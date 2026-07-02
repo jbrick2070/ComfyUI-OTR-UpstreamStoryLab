@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTR Story + Visual Sci-Fi Remnants Map</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101315;
+      --panel: #171c20;
+      --panel2: #20272d;
+      --ink: #eef3f4;
+      --muted: #a8b3bb;
+      --line: #33414a;
+      --story: #f2bd5a;
+      --visual: #79d5ff;
+      --logic: #9ce37d;
+      --risk: #ff8f8f;
+      --violet: #bca7ff;
+      --shadow: rgba(0, 0, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 46px;
+    }
+
+    header {
+      display: grid;
+      gap: 14px;
+      padding: 24px 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 62px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-top: 34px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    code, .chip {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    .lede {
+      max-width: 940px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .tagrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: currentColor;
+      flex: 0 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 22px var(--shadow);
+      padding: 16px;
+    }
+
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .metric {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 760;
+      margin-bottom: 8px;
+    }
+
+    .muted { color: var(--muted); }
+    .story { color: var(--story); }
+    .visual { color: var(--visual); }
+    .logic { color: var(--logic); }
+    .risk { color: var(--risk); }
+    .violet { color: var(--violet); }
+
+    .rail {
+      border-top: 4px solid currentColor;
+      min-height: 190px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .phrase-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 7px;
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .flowbox {
+      min-height: 126px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .table th,
+    .table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 9px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: #14191d;
+    }
+
+    .split-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      justify-content: center;
+      min-width: 84px;
+      padding: 5px 9px;
+      border: 1px solid currentColor;
+      font-weight: 760;
+      font-size: 12px;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stage:last-child { border-bottom: 0; }
+
+    .callout {
+      margin-top: 18px;
+      border-left: 4px solid var(--story);
+      background: #1f1a11;
+      padding: 14px 16px;
+      color: #f8e4b7;
+    }
+
+    a {
+      color: var(--visual);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 960px) {
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 {
+        grid-column: span 12;
+      }
+
+      .flow { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Story + Visual Sci-Fi Remnants Map</h1>
+      <p class="lede">
+        This artifact shows the two transplant lanes: story LLM remnants and visual prompt remnants.
+        The goal is to reuse the same downstream ledger slots, but edit the prompts and Python routing
+        so each source bank and visual style writes different data into those slots.
+      </p>
+      <div class="tagrow">
+        <span class="tag story"><span class="dot"></span>Story LLM prompt surgery</span>
+        <span class="tag visual"><span class="dot"></span>Visual prompt surgery</span>
+        <span class="tag logic"><span class="dot"></span>Same slots, different logic</span>
+        <span class="tag risk"><span class="dot"></span>No silent fallback</span>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="summary">
+      <div class="card span-3">
+        <div class="metric story">9</div>
+        <h3>Story Prompt Sites</h3>
+        <p class="muted">Outline, pitch, selector, dramatic state, coda, title, style picker, casting.</p>
+      </div>
+      <div class="card span-3">
+        <div class="metric visual">4</div>
+        <h3>Visual Prompt Clusters</h3>
+        <p class="muted">Brief helpers, MetaBrief, ShotLock, render driver.</p>
+      </div>
+      <div class="card span-3">
+        <div class="metric logic">1</div>
+        <h3>Ledger Contract</h3>
+        <p class="muted">The downstream ledger remains the shared bible.</p>
+      </div>
+      <div class="card span-3">
+        <div class="metric risk">0</div>
+        <h3>Fallbacks Wanted</h3>
+        <p class="muted">Unknown source/style should fail visibly.</p>
+      </div>
+    </section>
+
+    <h2>Core Concept</h2>
+    <section class="flow" aria-label="core concept">
+      <div class="flowbox">
+        <h3 class="story">Old Sci-Fi Slots</h3>
+        <p class="muted">Existing ledger slots, prompt stages, and downstream consumers are useful.</p>
+      </div>
+      <div class="arrow">-&gt;</div>
+      <div class="flowbox">
+        <h3 class="logic">Repurposed By Profile</h3>
+        <p class="muted">Same slot names can be filled with archive/public-domain/custom data through different prompt profiles and routing logic.</p>
+      </div>
+      <div class="arrow">-&gt;</div>
+      <div class="flowbox">
+        <h3 class="visual">Different Story + Look</h3>
+        <p class="muted">A media-restoration comedy, public-domain adaptation, or anime science story can all feed the same ledger contract.</p>
+      </div>
+    </section>
+
+    <h2>Story LLM Sci-Fi Remnants</h2>
+    <section class="grid" aria-label="story remnants">
+      <div class="card rail span-4 story">
+        <h3>Story Identity Phrases</h3>
+        <p class="muted">These must become source/story-model profile text.</p>
+        <div class="phrase-list">
+          <span class="chip">science-fiction audio drama</span>
+          <span class="chip">sci-fi radio drama</span>
+          <span class="chip">real science</span>
+          <span class="chip">grounded in real science</span>
+        </div>
+      </div>
+      <div class="card rail span-4 story">
+        <h3>News-Specific Labels</h3>
+        <p class="muted">These can stay as compatibility keys only, not conceptual meaning.</p>
+        <div class="phrase-list">
+          <span class="chip">NEWS KEY TERMS</span>
+          <span class="chip">NEWS PREMISE</span>
+          <span class="chip">news facts</span>
+          <span class="chip">news_close_brief</span>
+        </div>
+      </div>
+      <div class="card rail span-4 story">
+        <h3>Anthology Drift</h3>
+        <p class="muted">Media archive must not become sci-fi anthology with archive nouns pasted in.</p>
+        <div class="phrase-list">
+          <span class="chip">Star-Trek mission plot</span>
+          <span class="chip">Amazing-Stories twist</span>
+          <span class="chip">lab containment</span>
+          <span class="chip">spaceship rescue</span>
+        </div>
+      </div>
+    </section>
+
+    <h2>Story Prompt + Logic Map</h2>
+    <section class="card" aria-label="story prompt map">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Current Sci-Fi Remnant</th>
+            <th>Repurpose Action</th>
+            <th>Same Slot / Different Logic</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>nodes/_otr_outline.py</code></td>
+            <td>System prompts say science-fiction audio drama, science story, real science.</td>
+            <td>Add profile-aware <code>OutlineRequest</code> fields and system prompt override.</td>
+            <td>Same outline stage, different source labels, develop verb, and forbidden patterns.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_pitch_room.py</code></td>
+            <td>Pitch generation assumes short science-fiction audio drama.</td>
+            <td>Use story form label and source-scoped pitch persona.</td>
+            <td>Same pitch stage, media archive generates restoration/adventure/comedy pitches.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_story_select.py</code></td>
+            <td>Story grading says science-fiction audio drama.</td>
+            <td>Profile system prompt and source grounding label.</td>
+            <td>Same selector, different rubric for archive/public-domain/custom source fidelity.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_dramatic_state_llm.py</code></td>
+            <td>Uses real news item, news event, NEWS KEY TERMS, NEWS PREMISE.</td>
+            <td>Replace labels with active source packet/profile labels.</td>
+            <td>Same conflict builder, different source-material grounding.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_line_composer.py</code></td>
+            <td>Grounding line in news facts; news coda uses headlines/report language.</td>
+            <td>Source coda mode and line grounding instruction from profile.</td>
+            <td>Same line/coda slot, archive mode writes source note instead of news report.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/OTR_LedgerScriptWriter.py</code></td>
+            <td>Title and source resolution assume sci-fi/news; empty custom premise calls science RSS.</td>
+            <td>Thread <code>source_bank</code>, <code>story_model</code>, profile/spec through resolver.</td>
+            <td>Same writer node later, different upstream translator and source brain.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_style_picker.py</code></td>
+            <td>Inventor prompt says sci-fi radio drama showrunner.</td>
+            <td>Add override kwargs for inventor/chooser system and user prompts.</td>
+            <td>Same style-picker machinery only if source-scoped prompts/candidates are supplied.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/news_interpreter.py</code></td>
+            <td>Science/news article interpretation shape.</td>
+            <td>Treat as science source brain; media/archive gets its own source brain.</td>
+            <td>Same output idea, different source packet and prompt profile.</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_casting.py</code></td>
+            <td>Names like <code>news_seed</code> carry legacy meaning.</td>
+            <td>Keep reusable radio casting craft; feed active casting brief.</td>
+            <td>Same cast slot, archive/public-domain/custom briefs change character intent.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <h2>Visual Sci-Fi Remnants</h2>
+    <section class="grid" aria-label="visual remnants">
+      <div class="card rail span-4 visual">
+        <h3>Radio Studio Look</h3>
+        <p class="muted">Good for <code>sci_fi_radio</code>, wrong as universal default.</p>
+        <div class="phrase-list">
+          <span class="chip">vintage 1940s radio</span>
+          <span class="chip">chrome ribbon microphone</span>
+          <span class="chip">ON AIR sign</span>
+          <span class="chip">broadcast studio</span>
+        </div>
+      </div>
+      <div class="card rail span-4 visual">
+        <h3>Film Grade Look</h3>
+        <p class="muted">Must be style policy, not direct hardcoded appends.</p>
+        <div class="phrase-list">
+          <span class="chip">cinematic</span>
+          <span class="chip">35mm film look</span>
+          <span class="chip">film grain</span>
+          <span class="chip">dramatic film lighting</span>
+        </div>
+      </div>
+      <div class="card rail span-4 visual">
+        <h3>Video Motion Hardware</h3>
+        <p class="muted">Deep render fallbacks still assume radio objects.</p>
+        <div class="phrase-list">
+          <span class="chip">vacuum tubes</span>
+          <span class="chip">tuning dial</span>
+          <span class="chip">brass grille</span>
+          <span class="chip">radio console</span>
+        </div>
+      </div>
+    </section>
+
+    <h2>Visual Prompt + Logic Map</h2>
+    <section class="card" aria-label="visual prompt map">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Current Visual Remnant</th>
+            <th>Repurpose Action</th>
+            <th>Transplant Stage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>nodes/_otr_story_brief_helpers.py</code></td>
+            <td>Default cinematic/radio tails and shared finisher.</td>
+            <td>Policy-aware finisher, forbidden-term scrub, current behavior under <code>sci_fi_radio</code>.</td>
+            <td class="logic">V1 seam</td>
+          </tr>
+          <tr>
+            <td><code>nodes/otr_meta_brief_image_prompt.py</code></td>
+            <td>Portrait anchors, announcer radio subject, direct <code>IMAGE_GRADE_TAIL</code> appends.</td>
+            <td>Move local tail appends behind policy finisher after V1 exists.</td>
+            <td class="risk">V3 deep edit</td>
+          </tr>
+          <tr>
+            <td><code>nodes/otr_shot_lock.py</code></td>
+            <td>Fallback setting <code>a vintage radio studio</code>.</td>
+            <td>Stamp/read visual policy in patched ledger.</td>
+            <td class="visual">V2 wiring</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_video_engines/render_driver.py</code></td>
+            <td>LTX motion table and lipsync fallback prompts assume radio/cinematic.</td>
+            <td>Replace motion/fallback prompts role by role with style policy.</td>
+            <td class="risk">V3 highest risk</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <h2>Same Slots, Different Prompts</h2>
+    <section class="grid">
+      <div class="card span-6">
+        <div class="split-title"><span class="badge story">Science</span><h3>Current Slot Fill</h3></div>
+        <p class="muted">A science/news seed fills legacy <code>meta.news</code>, outline, cast, coda, still/video prompts with sci-fi radio assumptions.</p>
+      </div>
+      <div class="card span-6">
+        <div class="split-title"><span class="badge logic">Archive</span><h3>Repurposed Slot Fill</h3></div>
+        <p class="muted">A media archive item fills the same ledger slots with archive provenance, restoration/adventure story model, archive coda, and optional archival documentary visuals.</p>
+      </div>
+    </section>
+
+    <h2>Transplant Stages</h2>
+    <section class="card">
+      <div class="stage">
+        <span class="badge story">S1</span>
+        <div>
+          <h3>Story Source/Profile Surgery</h3>
+          <p class="muted">Pure packets, story models, prompt profiles, prompt preview leakage tests. No workflow edits.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <span class="badge story">S2</span>
+        <div>
+          <h3>Writer Runtime Transplant</h3>
+          <p class="muted">Append source/story controls, thread resolver, update whitelists, then append workflow JSON.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <span class="badge visual">V1</span>
+        <div>
+          <h3>Visual Policy Seams</h3>
+          <p class="muted">Add style policy parsing and shared finisher behavior while preserving sci-fi radio defaults.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <span class="badge visual">V2</span>
+        <div>
+          <h3>MetaBrief + ShotLock Wiring</h3>
+          <p class="muted">ForceInput policy sockets and ledger/meta stamping.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <span class="badge risk">V3</span>
+        <div>
+          <h3>Deep Video Prompt Edits</h3>
+          <p class="muted">Render-driver motion/fallback prompt replacement. This is a separate careful project.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="callout">
+      <strong>Correction captured:</strong> do not just move sci-fi remnants into a box. Edit and repurpose the same ledger slots and Python paths so each source bank, story model, and visual style writes the right content into the existing workflow.
+    </div>
+
+    <h2>Source Notes</h2>
+    <section class="card">
+      <p class="muted">
+        Built from <a href="./LEDGER_PROMPT_AUDIT.md">LEDGER_PROMPT_AUDIT.md</a>,
+        <a href="./VISUAL_PROMPT_AUDIT.md">VISUAL_PROMPT_AUDIT.md</a>,
+        <a href="./CODE_READY_PLAN.md">CODE_READY_PLAN.md</a>, and the R1-R4 kibitz convergence notes.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
+

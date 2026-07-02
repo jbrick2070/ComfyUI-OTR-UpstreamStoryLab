@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTR Visual Sci-Fi Remnants Map</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101214;
+      --panel: #171b1f;
+      --panel-2: #20262c;
+      --ink: #eef2f3;
+      --muted: #a7b0b8;
+      --line: #34404a;
+      --amber: #f2b84b;
+      --cyan: #67d8ef;
+      --rose: #ff8d8d;
+      --green: #7bd88f;
+      --lav: #b9a8ff;
+      --blue: #82aaff;
+      --shadow: rgba(0, 0, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    header {
+      display: grid;
+      gap: 14px;
+      padding: 24px 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-top: 34px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .tagrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: currentColor;
+      flex: 0 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 22px var(--shadow);
+      padding: 16px;
+    }
+
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .metric {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 750;
+      margin-bottom: 8px;
+    }
+
+    .muted { color: var(--muted); }
+    .amber { color: var(--amber); }
+    .cyan { color: var(--cyan); }
+    .rose { color: var(--rose); }
+    .green { color: var(--green); }
+    .lav { color: var(--lav); }
+    .blue { color: var(--blue); }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .flowbox {
+      min-height: 120px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .family {
+      min-height: 168px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      border-top: 4px solid currentColor;
+    }
+
+    .phrase-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    code, .chip {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 7px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .table th,
+    .table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 9px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: #14181c;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stage:last-child { border-bottom: 0; }
+
+    .badge {
+      display: inline-flex;
+      justify-content: center;
+      min-width: 70px;
+      padding: 5px 9px;
+      border: 1px solid currentColor;
+      color: var(--cyan);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .callout {
+      margin-top: 18px;
+      border-left: 4px solid var(--amber);
+      background: #1d1a12;
+      padding: 14px 16px;
+      color: #f7e5bb;
+    }
+
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 920px) {
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 {
+        grid-column: span 12;
+      }
+
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Visual Sci-Fi Remnants Map</h1>
+      <p class="lede">
+        A readable artifact showing where the old sci-fi/radio/cinematic look still lives, what should move into
+        <code>VisualStylePolicy</code>, and why video prompt extraction is a separate transplant stage.
+      </p>
+      <div class="tagrow">
+        <span class="tag amber"><span class="dot"></span>Move to <code>sci_fi_radio</code></span>
+        <span class="tag cyan"><span class="dot"></span>Keep role safety</span>
+        <span class="tag rose"><span class="dot"></span>High transplant risk</span>
+        <span class="tag green"><span class="dot"></span>Policy seam first</span>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="summary metrics">
+      <div class="card span-3">
+        <div class="metric amber">5</div>
+        <h3>Remnant Families</h3>
+        <p class="muted">Radio studio, film grade, broadcast motion, fallback settings, direct tail appends.</p>
+      </div>
+      <div class="card span-3">
+        <div class="metric cyan">4</div>
+        <h3>Core File Clusters</h3>
+        <p class="muted">Brief helpers, MetaBrief, ShotLock, render driver.</p>
+      </div>
+      <div class="card span-3">
+        <div class="metric rose">3</div>
+        <h3>Visual Stages</h3>
+        <p class="muted">Policy seams, node wiring, deep fallback extraction.</p>
+      </div>
+      <div class="card span-3">
+        <div class="metric green">0</div>
+        <h3>Workflow Edits Now</h3>
+        <p class="muted">Canonical workflow stays untouched until transplant.</p>
+      </div>
+    </section>
+
+    <h2>Where The Style Should Move</h2>
+    <section class="flow" aria-label="visual policy flow">
+      <div class="flowbox">
+        <h3 class="amber">Current State</h3>
+        <p class="muted">Style language is scattered across prompt helpers, MetaBrief, ShotLock, and render fallbacks.</p>
+      </div>
+      <div class="arrow">-&gt;</div>
+      <div class="flowbox">
+        <h3 class="green">Policy Owner</h3>
+        <p><code>VisualStylePolicy</code></p>
+        <p class="muted">The old radio/cinematic look becomes data owned by <code>sci_fi_radio</code>.</p>
+      </div>
+      <div class="arrow">-&gt;</div>
+      <div class="flowbox">
+        <h3 class="cyan">Style-Specific Output</h3>
+        <p class="muted">Anime, cartoon, origami, archival documentary, noir, and sci-fi radio stop leaking each other's visual language.</p>
+      </div>
+    </section>
+
+    <h2>Remnant Families</h2>
+    <section class="grid" aria-label="remnant families">
+      <div class="card family span-4 amber">
+        <h3>1940s Radio Studio Look</h3>
+        <p class="muted">Good for <code>sci_fi_radio</code>, bad as a universal default.</p>
+        <div class="phrase-list">
+          <span class="chip">vintage 1940s radio</span>
+          <span class="chip">chrome ribbon microphone</span>
+          <span class="chip">ON AIR sign</span>
+          <span class="chip">broadcast studio</span>
+        </div>
+      </div>
+      <div class="card family span-4 lav">
+        <h3>Cinematic Film Grade</h3>
+        <p class="muted">Currently leaks into styles where it fights the look.</p>
+        <div class="phrase-list">
+          <span class="chip">cinematic</span>
+          <span class="chip">35mm film look</span>
+          <span class="chip">film grain</span>
+          <span class="chip">dramatic film lighting</span>
+        </div>
+      </div>
+      <div class="card family span-4 blue">
+        <h3>Broadcast Motion Objects</h3>
+        <p class="muted">LTX/video fallback language still assumes radio hardware.</p>
+        <div class="phrase-list">
+          <span class="chip">vacuum tubes</span>
+          <span class="chip">tuning dial</span>
+          <span class="chip">brass grille</span>
+          <span class="chip">radio console</span>
+        </div>
+      </div>
+      <div class="card family span-6 rose">
+        <h3>Fallback Settings</h3>
+        <p class="muted">Fallbacks are risky because they appear exactly when better style data is missing.</p>
+        <div class="phrase-list">
+          <span class="chip">a vintage radio studio</span>
+          <span class="chip">1940s radio station studio</span>
+          <span class="chip">radio actor speaking into a studio</span>
+        </div>
+      </div>
+      <div class="card family span-6 rose">
+        <h3>Direct Tail Appends</h3>
+        <p class="muted">These can bypass the shared finisher, so policy-aware style still leaks the old grade.</p>
+        <div class="phrase-list">
+          <span class="chip">IMAGE_GRADE_TAIL</span>
+          <span class="chip">STYLE_TAIL_DEFAULT</span>
+          <span class="chip">RADIO_BROADCAST_TAIL</span>
+        </div>
+      </div>
+    </section>
+
+    <h2>File Map</h2>
+    <section class="card span-12" aria-label="file map">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>What It Still Carries</th>
+            <th>Transplant Action</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>nodes/_otr_story_brief_helpers.py</code></td>
+            <td>Default era/style tails, radio broadcast tail, still framing, shared finisher.</td>
+            <td>First seam: read <code>meta.visual_style</code>, apply policy tails and forbidden-term scrub.</td>
+            <td class="green">Best first hook</td>
+          </tr>
+          <tr>
+            <td><code>nodes/otr_meta_brief_image_prompt.py</code></td>
+            <td>Portrait anchors, announcer radio subject, direct <code>IMAGE_GRADE_TAIL</code> appends.</td>
+            <td>After policy finisher exists, move local tail appends behind the shared policy path.</td>
+            <td class="rose">Direct bypass risk</td>
+          </tr>
+          <tr>
+            <td><code>nodes/otr_shot_lock.py</code></td>
+            <td>Fallback setting <code>a vintage radio studio</code> and film-director assumptions.</td>
+            <td>Stamp visual policy into patched ledger, then let derived video prompts read it.</td>
+            <td class="amber">Medium</td>
+          </tr>
+          <tr>
+            <td><code>nodes/_otr_video_engines/render_driver.py</code></td>
+            <td>LTX motion prompts, radio console fallbacks, face/lipsync fallback prompts.</td>
+            <td>Replace deep fallbacks last, one role at a time, with style-specific motion prompts.</td>
+            <td class="rose">Highest</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <h2>What Stays Shared</h2>
+    <section class="grid">
+      <div class="card span-6">
+        <h3 class="cyan">Role Safety To Keep</h3>
+        <div class="phrase-list" style="margin-top: 12px">
+          <span class="chip">exact cast anchoring</span>
+          <span class="chip">no on-screen text</span>
+          <span class="chip">headroom / face visibility</span>
+          <span class="chip">mesh isolation</span>
+          <span class="chip">prompt hash after final style</span>
+        </div>
+      </div>
+      <div class="card span-6">
+        <h3 class="amber">Style To Extract</h3>
+        <div class="phrase-list" style="margin-top: 12px">
+          <span class="chip">1940s radio</span>
+          <span class="chip">cinematic 35mm</span>
+          <span class="chip">film grain</span>
+          <span class="chip">tube lighting</span>
+          <span class="chip">broadcast-distressed</span>
+        </div>
+      </div>
+    </section>
+
+    <h2>Staged Transplant Plan</h2>
+    <section class="card">
+      <div class="stage">
+        <span class="badge">V1</span>
+        <div>
+          <h3>Policy Seams First</h3>
+          <p class="muted">Add policy parsing, <code>meta.visual_style</code> reading, shared finisher behavior, and forbidden-term tests. Preserve current <code>sci_fi_radio</code> output.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <span class="badge">V2</span>
+        <div>
+          <h3>MetaBrief And ShotLock Wiring</h3>
+          <p class="muted">Add forceInput policy sockets and stamp parsed visual policy into the ledger/meta path. Bad wired policy fails visibly.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <span class="badge">V3</span>
+        <div>
+          <h3>Deep Video Prompt Extraction</h3>
+          <p class="muted">Replace render-driver and fallback prompts role by role. This is separate from the source/story transplant.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="callout">
+      <strong>Transplant rule:</strong> do not edit <code>workflows/otr_scifi_16gb_full.json</code> until the upstream translator head and manifest are ready.
+      This artifact is a map for later extraction, not a production wiring change.
+    </div>
+
+    <h2>Source Notes</h2>
+    <section class="card">
+      <p class="muted">
+        Built from <a href="./VISUAL_PROMPT_AUDIT.md">VISUAL_PROMPT_AUDIT.md</a>,
+        <a href="./CODE_READY_PLAN.md">CODE_READY_PLAN.md</a>, and the R1-R4 kibitz convergence notes.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
+
