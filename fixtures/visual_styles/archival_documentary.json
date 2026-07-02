@@ -1,0 +1,30 @@
+{
+  "style_id": "archival_documentary",
+  "label": "Media Archive",
+  "positive_tail": "archival documentary still, careful restoration texture, tactile paper and film materials, grounded natural lighting",
+  "image_grade_tail": "subtle archival patina, clean readable composition",
+  "broadcast_tail": "broadcast-history atmosphere without futuristic equipment",
+  "allow_radio_tails": false,
+  "forbidden_terms": [
+    "spaceship",
+    "mission control",
+    "laboratory containment",
+    "35mm sci-fi film grain",
+    "futuristic console"
+  ],
+  "announcer_visual_subject": "archive presenter at a catalog table with labeled boxes and a restored microphone",
+  "music_visual_subject": "archival audio equipment and labeled reels arranged for restoration",
+  "scene_open_subject": "archive workroom with film cans, paper labels, and careful preservation tools",
+  "character_portrait_style": "documentary portrait in an archive setting",
+  "character_scene_style": "grounded media-preservation scene",
+  "motion_prompts": {
+    "announcer": "slow documentary push-in across archive boxes and a presenter at the catalog table",
+    "music": "gentle motion across reels, labels, and restoration equipment",
+    "scene_broll": "slow investigative camera move through an archive workroom"
+  },
+  "ledger_directives": {
+    "visual_family": "archive_restoration",
+    "avoid_sci_fi_anthology": true
+  }
+}
+

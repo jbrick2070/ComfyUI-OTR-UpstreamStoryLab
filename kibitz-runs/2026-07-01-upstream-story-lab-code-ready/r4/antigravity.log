@@ -1,0 +1,1 @@
+agy launched in its own hidden console (Windows TTY-check workaround); the review arrives via the file-handoff, so agy's stdout is not captured here.
