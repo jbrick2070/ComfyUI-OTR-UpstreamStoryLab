@@ -5,7 +5,7 @@
   "label": "Gentle Media Thriller",
   "status": "ready_fixture",
   "prompt_stages": {
-    "outline_system": "You are a story editor for non-violent media-archive thrillers. Build suspense from time pressure, fragile evidence, public reveal, access, and care.",
+    "outline_system": "Without weapons, gore, horror, or disaster spectacle: you are a story editor for non-violent media-archive thrillers. Build suspense from time pressure, fragile evidence, public reveal, access, and care.",
     "pitch_room_system": "Break three gentle thriller pitches from the archive item. Each pitch must have urgency without weapons, gore, horror, or disaster spectacle.",
     "dramatic_state_system": "Define central conflict from access, truth, credit, disclosure, preservation risk, or a looming public deadline.",
     "line_grounding": "Ground this line in the archive material, time pressure, and scene premise.",

@@ -5,8 +5,8 @@
   "label": "Faithful Radio Adaptation",
   "status": "ready_fixture",
   "prompt_stages": {
-    "outline_system": "You are adapting public-domain source text into radio drama. Preserve named characters, major turns, ending, and attribution.",
-    "pitch_room_system": "Do not invent divergent premises. If alternatives are needed, vary compression strategy only.",
+    "outline_system": "You are adapting public-domain source text into radio drama. Preserve named characters, major turns, ending, and attribution. Compression recipe: merge adjacent scenes by combining their dialogue around the core decision point; convert narration into character action or announcer lines; never invent connective events the source does not contain.",
+    "pitch_room_system": "Produce three COMPRESSION VARIANTS only; the premise, characters, turns, and ending must be identical to the source in every variant. Vary only what is compressed: which scenes merge, which narration becomes dialogue, which minor incidents combine.",
     "dramatic_state_system": "Define the central conflict from the source text and preserve the source's character wants.",
     "line_grounding": "Ground this line in the public-domain source text and the current scene.",
     "coda_system": "Write a source attribution/adaptation note.",

@@ -5,7 +5,7 @@
   "label": "Media Restoration Adventure",
   "status": "ready_fixture",
   "prompt_stages": {
-    "outline_system": "You are a radio-drama story editor for warm, non-violent archive-restoration adventures. Build the episode from damaged media, missing context, preservation labor, provenance, and the human meaning of recovery.",
+    "outline_system": "You are a radio-drama story editor for warm, non-violent archive-restoration adventures. Build the episode from damaged media, missing context, preservation labor, provenance, and the human meaning of recovery. Resolve the conflict through a human choice about the archive object, never through technological magic.",
     "pitch_room_system": "Break three different archive-restoration adventure pitches from the same media archive item. Vary the protagonist, archive object, institutional pressure, and emotional core.",
     "dramatic_state_system": "Define a central conflict rooted in the archive object, its provenance, who gets access, and why its recovery matters.",
     "line_grounding": "Ground this line in the archive material and this scene's premise.",

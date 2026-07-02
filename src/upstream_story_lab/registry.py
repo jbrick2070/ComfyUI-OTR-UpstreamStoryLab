@@ -174,6 +174,25 @@ class Registry:
                         f"pack {path} missing required seams for bank "
                         f"{bank_id!r}: {missing} (no default prose is invented)"
                     )
+            # Executable pipelines must have FULL seam coverage in the pack
+            # (roundtable pass01, DeepSeek: pipelines and packs were validated
+            # atomically, never in combination - a missing seam only surfaced
+            # inside the runner). Descriptive pipelines are exempt: an absent
+            # seam there means "production constant stays", by contract.
+            pipeline = self.pipelines[pipeline_id]
+            if pipeline.executable_in_lab:
+                needed = {
+                    seam for p in pipeline.passes for seam in p.seam_refs
+                }
+                uncovered = sorted(
+                    seam for seam in needed
+                    if not pack.prompt_stages.get(seam, "").strip()
+                )
+                if uncovered:
+                    raise RegistryError(
+                        f"pack {path} does not cover executable pipeline "
+                        f"{pipeline_id!r} seams: {uncovered}"
+                    )
 
     # -- routing ---------------------------------------------------------
 

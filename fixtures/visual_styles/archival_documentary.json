@@ -18,10 +18,10 @@
   "character_portrait_style": "documentary portrait in an archive setting",
   "character_scene_style": "grounded media-preservation scene",
   "motion_prompts": {
-    "announcer": "Continuous shot, same catalog table throughout. Slow documentary push-in across labeled archive boxes. Paper labels flutter faintly. Dust motes drift in window light.",
-    "music_open": "Continuous shot, same restoration bench throughout. Reels begin to turn. Tape threads through guides. Gentle dolly push toward the spinning hub.",
-    "music_close": "Continuous shot, same restoration bench throughout. Reels slow to a stop. Tape settles. Light dims across labeled canisters. Slow dolly pull back.",
-    "music_inter": "Continuous shot, same shelf of labeled reels throughout. Slow lateral drift along the shelf. Handwritten labels pass in and out of focus."
+    "announcer": "Continuous shot, same surface throughout. Slow steadicam push-in. Shallow rack focus drifts forward. Dust motes catch and cross the light. Gentle settling at the end.",
+    "music_open": "Continuous shot, same bench throughout. Slow dolly push as rotation begins and steadily accelerates. Threading motion draws the eye forward. Light warms across the frame.",
+    "music_close": "Continuous shot, same bench throughout. Rotation slows to a stop. Focus softens. Light dims gradually. Slow dolly pull back to rest.",
+    "music_inter": "Continuous shot, same shelf throughout. Slow lateral tracking drift. Focus hands off plane to plane. Subtle parallax carries the motion."
   },
   "ledger_directives": {
     "visual_family": "archive_restoration",

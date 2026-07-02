@@ -21,8 +21,28 @@ class PipelineRunError(RuntimeError):
 LlmCallable = Callable[[str, str, str], str]
 
 
+def _context_block(pack: StoryPack, source_material_text: str,
+                   ledger_schema_text: str) -> str:
+    """The run context every pass can see (roundtable pass01, all three
+    panelists CONFIRMED the vacuum: pass prompts referenced guardrails and
+    schema the runner never supplied). Tone guardrails are POSITIVE
+    constraints and are injected; forbidden patterns stay metadata (the
+    locked negation-copy rule) and are enforced by the post-generation scan."""
+
+    parts = []
+    if source_material_text.strip():
+        parts.append("SOURCE MATERIAL:\n" + source_material_text.strip())
+    if pack.tone_guardrails:
+        parts.append("TONE GUARDRAILS:\n- " + "\n- ".join(pack.tone_guardrails))
+    if ledger_schema_text.strip():
+        parts.append("LEDGER SCHEMA:\n" + ledger_schema_text.strip())
+    return "\n\n".join(parts)
+
+
 def run_pipeline(pack: StoryPack, pipeline: PipelineSpec,
-                 llm: LlmCallable) -> dict[str, str]:
+                 llm: LlmCallable, *,
+                 source_material_text: str = "",
+                 ledger_schema_text: str = "") -> dict[str, str]:
     if not pipeline.executable_in_lab:
         raise PipelineRunError(
             f"pipeline {pipeline.story_pipeline_id!r} is descriptive metadata "
@@ -33,7 +53,9 @@ def run_pipeline(pack: StoryPack, pipeline: PipelineSpec,
             f"pack {pack.story_model_id!r} declares pipeline "
             f"{pack.story_pipeline_id!r}, not {pipeline.story_pipeline_id!r}"
         )
+    context = _context_block(pack, source_material_text, ledger_schema_text)
     outputs: dict[str, str] = {}
+    previous: str = ""
     for decl in pipeline.passes:
         if not decl.seam_refs:
             raise PipelineRunError(
@@ -46,8 +68,16 @@ def run_pipeline(pack: StoryPack, pipeline: PipelineSpec,
                 f"pass {decl.pass_id!r}: pack {pack.story_model_id!r} has no "
                 f"prompt for seam {seam!r} (JSON owns content; nothing is invented)"
             )
+        # Output CHAINING: each pass sees the previous pass's output - without
+        # this the 4-pass experiment is fiction (roundtable pass01).
+        pieces = [prompt]
+        if context:
+            pieces.append("RUN CONTEXT:\n" + context)
+        if previous:
+            pieces.append("PREVIOUS PASS OUTPUT:\n" + previous)
+        full_prompt = "\n\n".join(pieces)
         try:
-            result = llm(decl.slot, decl.pass_id, prompt)
+            result = llm(decl.slot, decl.pass_id, full_prompt)
         except Exception as exc:
             raise PipelineRunError(
                 f"pass {decl.pass_id!r} raised: {exc} - failing loudly; "
@@ -59,4 +89,5 @@ def run_pipeline(pack: StoryPack, pipeline: PipelineSpec,
                 "no fallback pipeline exists"
             )
         outputs[decl.pass_id] = result
+        previous = result
     return outputs
