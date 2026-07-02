@@ -75,7 +75,19 @@ def interpret_source(
                 "(wire news_interpreter.build_news_briefs); the facade never "
                 "re-implements the science brain"
             )
-        briefs = news_briefs_builder(article=article, **builder_kwargs)
+        # Map the article dict onto build_news_briefs' REAL keyword set
+        # (kibitz r4, Codex M1; signature at news_interpreter.py:731-746 -
+        # headline/summary/full_text/outlet/pub_date; technical_fn/style/seed
+        # arrive via builder_kwargs from the writer call site). No `article`
+        # kwarg exists in production.
+        call_kwargs = dict(builder_kwargs)
+        if article is not None:
+            call_kwargs.setdefault("headline", str(article.get("headline", "")))
+            call_kwargs.setdefault("summary", str(article.get("summary", "")))
+            call_kwargs.setdefault("full_text", str(article.get("full_text", "")))
+            call_kwargs.setdefault("outlet", str(article.get("source", "")))
+            call_kwargs.setdefault("pub_date", str(article.get("date", "")))
+        briefs = news_briefs_builder(**call_kwargs)
         data = briefs.model_dump() if hasattr(briefs, "model_dump") else dict(briefs)
         return {
             "casting_brief": data["casting_brief"],

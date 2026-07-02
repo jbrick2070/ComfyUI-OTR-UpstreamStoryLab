@@ -17,9 +17,12 @@ production is DONE and green; production repo is UNTOUCHED.
 - Kibitz arc r1-r4 run over the architecture + coding plan (Codex, Claude
   Code, Antigravity r1; agy quota-died mid-r2 and was dropped per skill
   fallback). Finals: kibitz-runs/2026-07-02-upstream-transplant-v2/r*/final.md.
-- v2 lab BUILT and green on the real ComfyUI venv
-  (.venv\Scripts\python.exe): 41 pytest + scripts/validate_lab.py +
-  scripts/smoke_nodes.py + scripts/verify_tree.py all pass.
+- v2 lab BUILT and green on the real ComfyUI venv. Gate commands (run these,
+  do not trust historical counts - kibitz r4):
+  `.venv\Scripts\python.exe -m pytest tests -q`
+  `.venv\Scripts\python.exe scripts\validate_lab.py`
+  `.venv\Scripts\python.exe scripts\smoke_nodes.py`
+  `python scripts\verify_tree.py`
   - JSON owns ALL content: fixtures/banks.json (4 banks, defaults,
     interpreter bindings), fixtures/pipelines.json (legacy descriptive +
     simple_4 executable), 12 seam-complete story packs, 5 visual styles
@@ -48,7 +51,10 @@ production is DONE and green; production repo is UNTOUCHED.
 
 0. Re-mirror check: compare production HEAD vs d48a9d76; if moved, refresh
    production_mirror + rerun lab drift tests (they fail loudly if shapes
-   moved).
+   moved). ALSO (kibitz r4): verify the live RSS import in the production
+   venv - `from nodes import story_orchestrator;
+   story_orchestrator._fetch_science_news` - and exercise its failure path
+   once; story_orchestrator is deliberately not mirrored.
 1. Drop the four staged modules into nodes/ verbatim; add production-side
    tests (adapter validated against the real NewsBriefs class).
 2. Writer edits per PATCH_PLAN item 1 (resolution before fetch, RSS gated

@@ -1,0 +1,9 @@
+Review written to `kibitz-runs/2026-07-02-upstream-transplant-v2/r4/claude.md`.
+
+**Summary:** VERDICT is **yes-with-fixes**. Two must-fix items:
+
+1. **Source interpreter facade code/test contradiction** -- `_otr_source_interpreter.py:78` passes `article=article` directly to the builder, but production's `build_news_briefs` doesn't accept that kwarg, and the test at `test_transplant_modules.py:133-139` explicitly asserts it should NOT be passed. The code needs to map article dict fields to production keyword args.
+
+2. **"Non-science banks ignore the style slug" is under-specified** in PATCH_PLAN #1 -- downstream code reads `resolved["style"]` in multiple places; the plan must say what value it gets for non-science banks.
+
+Three should-fixes (stale test counts, missing verify step in GO_FORWARD, widget name vs whitelist key mapping), and six verify-at-build items covering `_fetch_science_news`, re-mirror, `n_optional`, whitelist parity, real `NewsBriefs` validation, and the facade fix itself.

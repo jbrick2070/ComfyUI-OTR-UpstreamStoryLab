@@ -13,10 +13,12 @@ tests before any workflow edit. The writer's own self-test asserts its
 optional-widget count (n_optional == 16 in the current mirror) - that
 assertion, the offline schemas, and the widget/vector audits are updated in
 the SAME chunk as the widget append, before the workflow JSON is touched.
-VERIFY-AT-TRANSPLANT: the live RSS path imports
-story_orchestrator._fetch_science_news (not mirrored here) - confirm import
-availability and failure behavior against live production before the writer
-edit lands.
+VERIFY-AT-TRANSPLANT (executable, kibitz r4): in the live production
+repo/venv run
+`python -c "from nodes import story_orchestrator as so; print(callable(so._fetch_science_news))"`
+and exercise the writer RSS failure path once (all feeds blocked) to confirm
+the fail-loud message is unchanged - story_orchestrator.py is deliberately
+not mirrored here.
 
 New modules ready to drop into `ComfyUI-OldTimeRadio/nodes/` (staged in
 `transplant_work/production_new_modules/`, each with lab-side pure tests):
@@ -41,10 +43,31 @@ New modules ready to drop into `ComfyUI-OldTimeRadio/nodes/` (staged in
      `source_bank == "science_news"`; packet-driven lanes enter through the
      existing custom-premise-shaped article dict (`adapter_news_article`,
      seed_source="bridge_packet").
-   - PRECEDENCE (kibitz r2, Codex M5): existing `style`/`style_custom`
-     widgets remain the TONAL preset lane for science_news only; non-science
-     banks ignore the style slug (story_model owns tone) - add a test proving
-     a non-science run never reads the style slug for content.
+   - PRECEDENCE (kibitz r2, Codex M5; sharpened r4, Codex M2): existing
+     `style`/`style_custom` widgets remain the TONAL preset lane for
+     science_news only. For non-science banks the widget slug text is NEVER
+     read; `resolved["style"]` is set DETERMINISTICALLY to the resolved
+     `story_model` id and `style_custom` to "" - so every downstream
+     consumer of resolved["style"] (cast locking, outline, metadata stamps,
+     visual plan) receives one well-defined, stampable value. Tests: (a)
+     widget slug text not consumed on non-science lanes, (b)
+     resolved["style"] == story_model id, (c) downstream style args
+     deterministic across two runs.
+   - CANONICAL APPENDED INPUTS (kibitz r4, Codex M3), in this exact order at
+     the END of INPUT_TYPES: `source_bank` (COMBO), `story_model` (COMBO),
+     `story_pipeline` (COMBO), `visual_style` (COMBO),
+     `bridge_artifact_path` (STRING, forceInput). Production widget names
+     have NO `_id` suffix; each maps 1:1 onto the bridge artifact's
+     `*_id` fields (source_bank <-> source_bank_id, etc.). Defaults:
+     science_news/auto/auto/auto/"" - empty bridge path is valid ONLY for
+     science_news; non-science banks require a non-empty path and fail loud
+     without one. These five names are exactly what gets whitelisted in
+     item 9. Vocabulary note (kibitz r4): PRODUCTION widgets use these bare
+     names (matching production convention, e.g. `style`); the LAB node
+     widgets keep their `*_id` names; the adapter maps bare widget names
+     1:1 onto the bridge artifact's `*_id` fields. The style/style_custom
+     widgets stay VISIBLE on non-science lanes - code branches on
+     source_bank; nothing is hidden.
    - Title prompt: `title_form_label` from profile (science default
      preserves current text).
    - Coda routing: call `compose_source_coda` facade keyed by

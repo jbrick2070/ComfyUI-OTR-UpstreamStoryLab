@@ -117,12 +117,23 @@ def test_facade_science_wraps_builder_verbatim() -> None:
 
     calls = {}
 
-    def builder(article=None, **kwargs):
-        calls["article"] = article
+    def builder(**kwargs):
+        calls.update(kwargs)
         return FakeBriefs()
 
     out = facade.interpret_source(
-        "science_news", article={"headline": "h"}, news_briefs_builder=builder,
+        "science_news",
+        article={"headline": "h", "summary": "sum", "full_text": "ft",
+                 "source": "Outlet", "date": "2026-07-02", "link": "",
+                 "seed_text": "h sum"},
+        news_briefs_builder=builder,
+        technical_fn="tf-sentinel",
     )
     assert out["close_brief"] == "n"
-    assert calls["article"] == {"headline": "h"}
+    # kibitz r4 (Codex M1): the facade maps the article dict onto the REAL
+    # build_news_briefs keyword set - no `article` kwarg exists in production.
+    assert "article" not in calls
+    assert calls["headline"] == "h"
+    assert calls["outlet"] == "Outlet"
+    assert calls["pub_date"] == "2026-07-02"
+    assert calls["technical_fn"] == "tf-sentinel"
