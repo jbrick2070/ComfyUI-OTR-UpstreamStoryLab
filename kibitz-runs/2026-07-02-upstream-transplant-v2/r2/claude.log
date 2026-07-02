@@ -1,0 +1,8 @@
+Review written to `kibitz-runs/2026-07-02-upstream-transplant-v2/r2/claude.md`.
+
+Summary of findings:
+
+- **VERDICT: yes-with-fixes** -- architecturally sound, well-grounded against production code
+- **5 MUST-FIX**: OutlineRequest.outline_system_prompt doesn't exist yet (spec implies it does); pick_style override kwargs don't exist yet; 5 contract types referenced but not in C1 list; template variable allowlist unspecified; v1 packs were cleared from the working tree and need re-extraction
+- **5 SHOULD-FIX**: close_brief/news_close_brief naming gap; compose_source_coda is new not inherited; FALLBACK_INVENTORY table missing; SCI_FI_TAILS rename inconsistency; ~60 combo count unverifiable without fixtures
+- **3 CUT candidates**: per-file sha256 provenance hashes (git is the provenance), FakeLLM runner broader-than-needed language, Resolution record before any consumer exists

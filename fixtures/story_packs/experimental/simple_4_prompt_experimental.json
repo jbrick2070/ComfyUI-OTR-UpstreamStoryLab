@@ -1,0 +1,34 @@
+{
+  "source_bank_id": "custom_source_bank",
+  "story_model_id": "simple_4_prompt_experimental",
+  "story_pipeline_id": "simple_4_prompt_experimental",
+  "label": "Simple 4-Prompt Experimental",
+  "status": "experimental",
+  "prompt_stages": {
+    "pass_1_creative_story": "Create one complete, source-grounded radio story from the selected source material, story model, tone guardrails, and forbidden patterns. Do not output JSON in this pass.",
+    "pass_2_creative_ledger_fill": "Use the finished story to fill the production story ledger with cast, lines, beats, source metadata, coda/source note, and visual directives.",
+    "pass_3_technical_schema_cleanup": "Repair the ledger JSON so it satisfies required fields, enum values, ids, source fields, and downstream schema expectations.",
+    "pass_4_technical_ledger_audit": "Audit and repair cast/character references, speaker roles, beat ids, line ids, continuity, source note, visual directives, and downstream invariants. If the ledger cannot be made valid, fail loudly."
+  },
+  "examples": [
+    "A stronger model writes a rich story first, then fills and repairs the ledger in technical passes."
+  ],
+  "tone_guardrails": [
+    "Python should validate and repair structure, not secretly co-write the story.",
+    "No fallback to legacy_many_pass if this experiment fails.",
+    "Adaptive cleanup may continue only under a hard max pass cap and deterministic validator failures."
+  ],
+  "forbidden_plot_patterns": [
+    "hidden fallback to science RSS",
+    "silent fallback to legacy builder"
+  ],
+  "forbidden_leakage_terms": [],
+  "source_requirements": [
+    "Any selected source bank must provide a valid source packet and story pack."
+  ],
+  "ledger_validation_notes": [
+    "Pass 4 must check cast vs line speakers, character ids, beat ids, line ids, source metadata, coda/source note, and visual directives.",
+    "Optional adaptive cleanup stops when deterministic validators pass or max_cleanup_passes is reached."
+  ],
+  "schema_version": "v2.0"
+}
