@@ -5,6 +5,19 @@ nightly; exact diffs are generated against live HEAD in the transplant chunk.
 This plan names each file's changes at module level, its new-module partners,
 and the tests that gate it. Nothing in this folder is installed anywhere.
 
+ATOMICITY + ORDER (kibitz r3, Codex M3/M5): items 1-6 are ONE transplant
+chunk applied callee-first - (a) land the four new modules, (b) land callee
+API additions (compose_source_coda facade, pick_style kwargs, OutlineRequest
+fields), (c) only then the writer caller edits, (d) import/signature smoke
+tests before any workflow edit. The writer's own self-test asserts its
+optional-widget count (n_optional == 16 in the current mirror) - that
+assertion, the offline schemas, and the widget/vector audits are updated in
+the SAME chunk as the widget append, before the workflow JSON is touched.
+VERIFY-AT-TRANSPLANT: the live RSS path imports
+story_orchestrator._fetch_science_news (not mirrored here) - confirm import
+availability and failure behavior against live production before the writer
+edit lands.
+
 New modules ready to drop into `ComfyUI-OldTimeRadio/nodes/` (staged in
 `transplant_work/production_new_modules/`, each with lab-side pure tests):
 
@@ -40,7 +53,13 @@ New modules ready to drop into `ComfyUI-OldTimeRadio/nodes/` (staged in
    - Stamp `meta.source_bank`, `meta.story_model`, `meta.story_pipeline`,
      `meta.visual_style` (+ provenance block from the bridge artifact).
    - New widgets appended ONLY at the end of INPUT_TYPES; forceInput for
-     policy/bridge JSON sockets.
+     policy/bridge JSON sockets. The bridge-artifact input is an EXPLICIT
+     path/JSON socket - the adapter never scans a conventional folder
+     (convention scanning is a hidden default; kibitz r3 anchor).
+   - Widget DEFAULTS preserve current behavior byte-identically:
+     source_bank="science_news", story_model="auto", story_pipeline="auto",
+     visual_style="auto" - an untouched canonical workflow renders exactly
+     as today (append-only gate).
 2. `nodes/_otr_line_composer.py`
    - Add `compose_source_coda(*, coda_mode, ...)` facade returning
      `LineResult`; `compose_news_coda` stays the real_news_report
@@ -73,7 +92,9 @@ New modules ready to drop into `ComfyUI-OldTimeRadio/nodes/` (staged in
    after 7 proves byte-identical defaults; deep render_driver prompts one at
    a time with leakage tests).
 9. Whitelists: `scripts/otr_api.py` + `nodes/_otr_workflow_apply.py` gain the
-   four new creative keys when the widgets land (same chunk as widgets).
+   exact routing/config keys `source_bank`, `story_model`, `story_pipeline`,
+   `visual_style` (they are NOT ordinary creative knobs - kibitz r3), plus a
+   parity test asserting both whitelists carry the same key set.
 10. `workflows/otr_scifi_16gb_full.json` - LAST: append-only widgets +
     forceInput sockets; validator + round-trip + link audit + widget audit
     green first (gates in docs/FABLE_FINAL_REVIEW_2026-07-02.md).

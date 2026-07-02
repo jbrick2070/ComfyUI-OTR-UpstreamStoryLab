@@ -76,7 +76,16 @@ def read_style_id(meta: dict[str, Any]) -> str:
 def tail_overrides(policy: dict[str, Any]) -> dict[str, str]:
     """The four tail replacements the shared seams consult. Empty string =
     keep the production constant (sci_fi_radio supplies the SAME strings, so
-    default behavior is byte-identical either way)."""
+    default behavior is byte-identical either way).
+
+    NAME MAPPING (kibitz r3, Claude Code M1 - do not misconnect at the
+    transplant hunk):
+        "era_tail"             <- policy.era_tail        -> ERA_TAIL_DEFAULT
+        "style_tail"           <- policy.positive_tail   -> STYLE_TAIL_DEFAULT
+        "image_grade_tail"     <- policy.image_grade_tail-> IMAGE_GRADE_TAIL
+        "radio_broadcast_tail" <- policy.broadcast_tail  -> RADIO_BROADCAST_TAIL
+    Never add JSON fields named "style_tail"/"radio_broadcast_tail" to
+    VisualStylePolicy - those names are the override-dict vocabulary only."""
 
     policy = validate_policy(policy)
     return {

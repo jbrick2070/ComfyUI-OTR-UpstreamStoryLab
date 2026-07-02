@@ -13,6 +13,8 @@ parameter, not a hidden fallback).
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any, Callable
 
 #: Pinned to production news_interpreter.NewsBriefs (13 fields). The caller
@@ -47,6 +49,29 @@ class BridgeInputError(ValueError):
 def _require(condition: bool, message: str) -> None:
     if not condition:
         raise BridgeInputError(message)
+
+
+def load_bridge_artifact(
+    path: str | Path,
+    *,
+    news_briefs_model: Callable[..., Any] | None = None,
+) -> dict[str, Any]:
+    """Load a bridge artifact JSON file from an EXPLICIT path (the writer's
+    forceInput socket value - never a scanned folder) and validate it.
+    This is the one production entry point for file handoff (kibitz r3:
+    emit writes a path, production consumes a path; one contract)."""
+
+    p = Path(path)
+    if not p.is_file():
+        raise BridgeInputError(f"bridge artifact file not found: {p}")
+    raw = p.read_bytes()
+    if raw[:3] == b"\xef\xbb\xbf":
+        raise BridgeInputError(f"bridge artifact has a UTF-8 BOM: {p}")
+    try:
+        data = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BridgeInputError(f"bridge artifact is not valid UTF-8 JSON: {p}: {exc}") from exc
+    return validate_bridge_artifact(data, news_briefs_model=news_briefs_model)
 
 
 def validate_bridge_artifact(

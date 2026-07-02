@@ -10,6 +10,7 @@ at the mirror boundary).
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -34,6 +35,28 @@ from .registry import Registry
 
 class BridgeError(ValueError):
     """Fail-loud bridge assembly/emission problem."""
+
+
+def _read_production_baseline(root: Path) -> str:
+    """Read the mirrored production commit hash from
+    PRODUCTION_MIRROR_MANIFEST.md so provenance.production_baseline is LIVE
+    data, never hand-typed (kibitz r3: makes the field real; note the
+    provenance covers fixture state + this baseline hash - mirror FILE
+    contents are a validation-time concern covered by the drift tests and
+    the ComfyUI digest, intentionally not re-hashed here)."""
+
+    manifest = Path(root) / "PRODUCTION_MIRROR_MANIFEST.md"
+    if not manifest.exists():
+        raise BridgeError(
+            f"PRODUCTION_MIRROR_MANIFEST.md missing at {manifest} - cannot "
+            "stamp production_baseline provenance"
+        )
+    match = re.search(r"commit\s+([0-9a-f]{40})", manifest.read_text(encoding="utf-8"))
+    if not match:
+        raise BridgeError(
+            "no production commit hash found in PRODUCTION_MIRROR_MANIFEST.md"
+        )
+    return match.group(1)
 
 
 def build_spec(registry: Registry, *, source_bank_id: str,
@@ -66,7 +89,9 @@ def build_spec(registry: Registry, *, source_bank_id: str,
     pipeline = registry.pipeline(pipeline_id)
 
     provenance = Provenance(
-        production_baseline=production_baseline,
+        production_baseline=(
+            production_baseline or _read_production_baseline(registry.root)
+        ),
         lab_state_digest=registry.state_digest(),
         pack_sha256=file_sha256(registry.pack_path(bank_id, model_id, pipeline_id)),
         style_sha256=file_sha256(registry.style_path(style_id)),

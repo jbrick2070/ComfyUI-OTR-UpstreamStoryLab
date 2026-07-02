@@ -37,21 +37,27 @@ def main() -> int:
     assert tuple(extract_motion_role_keys(mirror / "_otr_video_engines" / "render_driver.py")) == MOTION_ROLE_KEYS
     assert extract_visual_tails(mirror / "_otr_story_brief_helpers.py") == PRODUCTION_VISUAL_TAILS
 
+    # Full declared matrix (kibitz r3, Codex S2): every runnable pack x every
+    # style - the same coverage the pytest matrix asserts, so a green here
+    # really is matrix-green.
     specs = 0
     for (bank_id, model_id, pipeline_id), _ in sorted(registry.packs.items()):
         if bank_id == "custom_source_bank":
             continue
-        spec = build_spec(
-            registry, source_bank_id=bank_id, story_model_id=model_id,
-            story_pipeline_id=pipeline_id,
-        )
-        if bank_id != "science_news":
-            leaked = scan_story_leakage(registry, spec)
-            assert not leaked, f"{bank_id}/{model_id} leaked {leaked}"
-        leaked_visual = scan_visual_leakage(spec)
-        assert not leaked_visual, f"{bank_id}/{model_id} visual leaked {leaked_visual}"
-        build_bridge_artifact(spec)
-        specs += 1
+        for style_id in sorted(registry.styles):
+            spec = build_spec(
+                registry, source_bank_id=bank_id, story_model_id=model_id,
+                story_pipeline_id=pipeline_id, visual_style_id=style_id,
+            )
+            if bank_id != "science_news":
+                leaked = scan_story_leakage(registry, spec)
+                assert not leaked, f"{bank_id}/{model_id} leaked {leaked}"
+            leaked_visual = scan_visual_leakage(spec)
+            assert not leaked_visual, (
+                f"{bank_id}/{model_id}/{style_id} visual leaked {leaked_visual}"
+            )
+            build_bridge_artifact(spec)
+            specs += 1
 
     manifests = registry.public_domain_manifests()
 

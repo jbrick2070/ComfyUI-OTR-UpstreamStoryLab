@@ -26,17 +26,37 @@ def _ensure_lab_importable() -> None:
         sys.path.insert(0, lab_src)
 
 
+_REGISTRY_CACHE: tuple[str, object] | None = None
+
+
 def _registry():
+    """Registry cached behind the state digest (kibitz r3, Claude Code S5):
+    ComfyUI calls INPUT_TYPES repeatedly; rebuilding+revalidating every
+    fixture each time is waste. A digest change rebuilds."""
+
+    global _REGISTRY_CACHE
     _ensure_lab_importable()
     from upstream_story_lab.registry import Registry
 
-    return Registry(LAB_ROOT)
+    stamp = _lab_state_digest()
+    if _REGISTRY_CACHE is not None and _REGISTRY_CACHE[0] == stamp:
+        return _REGISTRY_CACHE[1]
+    registry = Registry(LAB_ROOT)
+    _REGISTRY_CACHE = (stamp, registry)
+    return registry
 
 
 def _lab_state_digest() -> str:
     digest = hashlib.sha256()
-    paths = [LAB_ROOT / "__init__.py", LAB_ROOT / "nodes.py"]
-    for folder in (LAB_SRC, LAB_ROOT / "fixtures"):
+    paths = [
+        LAB_ROOT / "__init__.py",
+        LAB_ROOT / "nodes.py",
+        LAB_ROOT / "PRODUCTION_MIRROR_MANIFEST.md",
+    ]
+    # production_mirror included (kibitz r3 anchor + Codex r3 M4): the
+    # validator reads the mirror for drift checks, so a re-mirror must
+    # invalidate ComfyUI's cache.
+    for folder in (LAB_SRC, LAB_ROOT / "fixtures", LAB_ROOT / "production_mirror"):
         if folder.exists():
             paths.extend(
                 p for p in folder.rglob("*")
@@ -262,8 +282,17 @@ class OTR_BridgeArtifactEmit:
             visual_style_id=visual_style_id,
         )
         artifact = build_bridge_artifact(spec)
+        # Filename carries ALL resolved axes + a provenance hash so two
+        # different selections can never silently overwrite each other
+        # (kibitz r3, Codex M2).
+        from upstream_story_lab.compat import canonical_json_hash
+
+        content_hash = canonical_json_hash(
+            artifact.ledger_writing_spec.model_dump(mode="json")
+        )[:8]
         out = LAB_ROOT / "bridge_out" / (
-            f"bridge_{spec.source_bank_id}_{spec.story_model_id}.json"
+            f"bridge_{spec.source_bank_id}_{spec.story_model_id}_"
+            f"{spec.story_pipeline_id}_{spec.visual_style_id}_{content_hash}.json"
         )
         path = emit_bridge_artifact(artifact, out)
         return (str(path),)
