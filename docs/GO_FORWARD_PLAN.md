@@ -81,3 +81,19 @@ JSON: append-only widgets, forceInput sockets, validators green first.
 "Resume the OTR build. Read docs/GO_FORWARD_PLAN.md in
 ComfyUI-OTR-UpstreamStoryLab; current step is chunk T1 (production
 transplant). Start with the re-mirror check, then step 1."
+
+## DEFERRED STORY-LLM FIXES (park here; operator 2026-07-02: no story-LLM changes in production until this refactor lands)
+
+- **Director-note leak into spoken dialogue** (proof7 `Lab Race Against Time` b003,
+  operator eyeball catch): the composer emitted `Can't hold back the surge much
+  longer! Oya's voice should be more tense and urgent.` -- an UN-parenthesized
+  writing note inside `line.text`, so TTS read it aloud and the captions showed it.
+  The existing production scrubs only catch (...) / [...] spans (stage-direction
+  scrub, OTR_LedgerScriptWriter I.6a) and leading self-vocatives (I.6b).
+  Proposed fix (drafted + reverted out of production same day per operator hold):
+  a pre-freeze scrub (c) that drops whole SENTENCES matching a high-precision
+  director-note class -- `<name|his|her|their|the>('s)? voice (should|must|needs to)`,
+  `should sound more`, `deliver this line` -- keeping the original text (LOUD warn)
+  if the scrub would leave <2 words. Fold this into the v2 writer's line-hygiene
+  stage instead (root-cause: the composer prompt should ban delivery notes in
+  dialogue; the scrub is defense-in-depth).
