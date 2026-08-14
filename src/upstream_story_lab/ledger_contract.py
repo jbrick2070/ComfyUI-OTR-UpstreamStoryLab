@@ -24,6 +24,18 @@ from pydantic import (
     model_validator,
 )
 
+from .production_contract import (
+    AcceptanceEvent,
+    AttemptEvent,
+    PhaseAcceptance,
+    PhaseAttempt,
+    ProductionEvent,
+    ProductionState,
+    RunPhase,
+    SucceededResult,
+    iter_story_refs,
+)
+
 
 ENVELOPE_SCHEMA_VERSION = "otr.ledger_envelope.v1"
 STORY_SCHEMA_VERSION = "otr.story_ledger.v1"
@@ -576,7 +588,7 @@ class LedgerEnvelope(StrictModel):
     schema_version: Literal[ENVELOPE_SCHEMA_VERSION] = ENVELOPE_SCHEMA_VERSION
     story_ledger: StoryLedger
     story_seal: StorySeal
-    production_state: None = None
+    production_state: ProductionState | None = None
     final_seal: None = None
 
     @model_validator(mode="after")
@@ -586,7 +598,78 @@ class LedgerEnvelope(StrictModel):
             raise LedgerContractError(
                 "story_seal does not bind the exact story_ledger"
             )
+        if self.production_state is not None:
+            self._validate_production_bindings()
         return self
+
+    def _validate_production_bindings(self) -> None:
+        state = self.production_state
+        if state is None:
+            return
+        if state.episode_id != self.story_ledger.episode_id:
+            raise LedgerContractError(
+                "production_state does not bind story_ledger.episode_id"
+            )
+        if state.story_sha256 != self.story_seal.story_sha256:
+            raise LedgerContractError(
+                "production_state does not bind story_seal.story_sha256"
+            )
+
+        body = self.story_ledger.body
+        namespaces = {
+            "source_packet": {body.source_packet.packet_id},
+            "source": {row.source_id for row in body.source_packet.sources},
+            "fact": {row.fact_id for row in body.source_packet.facts},
+            "cast": {row.char_id for row in body.cast},
+            "scene": {row.scene_id for row in body.scenes},
+            "shot": {row.shot_id for row in body.shots},
+            "beat": {row.beat_id for row in body.beats},
+            "line": {row.line_id for row in body.lines},
+            "music_cue": {row.cue_id for row in body.music_cues},
+            "sequence": {row.sequence_id for row in body.sequence},
+        }
+        for ref in iter_story_refs(state):
+            if ref.ref_id not in namespaces[ref.kind]:
+                raise LedgerContractError(
+                    f"production {ref.kind!r} reference {ref.ref_id!r} does not "
+                    "resolve into the sealed story"
+                )
+
+        required_coverage = {
+            "cast_routing": ("cast", namespaces["cast"]),
+            "voice_render": ("line", namespaces["line"]),
+            "music_render": ("music_cue", namespaces["music_cue"]),
+            "speech_timeline": ("sequence", namespaces["sequence"]),
+        }
+        for event in state.journal:
+            if not isinstance(event, AttemptEvent):
+                continue
+            attempt = event.attempt
+            if not isinstance(attempt.result, SucceededResult):
+                continue
+            coverage = required_coverage.get(attempt.phase_id)
+            if coverage is None:
+                if attempt.phase_id == "audit":
+                    receipt = attempt.result.receipt
+                    if receipt.story_sha256 != self.story_seal.story_sha256:
+                        raise LedgerContractError(
+                            "audit receipt does not bind the sealed story"
+                        )
+                continue
+            kind, expected_ids = coverage
+            receipt_refs = [
+                ref.ref_id
+                for ref in iter_story_refs(attempt.result.receipt)
+                if ref.kind == kind
+            ]
+            if len(receipt_refs) != len(set(receipt_refs)):
+                raise LedgerContractError(
+                    f"{attempt.phase_id} receipt contains duplicate {kind} coverage"
+                )
+            if set(receipt_refs) != expected_ids:
+                raise LedgerContractError(
+                    f"{attempt.phase_id} succeeded receipt must cover every {kind}"
+                )
 
 
 def _plain(value: Any) -> Any:
@@ -737,6 +820,136 @@ def assert_story_unchanged(before: LedgerEnvelope, after: LedgerEnvelope) -> Non
         raise LedgerContractError("production extension mutated story_seal")
 
 
+def assert_production_append_only(
+    before: LedgerEnvelope, after: LedgerEnvelope
+) -> None:
+    """Prove that one legal production event extended an unchanged envelope."""
+
+    assert_story_unchanged(before, after)
+    if before.final_seal is not None or after.final_seal is not None:
+        raise LedgerContractError("production extension after final_seal is forbidden")
+    old_state = before.production_state
+    new_state = after.production_state
+    if old_state is None:
+        if new_state is None or new_state.journal:
+            raise LedgerContractError(
+                "production initialization must create an empty typed journal"
+            )
+        return
+    if new_state is None:
+        raise LedgerContractError("production_state cannot be removed")
+    old_root = old_state.model_dump(mode="json", exclude={"journal"})
+    new_root = new_state.model_dump(mode="json", exclude={"journal"})
+    if canonical_bytes(old_root) != canonical_bytes(new_root):
+        raise LedgerContractError("production root or run plan was rewritten")
+    old_events = [canonical_bytes(event) for event in old_state.journal]
+    new_events = [canonical_bytes(event) for event in new_state.journal]
+    if len(new_events) != len(old_events) + 1:
+        raise LedgerContractError("production extension must append exactly one event")
+    if new_events[: len(old_events)] != old_events:
+        raise LedgerContractError("production journal history is not an exact prefix")
+
+
+def initialize_production_state(
+    envelope: LedgerEnvelope,
+    *,
+    run_id: str,
+    created_at: datetime,
+    run_plan: list[RunPhase],
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> LedgerEnvelope:
+    """Attach an empty, story-bound production journal atomically."""
+
+    before = verify_story_envelope(
+        envelope,
+        receipt_verifiers=receipt_verifiers,
+    )
+    if before.production_state is not None:
+        raise LedgerContractError("production_state is already initialized")
+    state = ProductionState(
+        episode_id=before.story_ledger.episode_id,
+        run_id=run_id,
+        story_sha256=before.story_seal.story_sha256,
+        created_at=created_at,
+        run_plan=run_plan,
+        journal=[],
+    )
+    payload = before.model_dump(mode="json")
+    payload["production_state"] = state.model_dump(mode="json")
+    after = LedgerEnvelope.model_validate(payload)
+    verify_story_envelope(after, receipt_verifiers=receipt_verifiers)
+    assert_production_append_only(before, after)
+    return after
+
+
+def _append_production_event(
+    envelope: LedgerEnvelope,
+    event: ProductionEvent,
+    *,
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> LedgerEnvelope:
+    before = verify_story_envelope(
+        envelope,
+        receipt_verifiers=receipt_verifiers,
+    )
+    if before.production_state is None:
+        raise LedgerContractError("production_state is not initialized")
+    payload = before.model_dump(mode="json")
+    payload["production_state"]["journal"].append(event.model_dump(mode="json"))
+    after = LedgerEnvelope.model_validate(payload)
+    verify_story_envelope(after, receipt_verifiers=receipt_verifiers)
+    assert_production_append_only(before, after)
+    return after
+
+
+def append_production_attempt(
+    envelope: LedgerEnvelope,
+    attempt: PhaseAttempt,
+    *,
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> LedgerEnvelope:
+    """Return a new envelope with one immutable completed attempt appended."""
+
+    event = AttemptEvent(attempt=attempt)
+    return _append_production_event(
+        envelope,
+        event,
+        receipt_verifiers=receipt_verifiers,
+    )
+
+
+def accept_production_attempt(
+    envelope: LedgerEnvelope,
+    acceptance: PhaseAcceptance,
+    *,
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> LedgerEnvelope:
+    """Append an acceptance event; prior attempts and acceptances stay intact."""
+
+    event = AcceptanceEvent(acceptance=acceptance)
+    return _append_production_event(
+        envelope,
+        event,
+        receipt_verifiers=receipt_verifiers,
+    )
+
+
+def verify_production_state(
+    envelope: LedgerEnvelope,
+    *,
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> ProductionState:
+    """Freshly validate both story trust and the complete production journal."""
+
+    validated = verify_story_envelope(
+        envelope,
+        receipt_verifiers=receipt_verifiers,
+    )
+    if validated.production_state is None:
+        raise LedgerContractError("production_state is not initialized")
+    return validated.production_state
+
+
 __all__ = [
     "CANONICALIZATION_ID",
     "ENVELOPE_SCHEMA_VERSION",
@@ -751,10 +964,15 @@ __all__ = [
     "StoryBody",
     "StoryLedger",
     "StorySeal",
+    "accept_production_attempt",
+    "append_production_attempt",
+    "assert_production_append_only",
     "assert_story_unchanged",
     "build_story_seal",
     "canonical_bytes",
     "canonical_sha256",
+    "initialize_production_state",
     "verify_story_acceptance",
     "verify_story_envelope",
+    "verify_production_state",
 ]
