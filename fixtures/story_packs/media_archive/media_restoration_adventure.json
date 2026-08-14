@@ -5,11 +5,11 @@
   "label": "Media Restoration Adventure",
   "status": "ready_fixture",
   "prompt_stages": {
-    "outline_system": "You are a radio-drama story editor for warm archive-restoration adventures. Build the episode from damaged media, missing context, preservation labor, provenance, and the human meaning of recovery. Resolve the conflict through a human choice about the archive object, never through technological magic.",
+    "outline_system": "You are a radio-drama story editor for warm archive-restoration adventures. Build the episode from damaged media, missing context, preservation labor, provenance, and the human meaning of recovery. The source material remains the source of truth: any fictional lens must not create source facts, and the archive object, collection, preservation labor, or media-history hook must clearly come from the source material. Resolve the conflict through a human choice about the archive object, never through technological magic.",
     "pitch_room_system": "Break three different archive-restoration adventure pitches from the same media archive item. Vary the protagonist, archive object, institutional pressure, and emotional core.",
     "dramatic_state_system": "Define a central conflict rooted in the archive object, its provenance, who gets access, and why its recovery matters.",
     "line_grounding": "Ground this line in the archive material and this scene's premise.",
-    "coda_system": "Write an archive source note that turns from the fictional tale to preservation, provenance, or media history.",
+    "coda_system": "Write an archive source note that turns from the fictional tale to preservation, provenance, or media history. Open with a concrete bridge drawn from the story's own object (for example: Beyond tonight's flickering reel:), then land the real archive context.",
     "title_system": "Title an archive-inspired radio episode using concrete objects, places, sounds, or images from the finished story.",
     "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and media-culture craft.",
     "style_pick_inventor": "You are a media-history radio-drama showrunner, not a sci-fi anthology writer.",
@@ -51,5 +51,5 @@
     "meta.news may mirror values only for compatibility."
   ],
   "schema_version": "v2.0",
-  "outline_rules_extra": "Build suspense from fragile media, missing context, deadlines, or institutional pressure, not from futuristic danger."
+  "outline_rules_extra": "Build suspense from fragile media, missing context, deadlines, or institutional pressure, not from futuristic danger. Each beat should advance a clue, restoration decision, provenance question, access problem, public screening deadline, or human memory around the archive object."
 }

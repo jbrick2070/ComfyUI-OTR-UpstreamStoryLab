@@ -191,6 +191,47 @@ The provider-neutral executor and prompt layer now exist:
   pre-transplant contract widening while v2 has no external consumer): 8
   acts schedule 31 jobs / 28 base model calls.
 
+## Production fidelity-lane intelligence (read-only diff, 2026-08-14)
+
+A read-only comparison of live production OTR against this lab found the lab's
+packs matched production's frozen 2026-07-05 blueprints, not the live
+2026-08-05 prompts. The best of production's fidelity prose is now folded into
+the lab packs (microphone-not-a-rewrite framing, faithfulness-outranks-craft,
+source-spine restatement, faithful-cut coverage rule, verse preservation and
+stage-direction conversion for plays, essential-speakers cast rule,
+carry-the-source's-own-violence fidelity line, bridge-only codas with no URL
+read aloud, archive source-truth rule and beat vocabulary). Facts that matter
+for the later transplant:
+
+- Production's fidelity lanes live in `nodes/story_packs/` (`shakespeare/`,
+  `public_domain/`, `media_archive/`) plus `_otr_shakespeare_sources.py`,
+  `_otr_public_domain_sources.py`, `_otr_media_archive_interpreter.py`,
+  `_otr_source_document.py`, `_otr_source_grounding.py`,
+  `_otr_source_world.py`; design doc
+  `docs/2026-08-03-adaptation-fidelity-PLAN.md`. Production renamed the bank
+  `public_domain_story` -> `public_domain` and the pipeline to
+  `legacy_many_pass_adapt`; production's seam vocabulary differs from the
+  lab's, so folding is re-authoring, never file copy.
+- Production's per-beat verbatim source grounding
+  (`select_grounding`/`render_source_block`) is finished and tested but NOT
+  wired on `v2.0-alpha` — the lab can adopt it cleanly and should treat the
+  wiring as lab-first work.
+- Do NOT import from production: the still-required
+  `recommended_word_budget` manifest keys and allocation machinery, the
+  retired-but-present `_otr_content_safety.py` vocabularies, or the residual
+  "no murder, weapons / no violence" clauses still inside
+  `media_restoration_adventure`'s live seams — production itself recorded that
+  its safety clause discouraged "Is this a dagger which I see before me" while
+  adapting Macbeth; G9 spoken-safety was removed 2026-08-05.
+- The lab keeps its own structural strengths production lacks: the five-pack
+  public-domain form spread (stage play, chapter digest, comic panel,
+  storybook), and machine-checkable `forbidden_plot_patterns` /
+  `forbidden_leakage_terms` lists.
+- A dedicated Folger Shakespeare lane (real scene manifests, speaker
+  extraction from Folger layout, act/scene metadata, gender roster) exists
+  only in production; adopting it in the lab is future work under the
+  stage-play pack's rules.
+
 ## What is next — one real story on the RTX 4060
 
 The repo-local 4060 safety instructions are restored verbatim at
