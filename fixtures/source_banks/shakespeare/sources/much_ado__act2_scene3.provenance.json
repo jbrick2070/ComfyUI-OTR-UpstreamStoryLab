@@ -1,0 +1,76 @@
+{
+  "schema_version": "otr_source_provenance_v1",
+  "slug": "much_ado",
+  "unit": "act2_scene3",
+  "work_title": "Much Ado About Nothing",
+  "author": "William Shakespeare",
+  "license_label": "CC BY-NC 3.0 (Folger Shakespeare Library)",
+  "source_url": "https://folger-main-site-assets.s3.amazonaws.com/uploads/2022/11/much-ado-about-nothing_TXT_FolgerShakespeare.txt",
+  "fetched_utc": "2026-08-04T04:29:06Z",
+  "body_sha256": "731fce12ec0523c7154accbab1a0dd3036f1f62c61df621987dd1ffeab2eafd2",
+  "body_bytes": 12005,
+  "body_words": 2262,
+  "text_path": "fixtures/source_banks/shakespeare/sources/much_ado__act2_scene3.txt",
+  "act": 2,
+  "scene": 3,
+  "speakers": [
+    "BENEDICK",
+    "BOY",
+    "PRINCE",
+    "CLAUDIO",
+    "BALTHASAR",
+    "LEONATO",
+    "BEATRICE"
+  ],
+  "characters": [
+    {
+      "name": "BENEDICK",
+      "roster_name": "SIGNIOR BENEDICK",
+      "description": "a gentleman from Padua",
+      "gender": "male",
+      "gender_source": "title"
+    },
+    {
+      "name": "BOY",
+      "roster_name": "BOY",
+      "description": "",
+      "gender": "unknown",
+      "gender_source": "unknown"
+    },
+    {
+      "name": "PRINCE",
+      "roster_name": "",
+      "description": "",
+      "gender": "unknown",
+      "gender_source": "absent_from_roster"
+    },
+    {
+      "name": "CLAUDIO",
+      "roster_name": "COUNT CLAUDIO",
+      "description": "a young lord from Florence",
+      "gender": "male",
+      "gender_source": "title"
+    },
+    {
+      "name": "BALTHASAR",
+      "roster_name": "BALTHASAR",
+      "description": "",
+      "gender": "unknown",
+      "gender_source": "unknown"
+    },
+    {
+      "name": "LEONATO",
+      "roster_name": "LEONATO",
+      "description": "Governor of Messina",
+      "gender": "male",
+      "gender_source": "title"
+    },
+    {
+      "name": "BEATRICE",
+      "roster_name": "BEATRICE",
+      "description": "his niece",
+      "gender": "female",
+      "gender_source": "relation"
+    }
+  ]
+}

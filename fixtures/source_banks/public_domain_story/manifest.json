@@ -1,0 +1,1915 @@
+{
+  "schema_version": "otr_story_lab.source_manifest.v1",
+  "sources": [
+    {
+      "source_id": "cradle_protocol",
+      "title": "Cradle Protocol",
+      "author": "Jeffrey A. Brick",
+      "year": "2026",
+      "license_status": "cc0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "source_url": "repo:config/source_banks/public_domain_story/sources/cradle_protocol.txt",
+      "source_label": "an original dedicated to the public domain",
+      "adapter_type": "local_text_fixture",
+      "search_tags": [
+        "satire",
+        "original",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Elias Voss",
+        "Toby",
+        "Dr. Lira Kell",
+        "ARIA",
+        "the Announcer"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Boy Who Answered in Tokens",
+          "synopsis": "A lonely relay operator activates a companion that presents itself as a holographic infant, and it begins behaving exactly like a language model that has decided it is a toddler.",
+          "text_path": "sources/cradle_protocol.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "time_machine",
+      "title": "The Time Machine",
+      "author": "H. G. Wells",
+      "year": "1895",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/35/pg35.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "scientific_romance",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Time Traveller",
+        "the Editor",
+        "the Medical Man",
+        "the Psychologist"
+      ],
+      "units": [
+        {
+          "unit_id": "arrival",
+          "label": "The Time Traveller returns",
+          "synopsis": "The Time Traveller staggers into his own dinner party, filthy and lame, and begins to explain.",
+          "text_path": "sources/time_machine__arrival.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "dracula",
+      "title": "Dracula",
+      "author": "Bram Stoker",
+      "year": "1897",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/345/pg345.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "gothic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Jonathan Harker",
+        "Count Dracula",
+        "the coach driver"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Harker at the castle",
+          "synopsis": "Jonathan Harker arrives at Castle Dracula and spends his first nights as a guest who cannot leave.",
+          "text_path": "sources/dracula.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "frankenstein",
+      "title": "Frankenstein",
+      "author": "Mary Shelley",
+      "year": "1818",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/84/pg84.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "tragedy",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Victor Frankenstein",
+        "the Creature"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The meeting on the ice",
+          "synopsis": "Victor confronts his creature on the sea of ice, and the creature out-argues him.",
+          "text_path": "sources/frankenstein.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "jekyll_hyde",
+      "title": "The Strange Case of Dr. Jekyll and Mr. Hyde",
+      "author": "Robert Louis Stevenson",
+      "year": "1886",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/43/pg43.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "suspense",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Mr. Utterson",
+        "Poole",
+        "the voice behind the door"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The last night",
+          "synopsis": "Utterson and Poole listen at a locked door and decide the voice inside is not their master.",
+          "text_path": "sources/jekyll_hyde.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "cask_amontillado",
+      "title": "The Cask of Amontillado",
+      "author": "Edgar Allan Poe",
+      "year": "1846",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1063/pg1063.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "macabre",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Montresor",
+        "Fortunato"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The vaults",
+          "synopsis": "Montresor leads Fortunato down into the catacombs on the promise of a rare cask.",
+          "text_path": "sources/cask_amontillado.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "monkeys_paw",
+      "title": "The Monkey's Paw",
+      "author": "W. W. Jacobs",
+      "year": "1902",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/12122/pg12122.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "horror",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Mr. White",
+        "Mrs. White",
+        "Herbert White",
+        "Sergeant-Major Morris"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Three wishes",
+          "synopsis": "A family is granted three wishes by a talisman, and the third is spent on what answers the door.",
+          "text_path": "sources/monkeys_paw.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "turn_of_the_screw",
+      "title": "The Turn of the Screw",
+      "author": "Henry James",
+      "year": "1898",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/209/pg209.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "uncanny",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Governess",
+        "Miles",
+        "Mrs. Grose"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The last interview",
+          "synopsis": "The governess keeps Miles alone in a room and presses him while she alone describes a face at the glass.",
+          "text_path": "sources/turn_of_the_screw.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "speckled_band",
+      "title": "The Adventures of Sherlock Holmes",
+      "author": "Arthur Conan Doyle",
+      "year": "1892",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1661/pg1661.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "detective",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Sherlock Holmes",
+        "Dr. Watson",
+        "Helen Stoner",
+        "Dr. Grimesby Roylott"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Speckled Band",
+          "synopsis": "A low whistle and a metallic clang draw Holmes and Watson to a night vigil in a dark manor room.",
+          "text_path": "sources/speckled_band.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "queer_feet",
+      "title": "The Innocence of Father Brown",
+      "author": "G. K. Chesterton",
+      "year": "1911",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/204/pg204.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "paradox",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Father Brown",
+        "Flambeau",
+        "Mr. Lever",
+        "a colonel"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Queer Feet",
+          "synopsis": "A single pair of footsteps in a hotel corridor alternates a gentleman's saunter and a waiter's trot.",
+          "text_path": "sources/queer_feet.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "moby_dick_quarterdeck",
+      "title": "Moby-Dick",
+      "author": "Herman Melville",
+      "year": "1851",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/2701/pg2701.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "epic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Captain Ahab",
+        "Starbuck",
+        "Stubb",
+        "the crew"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Quarter-Deck",
+          "synopsis": "Ahab nails a doubloon to the mast and binds the crew by oath to hunt the white whale.",
+          "text_path": "sources/moby_dick_quarterdeck.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "secret_sharer",
+      "title": "The Secret Sharer",
+      "author": "Joseph Conrad",
+      "year": "1910",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/220/pg220.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "psychological",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the young Captain",
+        "Leggatt",
+        "the Chief Mate"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The secret sharer",
+          "synopsis": "A young captain hides a fugitive in his own cabin and conducts an entire command at whisper volume.",
+          "text_path": "sources/secret_sharer.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "treasure_island_barrel",
+      "title": "Treasure Island",
+      "author": "Robert Louis Stevenson",
+      "year": "1883",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/120/pg120.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "adventure",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Jim Hawkins",
+        "Long John Silver",
+        "Israel Hands",
+        "Dick"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "What I heard in the apple barrel",
+          "synopsis": "Hidden in a barrel, Jim hears the mutiny assemble voice by voice.",
+          "text_path": "sources/treasure_island_barrel.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "huck_finn_fog",
+      "title": "Adventures of Huckleberry Finn",
+      "author": "Mark Twain",
+      "year": "1884",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/76/pg76.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "americana",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Huck Finn",
+        "Jim"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The fog",
+          "synopsis": "Separated in fog on the river, Huck tricks Jim about it and is shamed by the answer.",
+          "text_path": "sources/huck_finn_fog.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "ransom_red_chief",
+      "title": "Whirligigs",
+      "author": "O. Henry",
+      "year": "1910",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1595/pg1595.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "comedy",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Sam",
+        "Bill Driscoll",
+        "Johnny",
+        "Ebenezer Dorset"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Ransom of Red Chief",
+          "synopsis": "Two kidnappers take a boy who torments them until they pay his father to take him back.",
+          "text_path": "sources/ransom_red_chief.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "desiree_baby",
+      "title": "The Awakening and Selected Short Stories",
+      "author": "Kate Chopin",
+      "year": "1893",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/160/pg160.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "tragedy",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Desiree",
+        "Armand Aubigny",
+        "Madame Valmonde"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Desiree's Baby",
+          "synopsis": "A plantation marriage detonates over the child's parentage, and the letter at the end reverses it.",
+          "text_path": "sources/desiree_baby.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "pride_prejudice_proposal",
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "year": "1813",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1342/pg1342.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "courtship",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Elizabeth Bennet",
+        "Fitzwilliam Darcy"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The first proposal",
+          "synopsis": "Darcy proposes at Hunsford and Elizabeth refuses him; both believe themselves the injured party.",
+          "text_path": "sources/pride_prejudice_proposal.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "jane_eyre_wedding",
+      "title": "Jane Eyre",
+      "author": "Charlotte Bronte",
+      "year": "1847",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1260/pg1260.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "melodrama",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Jane Eyre",
+        "Mr. Rochester",
+        "Mr. Briggs",
+        "Richard Mason"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The interrupted wedding",
+          "synopsis": "The vows are stopped by a lawyer's objection, and the party climbs to the attic to meet it.",
+          "text_path": "sources/jane_eyre_wedding.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "wuthering_heights_window",
+      "title": "Wuthering Heights",
+      "author": "Emily Bronte",
+      "year": "1847",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/768/pg768.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "haunting",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Lockwood",
+        "Heathcliff",
+        "the voice at the glass"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The night in the oak closet",
+          "synopsis": "A stranger sleeps in a shut-up bed, and a branch at the pane turns into a child's wrist.",
+          "text_path": "sources/wuthering_heights_window.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "christmas_carol_marley",
+      "title": "A Christmas Carol",
+      "author": "Charles Dickens",
+      "year": "1843",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/46/pg46.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "yuletide",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Ebenezer Scrooge",
+        "Jacob Marley",
+        "Fred",
+        "Bob Cratchit"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Marley's Ghost",
+          "synopsis": "Scrooge refuses Christmas and is visited by a business partner seven years dead.",
+          "text_path": "sources/christmas_carol_marley.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "alice_tea_party",
+      "title": "Alice's Adventures in Wonderland",
+      "author": "Lewis Carroll",
+      "year": "1865",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/11/pg11.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "nonsense",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Alice",
+        "the Hatter",
+        "the March Hare",
+        "the Dormouse"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "A Mad Tea-Party",
+          "synopsis": "Alice argues logic with a hatter, a hare and a sleeping dormouse at a table set for far more.",
+          "text_path": "sources/alice_tea_party.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "three_men_boat_pineapple",
+      "title": "Three Men in a Boat",
+      "author": "Jerome K. Jerome",
+      "year": "1889",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/308/pg308.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "farce",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "J.",
+        "George",
+        "Harris"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The tinned pineapple",
+          "synopsis": "Three men on a river attempt to open a tin without an opener, and lose.",
+          "text_path": "sources/three_men_boat_pineapple.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "open_window",
+      "title": "Beasts and Super-Beasts",
+      "author": "Saki",
+      "year": "1914",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/269/pg269.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "sting",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Vera",
+        "Framton Nuttel",
+        "Mrs. Sappleton"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Open Window",
+          "synopsis": "A girl improvises a ghost story so well that the returning hunters arrive as apparitions.",
+          "text_path": "sources/open_window.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "dorian_gray_murder",
+      "title": "The Picture of Dorian Gray",
+      "author": "Oscar Wilde",
+      "year": "1891",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/174/pg174.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "decadent",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Dorian Gray",
+        "Basil Hallward"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The painter and the portrait",
+          "synopsis": "Dorian walks Basil upstairs to show him the portrait, and does not let him leave.",
+          "text_path": "sources/dorian_gray_murder.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "monte_cristo_faria",
+      "title": "The Count of Monte Cristo",
+      "author": "Alexandre Dumas",
+      "year": "1844",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1184/pg1184.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "escape",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Edmond Dantes",
+        "Abbe Faria",
+        "the jailer"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Number 34 and Number 27",
+          "synopsis": "Years of solitary end when a scraping in the wall becomes a voice, and the voice becomes a teacher.",
+          "text_path": "sources/monte_cristo_faria.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "don_quixote_windmills",
+      "title": "Don Quixote",
+      "author": "Miguel de Cervantes",
+      "year": "1605",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/996/pg996.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "picaresque",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Don Quixote",
+        "Sancho Panza"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The windmills",
+          "synopsis": "The knight charges giants his squire insists are windmills, and is unpersuaded afterwards.",
+          "text_path": "sources/don_quixote_windmills.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "rikki_tikki_tavi",
+      "title": "The Jungle Book",
+      "author": "Rudyard Kipling",
+      "year": "1894",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/236/pg236.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "peril",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Rikki-tikki",
+        "Nag",
+        "Nagaina",
+        "Darzee"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Rikki-Tikki-Tavi",
+          "synopsis": "A mongoose adopted by an English family fights a pair of cobras for the garden.",
+          "text_path": "sources/rikki_tikki_tavi.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "oz_humbug",
+      "title": "The Wonderful Wizard of Oz",
+      "author": "L. Frank Baum",
+      "year": "1900",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/55/pg55.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "fable",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Dorothy",
+        "the Scarecrow",
+        "the Tin Woodman",
+        "the Lion",
+        "Oz"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The discovery of Oz the Terrible",
+          "synopsis": "Four petitioners confront a disembodied Voice and find a small man working the effects.",
+          "text_path": "sources/oz_humbug.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "anne_green_gables_apology",
+      "title": "Anne of Green Gables",
+      "author": "L. M. Montgomery",
+      "year": "1908",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/45/pg45.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "warm",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Anne Shirley",
+        "Marilla Cuthbert",
+        "Mrs. Rachel Lynde",
+        "Matthew Cuthbert"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Mrs. Rachel Lynde is properly horrified",
+          "synopsis": "Anne answers an insult with interest, then delivers an apology so extravagant it becomes a triumph.",
+          "text_path": "sources/anne_green_gables_apology.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "machine_stops",
+      "title": "The Eternal Moment and Other Stories",
+      "author": "E. M. Forster",
+      "year": "1909",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/72890/pg72890.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "prophetic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Vashti",
+        "Kuno",
+        "the voice of the Machine"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Machine Stops",
+          "synopsis": "Vashti lives alone in a hexagonal cell served by the Machine, and her son calls to beg her to come to him in person.",
+          "text_path": "sources/machine_stops.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "the_wendigo",
+      "title": "The Wendigo",
+      "author": "Algernon Blackwood",
+      "year": "1910",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/10897/pg10897.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "primal",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Defago",
+        "Simpson",
+        "Dr. Cathcart",
+        "Hank"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The night camp",
+          "synopsis": "A guide weeps in his sleep, a voice calls him out of the tent, and his cry recedes across the sky.",
+          "text_path": "sources/the_wendigo.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "the_mezzotint",
+      "title": "Ghost Stories of an Antiquary",
+      "author": "M. R. James",
+      "year": "1904",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/8486/pg8486.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "donnish",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Williams",
+        "Nisbet",
+        "a colleague",
+        "Filcher"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Mezzotint",
+          "synopsis": "Scholars examine an engraving in turns across one night, and the figure in it moves between glances.",
+          "text_path": "sources/the_mezzotint.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "green_tea",
+      "title": "Green Tea; Mr. Justice Harbottle",
+      "author": "J. Sheridan Le Fanu",
+      "year": "1872",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/11635/pg11635.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "confessional",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Dr. Hesselius",
+        "Reverend Jennings"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Green Tea",
+          "synopsis": "A clergyman confesses to a doctor that a small red-eyed monkey has followed him since he began taking green tea.",
+          "text_path": "sources/green_tea.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "man_size_in_marble",
+      "title": "Grim Tales",
+      "author": "E. Nesbit",
+      "year": "1893",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/40321/pg40321.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "folkloric",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Jack",
+        "Laura",
+        "Mrs. Dorman",
+        "Dr. Kelly"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Man-Size in Marble",
+          "synopsis": "A housekeeper warns that the marble figures walk on All Saints' Eve, the warning is dismissed, and the slabs are found empty.",
+          "text_path": "sources/man_size_in_marble.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "beckoning_fair_one",
+      "title": "Widdershins",
+      "author": "Oliver Onions",
+      "year": "1911",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/14168/pg14168.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "insidious",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Paul Oleron",
+        "Elsie Bengough",
+        "the landlady"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Beckoning Fair One",
+          "synopsis": "Alone in his rooms, a writer hears a drip resolve into a comb drawn slowly through long hair.",
+          "text_path": "sources/beckoning_fair_one.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "white_people",
+      "title": "The House of Souls",
+      "author": "Arthur Machen",
+      "year": "1904",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/25016/pg25016.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "incantatory",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the girl",
+        "Ambrose",
+        "Cotgrave"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Green Book",
+          "synopsis": "A girl's diary recites half-understood ceremonies taught by her nurse, in a language she never explains.",
+          "text_path": "sources/white_people.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "whistling_room",
+      "title": "Carnacki, the Ghost-Finder",
+      "author": "William Hope Hodgson",
+      "year": "1910",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/10832/pg10832.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "eerie",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Carnacki",
+        "Tassoc",
+        "a club listener"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Whistling Room",
+          "synopsis": "A ghost-finder keeps vigil in a castle room whose haunting is an enormous whistle, and watches the floor purse into lips.",
+          "text_path": "sources/whistling_room.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "idle_days_on_the_yann",
+      "title": "A Dreamer's Tales",
+      "author": "Lord Dunsany",
+      "year": "1910",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/8129/pg8129.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "dreamlike",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Dreamer",
+        "the Captain",
+        "the helmsman"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Idle Days on the Yann",
+          "synopsis": "A dreamer boards the Bird of the River, and at sunset every sailor prays to a different god.",
+          "text_path": "sources/idle_days_on_the_yann.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "fire_not_quenched",
+      "title": "Uncanny Stories",
+      "author": "May Sinclair",
+      "year": "1922",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/59165/pg59165.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "purgatorial",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Harriott Leigh",
+        "Oscar Wade"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Where Their Fire Is Not Quenched",
+          "synopsis": "A woman dies and finds eternity is the one hotel afternoon she is most ashamed of, recurring.",
+          "text_path": "sources/fire_not_quenched.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "voyage_to_arcturus",
+      "title": "A Voyage to Arcturus",
+      "author": "David Lindsay",
+      "year": "1920",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1329/pg1329.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "vertiginous",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Maskull",
+        "Krag",
+        "Nightspore",
+        "Backhouse"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Seance",
+          "synopsis": "A drawing-room seance materializes a smiling apparition, and a stranger walks up and breaks its neck.",
+          "text_path": "sources/voyage_to_arcturus.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "poison_belt",
+      "title": "The Poison Belt",
+      "author": "Arthur Conan Doyle",
+      "year": "1913",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/126/pg126.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "valedictory",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Professor Challenger",
+        "Mrs. Challenger",
+        "Summerlee",
+        "Lord John Roxton",
+        "Malone"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The sealed room",
+          "synopsis": "Five people seal themselves in with oxygen cylinders and watch the world go quiet through the window.",
+          "text_path": "sources/poison_belt.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "kipling_wireless",
+      "title": "Traffics and Discoveries",
+      "author": "Rudyard Kipling",
+      "year": "1902",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/9790/pg9790.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "numinous",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the narrator",
+        "Mr. Shaynor",
+        "Mr. Cashell"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Wireless",
+          "synopsis": "An induction coil crackles for signals while a consumptive chemist's assistant slides into trance and writes Keats he has never read.",
+          "text_path": "sources/kipling_wireless.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "theodore_savage",
+      "title": "Theodore Savage",
+      "author": "Cicely Hamilton",
+      "year": "1922",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/65848/pg65848.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "apocalyptic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Theodore Savage",
+        "Ada",
+        "a camp official"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The air war",
+          "synopsis": "A civil servant watches the northern sky burn and joins the roads of the displaced.",
+          "text_path": "sources/theodore_savage.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "clockwork_man",
+      "title": "The Clockwork Man",
+      "author": "E. V. Odle",
+      "year": "1923",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/60374/pg60374.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "tragicomic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Clockwork Man",
+        "Dr. Allingham",
+        "Gregg",
+        "Arthur Withers"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The cricket match",
+          "synopsis": "A man with flapping ears and looping speech interrupts a village cricket match, then sprints into a hedge.",
+          "text_path": "sources/clockwork_man.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "enoch_soames",
+      "title": "Seven Men",
+      "author": "Max Beerbohm",
+      "year": "1916",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1306/pg1306.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "sardonic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Max",
+        "Enoch Soames",
+        "the Devil",
+        "Rothenstein"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Enoch Soames",
+          "synopsis": "A failed poet sells his soul to visit the future and learn whether posterity remembers him.",
+          "text_path": "sources/enoch_soames.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "living_alone",
+      "title": "Living Alone",
+      "author": "Stella Benson",
+      "year": "1919",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/14907/pg14907.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "whimsical",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Witch",
+        "Sarah Brown",
+        "two committee ladies"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The War Savings Committee",
+          "synopsis": "A witch disrupts a wartime committee meeting, and the minutes do not know what to do with her.",
+          "text_path": "sources/living_alone.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "buck_rogers",
+      "title": "Armageddon 2419 A.D.",
+      "author": "Philip Francis Nowlan",
+      "year": "1928",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/32530/pg32530.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "pulp",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Anthony Rogers",
+        "Wilma Deering",
+        "a Han patrol"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Anthony Rogers wakes in 2419",
+          "synopsis": "A surveyor is sealed in a mine by radioactive gas and wakes nearly five centuries later into an occupied America.",
+          "text_path": "sources/buck_rogers.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "oz_cyclone",
+      "title": "The Wonderful Wizard of Oz",
+      "author": "L. Frank Baum",
+      "year": "1900",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/55/pg55.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "fable",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Dorothy",
+        "Aunt Em",
+        "the Good Witch of the North",
+        "a Munchkin"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The cyclone and the Munchkins",
+          "synopsis": "A cyclone carries a Kansas farmhouse into a country of Munchkins, and it lands on somebody.",
+          "text_path": "sources/oz_cyclone.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "oz_wicked_witch",
+      "title": "The Wonderful Wizard of Oz",
+      "author": "L. Frank Baum",
+      "year": "1900",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/55/pg55.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "fable",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Dorothy",
+        "the Wicked Witch of the West",
+        "the Lion",
+        "the Scarecrow",
+        "the Tin Woodman"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The search for the Wicked Witch",
+          "synopsis": "The Witch of the West sends wolves, crows, bees and winged monkeys, and is undone by a bucket of water.",
+          "text_path": "sources/oz_wicked_witch.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "gertrude_governess",
+      "title": "Nonsense Novels",
+      "author": "Stephen Leacock",
+      "year": "1911",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/4682/pg4682.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "melodramatic",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the narrator",
+        "Gertrude",
+        "Lord Ronald",
+        "the Earl of Nosh"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Gertrude the Governess",
+          "synopsis": "A Victorian romance played entirely straight while every cliche collides, and Lord Ronald rides madly off in all directions.",
+          "text_path": "sources/gertrude_governess.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "defective_detective",
+      "title": "Nonsense Novels",
+      "author": "Stephen Leacock",
+      "year": "1911",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/4682/pg4682.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "deadpan",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the narrator",
+        "the Great Detective",
+        "the Prime Minister"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Maddened by Mystery, or The Defective Detective",
+          "synopsis": "A Great Detective deduces everything wrong with absolute confidence, escalating through disguises.",
+          "text_path": "sources/defective_detective.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "buggam_grange",
+      "title": "Winsome Winnie and Other New Nonsense Novels",
+      "author": "Stephen Leacock",
+      "year": "1920",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/20633/pg20633.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "portentous",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the narrator",
+        "Horrod the butler",
+        "the phantasm"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Buggam Grange: A Good Old Ghost Story",
+          "synopsis": "Every ghost-story trope announced solemnly and then overdone by ten percent, sinister butler included.",
+          "text_path": "sources/buggam_grange.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "miss_mix",
+      "title": "Condensed Novels",
+      "author": "Bret Harte",
+      "year": "1867",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/2277/pg2277.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "lurid",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Miss Mix",
+        "Mr. Rawjester",
+        "the housekeeper"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Miss Mix, by Ch--l--tte Br--nte",
+          "synopsis": "Jane Eyre compressed to its tropes: a governess swoons over a man's rudeness and a burning house, unaware any of it is odd.",
+          "text_path": "sources/miss_mix.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "mote_middle_distance",
+      "title": "A Christmas Garland",
+      "author": "Max Beerbohm",
+      "year": "1912",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/14667/pg14667.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "fussy",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Keith Tantalus",
+        "Eva",
+        "the narrator"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Mote in the Middle Distance (after Henry James)",
+          "synopsis": "Two children decide whether to peek at their Christmas stockings, narrated in full late-James syntax.",
+          "text_path": "sources/mote_middle_distance.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "pc_x_36",
+      "title": "A Christmas Garland",
+      "author": "Max Beerbohm",
+      "year": "1912",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/14667/pg14667.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "jaunty",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Constable X 36",
+        "Santa Claus",
+        "the narrator"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "P.C., X, 36 (after Kipling)",
+          "synopsis": "A tough Kipling copper arrests Santa Claus coming down the chimney, and books him.",
+          "text_path": "sources/pc_x_36.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "cannibalism_in_the_cars",
+      "title": "Sketches New and Old",
+      "author": "Mark Twain",
+      "year": "1868",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/3189/pg3189.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "solemn",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the narrator",
+        "the courtly stranger",
+        "Mr. Bascom",
+        "Mr. Gaston"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Cannibalism in the Cars",
+          "synopsis": "Snowbound passengers apply full parliamentary procedure to deciding whom to eat, with amendments.",
+          "text_path": "sources/cannibalism_in_the_cars.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "journalism_in_tennessee",
+      "title": "Sketches New and Old",
+      "author": "Mark Twain",
+      "year": "1871",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/3189/pg3189.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "unflappable",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the new associate editor",
+        "the chief editor",
+        "armed callers"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Journalism in Tennessee",
+          "synopsis": "The chief editor calmly revises copy while being shot, bombed and scalped by aggrieved readers.",
+          "text_path": "sources/journalism_in_tennessee.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "stolen_white_elephant",
+      "title": "The Stolen White Elephant",
+      "author": "Mark Twain",
+      "year": "1882",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/3181/pg3181.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "procedural",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Siamese functionary",
+        "Inspector Blunt",
+        "the detectives"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Stolen White Elephant",
+          "synopsis": "Detectives mount a full procedural manhunt for an elephant that is in the cellar the whole time.",
+          "text_path": "sources/stolen_white_elephant.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "canterville_ghost",
+      "title": "The Canterville Ghost",
+      "author": "Oscar Wilde",
+      "year": "1887",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/14522/pg14522.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "impish",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the Ghost",
+        "Mr. Otis",
+        "Mrs. Otis",
+        "the twins",
+        "Virginia"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Canterville Ghost",
+          "synopsis": "An American family moves into a haunted house and offers the ghost lubricator for his clanking chains.",
+          "text_path": "sources/canterville_ghost.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "tobermory",
+      "title": "The Chronicles of Clovis",
+      "author": "Saki",
+      "year": "1911",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/3688/pg3688.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "catty",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Tobermory",
+        "Mr. Appin",
+        "Lady Blemley",
+        "Mrs. Cornett"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Tobermory",
+          "synopsis": "A cat learns English at a house party and repeats aloud what everyone has been saying privately.",
+          "text_path": "sources/tobermory.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "pigs_is_pigs",
+      "title": "Pigs Is Pigs",
+      "author": "Ellis Parker Butler",
+      "year": "1905",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/2004/pg2004.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "exasperated",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Flannery",
+        "Mr. Morehouse",
+        "the head-office clerk"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Pigs Is Pigs",
+          "synopsis": "An express agent insists two guinea pigs are livestock-rate pigs, and they multiply while head office answers by memo.",
+          "text_path": "sources/pigs_is_pigs.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "great_sermon_handicap",
+      "title": "The Inimitable Jeeves",
+      "author": "P. G. Wodehouse",
+      "year": "1923",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/59254/pg59254.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "breezy",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Bertie Wooster",
+        "Jeeves",
+        "Bingo Little",
+        "Steggles"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Great Sermon Handicap",
+          "synopsis": "Racing-form argot applied to rural clergy, complete with a betting card on the local vicars.",
+          "text_path": "sources/great_sermon_handicap.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "water_ghost",
+      "title": "The Water Ghost and Others",
+      "author": "John Kendrick Bangs",
+      "year": "1891",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/8377/pg8377.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "practical",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the water ghost",
+        "the heir of Harrowby",
+        "the narrator"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Water Ghost of Harrowby Hall",
+          "synopsis": "A dripping ghost haunts on schedule and is defeated by engineering, having first lodged her complaints.",
+          "text_path": "sources/water_ghost.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "told_after_supper",
+      "title": "Told After Supper",
+      "author": "Jerome K. Jerome",
+      "year": "1891",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/1993/pg1993.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "tipsy",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "the narrator",
+        "the uncle",
+        "the doctor",
+        "the curate"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "Told After Supper",
+          "synopsis": "The Christmas ghost-story ritual itself parodied, each narrator tipsier than the last.",
+          "text_path": "sources/told_after_supper.txt"
+        }
+      ]
+    },
+    {
+      "source_id": "munchausen",
+      "title": "The Surprising Adventures of Baron Munchausen",
+      "author": "Rudolf Erich Raspe",
+      "year": "1785",
+      "license_status": "public_domain_us",
+      "license_url": "https://www.gutenberg.org/policy/license.html",
+      "source_url": "https://www.gutenberg.org/cache/epub/3154/pg3154.txt",
+      "source_label": "Project Gutenberg",
+      "adapter_type": "project_gutenberg_text",
+      "search_tags": [
+        "braggart",
+        "public_domain",
+        "radio_adaptation"
+      ],
+      "cast_hints": [
+        "Baron Munchausen",
+        "a credulous listener"
+      ],
+      "units": [
+        {
+          "unit_id": "main",
+          "label": "The Baron's tallest tales",
+          "synopsis": "A horse tied to a church steeple, half a horse drinking forever, and a post-horn that thaws out its tunes.",
+          "text_path": "sources/munchausen.txt"
+        }
+      ]
+    }
+  ]
+}
