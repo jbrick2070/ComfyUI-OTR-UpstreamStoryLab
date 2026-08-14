@@ -28,14 +28,7 @@
         "exchanges_per_beat_low": 2,
         "exchanges_per_beat_high": 4
       },
-      "required_seams": [
-        "outline_system",
-        "pitch_room_system",
-        "dramatic_state_system",
-        "line_grounding",
-        "coda_system",
-        "title_system"
-      ],
+      "required_seams": [],
       "runnable": true,
       "guide_ref": ""
     },
@@ -97,17 +90,7 @@
         "exchanges_per_beat_low": 2,
         "exchanges_per_beat_high": 4
       },
-      "required_seams": [
-        "outline_system",
-        "pitch_room_system",
-        "story_select_system",
-        "dramatic_state_system",
-        "line_grounding",
-        "coda_system",
-        "title_system",
-        "style_pick_inventor",
-        "style_pick_chooser"
-      ],
+      "required_seams": [],
       "runnable": true,
       "guide_ref": ""
     },
@@ -138,17 +121,7 @@
         "exchanges_per_beat_low": 2,
         "exchanges_per_beat_high": 4
       },
-      "required_seams": [
-        "outline_system",
-        "pitch_room_system",
-        "story_select_system",
-        "dramatic_state_system",
-        "line_grounding",
-        "coda_system",
-        "title_system",
-        "style_pick_inventor",
-        "style_pick_chooser"
-      ],
+      "required_seams": [],
       "runnable": true,
       "guide_ref": ""
     },
