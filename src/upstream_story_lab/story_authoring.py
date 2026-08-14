@@ -413,7 +413,9 @@ def _draft_role(row: Mapping[str, Any]) -> str:
 
 
 def _embedded_non_spoken_reason(
-    row: Mapping[str, Any], role: str
+    row: Mapping[str, Any],
+    role: str,
+    carried: Any | None = None,
 ) -> str | None:
     for field_name in _EXPLICIT_NON_SPOKEN_FIELDS:
         value = row.get(field_name)
@@ -422,6 +424,8 @@ def _embedded_non_spoken_reason(
     text = row.get("text")
     if not isinstance(text, str) or not text.strip():
         return None
+    # Absolute rules: a cue or a direction is never speakable, whoever wrote
+    # it, so a carried source can never excuse these three.
     if _PRODUCTION_CUE_RE.search(text):
         return "spoken text begins with a production/non-spoken cue"
     if _DELIMITED_DIRECTION_RE.search(text):
@@ -429,12 +433,18 @@ def _embedded_non_spoken_reason(
     if _WHOLE_LINE_CUE_RE.fullmatch(text):
         return "spoken text is a standalone action or sound cue"
     if role == "character_dialogue" and _CHARACTER_NARRATION_RE.search(text):
+        # Heuristic rule: it infers a model invented narration.  Literal
+        # carriage from the source disproves that premise.
+        if carried is not None and carried(text):
+            return None
         return "character text contains high-confidence narrated action"
     return None
 
 
 def sanitize_draft_sequence(
     rows: Sequence[Mapping[str, Any]],
+    *,
+    carried_source: Any | None = None,
 ) -> DraftSanitizationResult:
     """Conservatively project generic draft rows toward the sealed program.
 
@@ -451,6 +461,20 @@ def sanitize_draft_sequence(
         )
     if isinstance(rows, (str, bytes, bytearray, Mapping)):
         raise StoryAuthoringError("draft rows must be a sequence of mappings")
+
+    carried = None
+    if carried_source is not None:
+        contains = getattr(carried_source, "contains", None)
+        if callable(contains):
+            carried = lambda text: bool(text.strip()) and bool(contains(text))
+        elif callable(carried_source):
+            carried = lambda text: bool(text.strip()) and bool(
+                carried_source(text)
+            )
+        else:
+            raise StoryAuthoringError(
+                "carried_source must expose contains(text) or be callable"
+            )
 
     retained: list[dict[str, Any]] = []
     dropped: list[DraftRowIssue] = []
@@ -482,7 +506,7 @@ def sanitize_draft_sequence(
             continue
 
         retained.append(row)
-        reason = _embedded_non_spoken_reason(row, role)
+        reason = _embedded_non_spoken_reason(row, role, carried)
         if reason is not None:
             rewrite.append(
                 DraftRowIssue(

@@ -46,6 +46,12 @@ class LabSourceError(ValueError):
     """A source body, window, or block was unsafe or misidentified."""
 
 
+def _flatten(text: str) -> str:
+    """Whitespace-flattened, case-folded form used for carriage tests only."""
+
+    return " ".join(text.split()).casefold()
+
+
 def normalize_lab_source_body(text: str) -> str:
     """Return one stamped canonical form of a source body.
 
@@ -152,7 +158,7 @@ class LabSourceDocument:
     of ``repr``.
     """
 
-    __slots__ = ("_source_id", "_canonical_body", "_body_sha256")
+    __slots__ = ("_source_id", "_canonical_body", "_body_sha256", "_flat_body")
 
     def __init__(self, source_id: str, canonical_body: str, body_sha256: str) -> None:
         if not source_id.strip():
@@ -169,6 +175,7 @@ class LabSourceDocument:
         object.__setattr__(self, "_source_id", source_id)
         object.__setattr__(self, "_canonical_body", canonical_body)
         object.__setattr__(self, "_body_sha256", body_sha256)
+        object.__setattr__(self, "_flat_body", _flatten(canonical_body))
 
     def __setattr__(self, name: str, value: object) -> None:
         raise LabSourceError("a source document is immutable")
@@ -201,10 +208,18 @@ class LabSourceDocument:
         return len(self._canonical_body)
 
     def contains(self, phrase: str) -> bool:
-        """True when the body literally carries this phrase."""
+        """True when the body literally carries this phrase.
 
-        needle = normalize_lab_source_body(phrase) if phrase.strip() else ""
-        return bool(needle) and needle in self._canonical_body
+        Compared with whitespace flattened and case folded, because verse wraps
+        across lines: a faithfully carried speech joins the source's line
+        breaks into spaces and may re-case a mid-line capital.  Word order and
+        wording still have to match exactly - this is literal carriage, not
+        similarity.
+        """
+
+        if not phrase.strip():
+            return False
+        return _flatten(normalize_lab_source_body(phrase)) in self._flat_body
 
     def __repr__(self) -> str:
         return (
@@ -323,8 +338,12 @@ def render_source_block(span: LabSourceSpan) -> str:
             "this act adapts.",
             "Carry its people, place, period and events; where it gives a "
             "character words, carry those words.",
-            "Speaker labels and stage directions here are context: never "
-            "speak a stage direction as a line.",
+            "Speaker labels and stage directions below are CONTEXT, not "
+            "script. Never emit a stage direction as a line.",
+            "Where the passage gives only a stage direction, convert it into "
+            "spoken implication or concrete radio business - a character says "
+            "what they see, hear, or do - or let it become a music cue. If it "
+            "can become neither, drop it.",
             "",
             text,
             f"{token}>>>",

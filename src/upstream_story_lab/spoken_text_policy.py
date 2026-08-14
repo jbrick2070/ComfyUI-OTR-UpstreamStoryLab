@@ -18,6 +18,10 @@ from typing import Any, Iterable, Literal, Sequence
 
 
 SPOKEN_TEXT_POLICY_ID = "otr.spoken-text-only.v1"
+#: Selected only when a caller supplies a source document; see
+#: ``audit_spoken_text``.  Same detectors, plus a literal-carriage exemption
+#: for the heuristic findings on adaptation lanes.
+SPOKEN_TEXT_POLICY_V2_ID = "otr.spoken-text-only.v2"
 
 SpokenFindingCode = Literal[
     "production_cue",
@@ -26,6 +30,33 @@ SpokenFindingCode = Literal[
     "third_person_stage_business",
     "cross_speaker_attribution",
 ]
+
+
+#: Findings that infer authorship from prose shape.  Only these may be
+#: excused by literal carriage from a source; a production cue or a delimited
+#: direction is never speakable, whoever wrote it.
+HEURISTIC_FINDING_CODES: frozenset[str] = frozenset(
+    {
+        "quoted_novel_dialogue",
+        "third_person_stage_business",
+        "cross_speaker_attribution",
+    }
+)
+
+
+def _carried_predicate(carried_source: Any | None):
+    """Adapt a source document into a ``text -> bool`` carriage test."""
+
+    if carried_source is None:
+        return None
+    contains = getattr(carried_source, "contains", None)
+    if callable(contains):
+        return lambda text: bool(text.strip()) and bool(contains(text))
+    if callable(carried_source):
+        return lambda text: bool(text.strip()) and bool(carried_source(text))
+    raise TypeError(
+        "carried_source must expose contains(text) or be callable"
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -459,8 +490,28 @@ def _is_whole_line_stage_action(text: str, *, max_words: int = 32) -> bool:
 def audit_spoken_text(
     lines: Sequence[Any],
     cast: Sequence[Any],
+    *,
+    carried_source: Any | None = None,
 ) -> tuple[SpokenTextFinding, ...]:
-    """Return high-confidence spoken-surface defects without mutating input."""
+    """Return high-confidence spoken-surface defects without mutating input.
+
+    With no ``carried_source`` this is exactly ``otr.spoken-text-only.v1``.
+
+    Supplying a source document selects ``otr.spoken-text-only.v2``, which
+    exempts the three *heuristic* findings for a line whose words are literally
+    carried from that source.  Those heuristics exist to catch a model writing
+    narrative prose instead of dialogue; when the words provably come from the
+    author, that premise is false.  Measured need: `Sir, there she stands.` and
+    `with washed eyes Cordelia leaves you.` are genuine spoken Shakespeare that
+    v1 rejects.
+
+    The exemption is deliberately narrow.  It requires literal carriage, so a
+    paraphrase stays subject to the heuristics.  Production cues, delimited
+    stage directions, and a row that is *entirely* a stage cue are never
+    exempt: the source printing a direction does not make it speakable.
+    """
+
+    carried = _carried_predicate(carried_source)
 
     names_by_id = {
         str(_value(row, "char_id")): str(_value(row, "name"))
@@ -483,12 +534,16 @@ def audit_spoken_text(
         pattern for pattern in patterns_by_id.values() if pattern is not None
     )
     findings: list[SpokenTextFinding] = []
+    #: Findings no source may excuse, keyed by (line_id, code).
+    never_exempt: set[tuple[str, str]] = set()
+    text_by_line: dict[str, str] = {}
 
     for row in lines:
         line_id = str(_value(row, "line_id"))
         char_id = str(_value(row, "char_id"))
         role = str(_value(row, "speaker_role"))
         text = str(_value(row, "text"))
+        text_by_line[line_id] = text
 
         if _PRODUCTION_CUE_RE.search(text):
             findings.append(
@@ -503,6 +558,9 @@ def audit_spoken_text(
                 )
             )
         if _BARE_STAGE_LINE_RE.fullmatch(text):
+            # A row that is nothing but a stage cue stays forbidden even when
+            # the source prints it: a direction is never speakable.
+            never_exempt.add((line_id, "third_person_stage_business"))
             findings.append(
                 SpokenTextFinding(
                     line_id,
@@ -598,15 +656,32 @@ def audit_spoken_text(
     unique: dict[tuple[str, str], SpokenTextFinding] = {}
     for finding in findings:
         unique[(finding.line_id, finding.code)] = finding
+
+    if carried is not None:
+        for key in list(unique):
+            line_id, code = key
+            if (
+                code in HEURISTIC_FINDING_CODES
+                and key not in never_exempt
+                and carried(text_by_line.get(line_id, ""))
+            ):
+                del unique[key]
     return tuple(unique[key] for key in sorted(unique))
 
 
-def spoken_text_is_clean(lines: Sequence[Any], cast: Sequence[Any]) -> bool:
-    return not audit_spoken_text(lines, cast)
+def spoken_text_is_clean(
+    lines: Sequence[Any],
+    cast: Sequence[Any],
+    *,
+    carried_source: Any | None = None,
+) -> bool:
+    return not audit_spoken_text(lines, cast, carried_source=carried_source)
 
 
 __all__ = [
+    "HEURISTIC_FINDING_CODES",
     "SPOKEN_TEXT_POLICY_ID",
+    "SPOKEN_TEXT_POLICY_V2_ID",
     "SpokenTextFinding",
     "audit_spoken_text",
     "spoken_text_is_clean",
