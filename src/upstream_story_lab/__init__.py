@@ -92,6 +92,7 @@ from .ledger_io import (
     save_ledger_envelope,
 )
 from .authoring_executor import (
+    ULTRASHORT_GUIDANCE,
     AttemptRecord,
     AuthoringBrief,
     AuthoringExecutionError,
@@ -128,6 +129,7 @@ __all__ = [
     "StagedAuthoringGuidance",
     "StagedAuthoringResult",
     "StagedModelProvider",
+    "ULTRASHORT_GUIDANCE",
     "assign_story_facts",
     "author_story_ledger",
     "render_job_prompt",

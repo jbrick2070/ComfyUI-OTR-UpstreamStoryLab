@@ -115,6 +115,16 @@ class StagedAuthoringGuidance(StrictExecutorModel):
         return self
 
 
+#: Rapid-fire testing preset: the smallest complete drama shape. Still
+#: guidance only - it steers prompts and never gates admission.
+ULTRASHORT_GUIDANCE = StagedAuthoringGuidance(
+    beats_per_act_low=2,
+    beats_per_act_high=2,
+    exchanges_per_beat_low=2,
+    exchanges_per_beat_high=2,
+)
+
+
 class AuthoringBrief(StrictExecutorModel):
     """Everything one staged authoring run needs besides the model provider."""
 
@@ -1390,6 +1400,7 @@ __all__ = [
     "StagedAuthoringGuidance",
     "StagedAuthoringResult",
     "StagedModelProvider",
+    "ULTRASHORT_GUIDANCE",
     "assign_story_facts",
     "author_story_ledger",
     "render_job_prompt",
