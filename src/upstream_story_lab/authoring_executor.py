@@ -448,28 +448,52 @@ _MUSIC_CLOSE_CUE = MusicCue(
 
 _OUTPUT_CONTRACTS: dict[str, str] = {
     "story_seed": (
-        'Return one JSON object: {"episode_title": "...", "story_seed": "..."}. '
-        "Both are planning text, never spoken rows."
+        'Return one JSON object and nothing else: {"episode_title": "...", '
+        '"story_seed": "..."}. No markdown fences, no commentary, no extra '
+        "keys. Both values are plain planning text. Neither value may hold a "
+        "line of dialogue, a speaker name, or quoted speech."
     ),
     "story_arc": (
-        'Return one JSON object: {"summary": "...", "act_premises": ["..."]}. '
-        "act_premises must contain exactly one premise per scheduled act, in "
-        "act order."
+        'Return one JSON object and nothing else: {"summary": "...", '
+        '"act_premises": ["...", "..."]}. No markdown fences, no commentary, '
+        "no extra keys. act_premises is a flat list of plain strings in act "
+        "order, one string per act; do not number them, do not give them IDs, "
+        "and do not make them objects. summary and every premise are planning "
+        "text, never dialogue."
     ),
     "act_spine": (
-        'Return one JSON object: {"spine": "...", "entry_state": "...", '
-        '"exit_state": "..."}. Planning text only; no dialogue.'
+        'Return one JSON object and nothing else: {"spine": "...", '
+        '"entry_state": "...", "exit_state": "..."}. No markdown fences, no '
+        "commentary, no extra keys. All three values are plain planning text, "
+        "never dialogue and never a speaker's words."
     ),
     "act_beats": (
-        'Return one JSON object: {"beat_intents": ["..."]} listing this '
-        "act's ordered dramatic beats. Intents are planning text, not lines."
+        'Return one JSON object and nothing else: {"beat_intents": ["...", '
+        '"..."]}. No markdown fences, no commentary, no extra keys. '
+        "beat_intents is a flat list of plain strings in the order the beats "
+        "happen, one string per beat; do not number the beats, do not give "
+        "them IDs, and do not make them objects, because the beat IDs are "
+        "assigned later by code. Every string says what happens, never what "
+        "anyone says."
     ),
     "act_dialogue": (
-        'Return one JSON object: {"rows": [...]}. Each row is either '
-        '{"role": "character_dialogue", "beat_id": "...", "char_id": "...", '
-        '"text": "...", "fact_ids": ["..."]} or {"role": "music_inter", '
-        '"description": "...", "generation_prompt": "..."}. Rows must follow '
-        "beat order. text carries only words spoken aloud by that character."
+        'Return one JSON object and nothing else: {"rows": [...]}. No markdown '
+        "fences, no commentary, no extra keys. Every element of rows is "
+        'exactly one of two shapes. A spoken row is {"role": '
+        '"character_dialogue", "beat_id": "...", "char_id": "...", "text": '
+        '"...", "fact_ids": ["..."]}, where beat_id is copied from the beats '
+        "list, char_id is copied from a locked_cast row whose cast_role is "
+        '"character", text holds only the bare words spoken aloud, and '
+        "fact_ids is a list of fact ID strings that is [] when the row cites "
+        'none. A music row is {"role": "music_inter", "description": "...", '
+        '"generation_prompt": "..."}, where both fields are filled in and the '
+        "row carries no beat_id, no char_id and no fact_ids. Use no other role "
+        "and no other field; never add an action, stage_direction, narration "
+        "or delivery_note field to any row. Put the rows in beat order, from "
+        "this act's first beat to its last. A music row may not be the first "
+        "row of act 1 or the last row of the final act. Never return the same "
+        "spoken line twice, and never repeat the same word or phrase over and "
+        "over inside one line."
     ),
     "act_cleanup": (
         'Return one JSON object and nothing else: {"rows": [...]}. No markdown '
@@ -488,14 +512,22 @@ _OUTPUT_CONTRACTS: dict[str, str] = {
         "empty row, a placeholder, or an explanation."
     ),
     "announcer_open": (
-        'Return one JSON object: {"text": "..."} containing only the '
-        "announcer's spoken opening words."
+        'Return one JSON object and nothing else: {"text": "..."}. No markdown '
+        "fences, no commentary, no other key. text is one plain string holding "
+        "only the words the announcer says out loud. Every phrase in "
+        "required_literal_mentions must appear inside text, its words in order "
+        "with no other word between them. text must contain no square "
+        "brackets, no curly braces and no asterisks."
     ),
     "announcer_news_coda": (
-        'Return one JSON object: {"text": "...", "fact_id": "..."} containing '
-        "only the announcer's spoken closing news words. fact_id must be the "
-        "assigned closing fact, and text must include its complete claim "
-        "verbatim."
+        'Return one JSON object and nothing else: {"text": "...", "fact_id": '
+        '"..."}. No markdown fences, no commentary, no other key. text is one '
+        "plain string holding only the words the announcer says out loud, and "
+        "it must contain every word of closing_fact_claim in order with no "
+        "other word between them. fact_id is the exact value CONTEXT gives for "
+        "closing_fact_id, copied as a plain string. text must contain no "
+        "square brackets, no curly braces and no asterisks. Do not repeat the "
+        "same word or phrase over and over."
     ),
 }
 

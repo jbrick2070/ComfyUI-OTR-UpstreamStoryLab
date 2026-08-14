@@ -140,9 +140,9 @@ def test_dialogue_contract_is_repeated_verbatim_for_every_act() -> None:
         DIALOGUE_JOB_INSTRUCTIONS
     }
     joined = " ".join(DIALOGUE_JOB_INSTRUCTIONS).casefold()
-    assert "actual spoken dialogue" in joined
-    assert "assigned speaker" in joined
-    assert "stage directions" in joined
+    assert "says out loud" in joined
+    assert "char_id" in joined
+    assert "stage direction" in joined
     assert "narration" in joined
 
 

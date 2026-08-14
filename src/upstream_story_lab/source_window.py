@@ -381,6 +381,8 @@ def render_source_block(span: LabSourceSpan) -> str:
             "character words, carry those words.",
             "Speaker labels and stage directions below are CONTEXT, not "
             "script. Never emit a stage direction as a line.",
+            "A name printed above or in front of a speech is a label, not "
+            "spoken words. Never copy a label into a line.",
             "Where the passage gives only a stage direction, convert it into "
             "spoken implication or concrete radio business - a character says "
             "what they see, hear, or do - or let it become a music cue. If it "

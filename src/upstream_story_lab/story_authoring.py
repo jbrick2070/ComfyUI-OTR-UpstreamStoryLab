@@ -31,11 +31,20 @@ JobKind = Literal[
 ]
 JobExecutor = Literal["model", "compiler", "admission"]
 
+#: Every line here guards a rule some acceptance function actually enforces,
+#: so a model that follows the block literally produces an admissible act.
+#: Written plainly for a small local model and a frontier model alike: the
+#: role field, the beat and cast handles, the literal lexical bans the
+#: spoken-text regexes match on, and the fact-citation rule that a music row
+#: cannot satisfy.
 DIALOGUE_JOB_INSTRUCTIONS = (
-    "Write actual spoken dialogue for every assigned beat.",
-    "Each dialogue row must contain only words spoken aloud by its assigned speaker.",
-    "Do not write stage directions, action, narration, delivery notes, or another speaker's words.",
-    "Use only the beat IDs and character IDs you were given, keep the beats in the order listed, and make sure some row carries each assigned fact ID.",
+    'Write this act\'s spoken rows. Every row is either the words one character says out loud or a music cue, and every row carries a role: "character_dialogue" for a spoken row, "music_inter" for a music cue.',
+    "Write at least one spoken row for every beat_id in beats in CONTEXT. Copy each beat_id exactly as that list spells it, and work through the beats from first to last, never returning to an earlier beat.",
+    'Take char_id from a locked_cast row whose cast_role is "character". Never use the announcer\'s char_id, and never invent one.',
+    "text holds only the bare words that character says out loud to someone else in the scene, in that character's own voice, using I, we and you. Never return a spoken row whose text is empty.",
+    "Never describe what anyone does, how a line is said, or what is heard. Never write a name or a pronoun followed by an action or speech verb such as turns, looks, nods, sighs, says or replies, and never write a row that is only an action or a sound.",
+    "Never put a speaker name, a quotation mark, a he-said tag, square brackets, curly braces or asterisks in text. Never begin text with a label such as ACTION:, SOUND:, SFX:, CUE:, MUSIC:, AUDIO:, NARRATION:, STAGE DIRECTION: or DELIVERY NOTE:, and never put a note about action, music or sound inside parentheses.",
+    "fact_ids is a list of fact ID strings copied from facts in CONTEXT, and no ID may appear twice in one row. Every ID in assigned_fact_ids must appear in the fact_ids of one of this act's spoken rows, because a music row carries no facts.",
 )
 
 #: The ledger may hold only dialogue and music.  Rather than let code rewrite
@@ -48,13 +57,13 @@ DIALOGUE_JOB_INSTRUCTIONS = (
 #: Each line also guards a real acceptance rule, so following it literally
 #: produces an admissible act rather than a rejected one.
 CLEANUP_JOB_INSTRUCTIONS = (
-    "Your only job is to make every row speakable: each row you return holds either words a character says out loud or a music cue. Leave any row that already holds only spoken words exactly as it is, and when you are unsure about a row, leave it as it is.",
+    "Your only job is to make every row speakable: each row you return holds either words a character says out loud or a music cue. When a row already holds only spoken words, return its words unchanged, and when you are unsure about a row, return its words unchanged. Edit only to remove what is not spoken aloud: never trim, tighten, condense, or summarize a spoken line, never rewrite one just to make it read better, and do not pad a line or add rows.",
+    'The draft rows you were given carry no role field. Give every row you return one: "character_dialogue" for a spoken row, "music_inter" for a music cue. Use no other role.',
     "Turn any stage direction, action line, narration, production cue, or delivery note into words that same row's character says out loud, or into a music cue; remove it only when it can become neither. Words you write in place of a direction must still do the job that row's beat intent describes, and must fit this act's spine and its entry and exit state.",
     "Remove a speaker name, speech prefix, bracketed note, or parenthetical note that was copied into a line, and keep every spoken word that remains. text holds the bare spoken words, with no speaker name and no quotation marks around them. Never return a row whose text is empty: if nothing spoken is left, make the row a music cue or leave the row out.",
-    "Never delete a row that has anything in fact_ids, and never turn such a row into a music cue, because a music cue carries no facts. Never delete the last remaining spoken row of a beat; rewrite its words instead. Never make a music cue the first row of act 1 or the last row of the final act.",
+    "Never delete a row that has anything in fact_ids, and never turn such a row into a music cue, because a music cue carries no facts; when its words are not speakable, rewrite them instead. Never delete the last remaining spoken row of a beat; rewrite its words instead. Never make a music cue the first row of act 1 or the last row of the final act.",
     "Keep every spoken row's beat_id, char_id, and fact_ids exactly as the draft gave them, and never invent a beat, a character, or a fact. Return the rows in the order you received them, and never move a row so that it goes back to an earlier beat.",
     "When the act adapts a source passage, keep the character's own words exactly as the source wrote them, however blunt or violent they are; do not reword, replace, cut, or soften any of them. Strip only a speaker label the draft copied in front of the line.",
-    "Edit only to remove what is not spoken aloud. Never trim, tighten, condense, or summarize a spoken line, and never rewrite one just to make it read better; do not pad a line or add rows either.",
 )
 
 _MODEL_JOB_KINDS = frozenset(
@@ -159,7 +168,11 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
             kind="story_seed",
             executor="model",
             instructions=(
-                "Create one source-grounded story seed as planning text, not dialogue.",
+                "Invent the story this episode tells. Fill story_seed with planning text, not spoken words.",
+                "Write episode_title as ordinary spoken words. The announcer job must later say the title out loud, word for word.",
+                "Use the setting, the scene_time and the locked_cast in CONTEXT exactly as given. Do not rename a character, do not add a character, and do not move the story to another place or time.",
+                "Build a story that every claim under facts in CONTEXT belongs inside. Later jobs must put each of those claims into someone's mouth.",
+                "Do not repeat the same word or phrase over and over.",
             ),
         ),
         AuthoringJob(
@@ -168,8 +181,11 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
             executor="model",
             depends_on=("story_seed",),
             instructions=(
-                f"Plan one coherent {act_count}-act arc from the accepted story seed.",
-                "Keep the announcer opening, news coda, and music outside the act count.",
+                f"act_premises must hold exactly {act_count} premises: one for each act, the first act first.",
+                "Each premise is one plain string saying what that act does in the story. Write planning text, not spoken words.",
+                "summary tells the whole story of the accepted story seed once, from its beginning to its end.",
+                "Do not spend a premise on the announcer opening, the news coda, or the music. Other jobs write those.",
+                "Do not repeat the same word or phrase over and over.",
             ),
         ),
     ]
@@ -192,7 +208,11 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                     act_number=act_number,
                     depends_on=tuple(spine_dependencies),
                     instructions=(
-                        f"Plan the dramatic spine for act {act_number}; planning text only.",
+                        f"Plan act {act_number}. Fill spine, entry_state and exit_state with planning text, not spoken words.",
+                        f"Use premise number {act_number} in story_arc.act_premises in CONTEXT as this act's assignment.",
+                        f"spine says what changes in act {act_number} and why that change matters to the story.",
+                        "entry_state says where the people and the situation stand when this act begins, and exit_state says where they stand when it ends. exit_state must not repeat entry_state.",
+                        "Begin this act from prior_act_exit_state in CONTEXT when CONTEXT gives one, and from the story seed in story_arc in CONTEXT when it does not. exit_state is where this act leaves the story, and the final act's exit_state is where the story ends.",
                     ),
                 ),
                 AuthoringJob(
@@ -202,7 +222,11 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                     act_number=act_number,
                     depends_on=(spine_id,),
                     instructions=(
-                        f"Expand act {act_number}'s spine into ordered dramatic beats; do not write final lines.",
+                        f"Break act {act_number} into the beats that carry it from the entry_state to the exit_state in act_spine in CONTEXT.",
+                        "A beat is one thing that happens. Write each beat as one plain string that says what happens, not what anyone says.",
+                        "List the beats in the order they happen. Later jobs keep this order and never go back to an earlier beat.",
+                        "Every beat must be a beat the characters can speak. A later job has to write a spoken line for every beat you list, so do not list a beat that nobody speaks in.",
+                        "guidance.beats_per_act in CONTEXT shapes this act. It is a suggestion, not a rule.",
                     ),
                 ),
                 AuthoringJob(
@@ -247,9 +271,11 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                 executor="model",
                 depends_on=shared_announcer_dependencies,
                 instructions=(
-                    "Write only the announcer's spoken opening words; no production cues or stage directions.",
-                    "Say every phrase listed in required_literal_mentions, copied exactly, letter for letter: the story title, the setting, the scene time, and each character name.",
-                    "Introduce the story and those characters in one short spoken passage; do not paraphrase or shorten any required phrase.",
+                    "Write only the words the announcer says out loud.",
+                    "Say every phrase in required_literal_mentions in CONTEXT. Use each phrase's words in the order given, with no other word between them.",
+                    "Capital letters and punctuation inside a phrase do not have to match. Write a number, a date or a name in a phrase the way the phrase writes it.",
+                    "You may write your own words before, between and after those phrases. Do not repeat the same word or phrase over and over.",
+                    "Never put square brackets, curly braces or asterisks in text. Never begin text with a label such as ACTION:, SOUND:, SFX:, CUE:, MUSIC:, AUDIO:, NARRATION:, STAGE DIRECTION: or DELIVERY NOTE:, and never put a note about action, music or sound inside parentheses.",
                 ),
             ),
             AuthoringJob(
@@ -258,9 +284,11 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                 executor="model",
                 depends_on=shared_announcer_dependencies,
                 instructions=(
-                    "Write only the announcer's spoken source-grounded news coda; no production cues or stage directions.",
-                    "Include the whole of closing_fact_claim word for word, exactly as given; do not paraphrase it, shorten it, or split it up.",
-                    "You may add a short spoken bridge before that claim to turn from the drama to the real source; return closing_fact_id as fact_id.",
+                    "Write only the words the announcer says out loud. You may write your own words before and after the claim to turn from the drama back to the real report.",
+                    "Say every word of closing_fact_claim in CONTEXT, in the order given, with no other word between them. No other entry in facts will do.",
+                    "Capital letters and punctuation inside closing_fact_claim do not have to match, and putting the claim in quotation marks is allowed. Write a number, a date or a name in the claim the way closing_fact_claim writes it.",
+                    "Set fact_id to the value CONTEXT gives for closing_fact_id. Do not write the words closing_fact_id.",
+                    "Never put square brackets, curly braces or asterisks in text. Never begin text with a label such as ACTION:, SOUND:, SFX:, CUE:, MUSIC:, AUDIO:, NARRATION:, STAGE DIRECTION: or DELIVERY NOTE:, and never put a note about action, music or sound inside parentheses.",
                 ),
             ),
             AuthoringJob(
