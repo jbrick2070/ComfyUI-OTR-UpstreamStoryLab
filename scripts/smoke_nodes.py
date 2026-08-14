@@ -36,9 +36,20 @@ require(
     ],
     f"unexpected node mappings: {mappings}",
 )
+EXPECTED_BANKS = [
+    "custom_source_bank",
+    "media_archive",
+    "original",
+    "public_domain",
+    "scifi_news",
+    "scifi_news_pro",
+    "shakespeare",
+]
+# The full roster, not a spot check: a bank lost from the dropdown must fail
+# the smoke rather than pass silently. _bank_choices returns sorted ids.
 require(
-    "media_archive" in banks and "custom_source_bank" in banks,
-    f"bank choices are missing an expected bank: {banks}",
+    banks == EXPECTED_BANKS,
+    f"bank dropdown roster drifted: {banks} != {EXPECTED_BANKS}",
 )
 require(
     "simple_4_prompt_experimental" not in [m for m in models if m != "auto"],

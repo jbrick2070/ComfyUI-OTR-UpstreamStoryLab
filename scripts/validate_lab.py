@@ -100,9 +100,10 @@ def main() -> int:
                 story_pipeline_id=pipeline_id, visual_style_id=style_id,
                 act_count=3,
             )
-            if bank_id != "science_news":
-                leaked = scan_story_leakage(registry, spec)
-                require(not leaked, f"{bank_id}/{model_id} leaked {leaked}")
+            # Pack-driven: the scan uses the active pack's own
+            # forbidden_leakage_terms, so no bank id is exempted by name.
+            leaked = scan_story_leakage(registry, spec)
+            require(not leaked, f"{bank_id}/{model_id} leaked {leaked}")
             leaked_visual = scan_visual_leakage(spec)
             require(
                 not leaked_visual,

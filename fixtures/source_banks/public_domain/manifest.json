@@ -8,7 +8,7 @@
       "year": "2026",
       "license_status": "cc0",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "source_url": "repo:config/source_banks/public_domain_story/sources/cradle_protocol.txt",
+      "source_url": "repo:config/source_banks/public_domain/sources/cradle_protocol.txt",
       "source_label": "an original dedicated to the public domain",
       "adapter_type": "local_text_fixture",
       "search_tags": [

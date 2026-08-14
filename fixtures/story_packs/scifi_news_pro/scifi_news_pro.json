@@ -1,0 +1,52 @@
+{
+  "source_bank_id": "scifi_news_pro",
+  "story_model_id": "scifi_news_pro",
+  "story_pipeline_id": "legacy_many_pass",
+  "label": "Sci-Fi News Pro",
+  "status": "ready_fixture",
+  "job_prompts": {
+    "story_seed": "Take the science story as fact and build its dossier first: the finding, the people, the places, the numerals it actually reports. Copy them; invent none. Then name the human pressure that grows from that finding, not the hardware. Choose one speculative leap the dossier can carry, and give the people aims that collide over it. Title the episode from something concrete in that world. Planning text only, never dialogue.",
+    "story_arc": "Write this as a treatment. State the dramatic question as one yes/no question naming who wants what. Give every character a want, a pressure on that want, and an audible way of speaking. Name the turn that reverses the story, then choose the ending shape - paid victory, quiet loss, ironic turn, or open question - and price it: the last choice and what it costs. Never contradict the source. Planning text only, never dialogue.",
+    "act_spine": "Plan this act as planning text, not dialogue. Take up the story where the last act left it and say what this act changes. Name what each person here wants now, what bears down on that want, and what the finding makes urgent. Let more than one thread run: the argument over the science, and the private thing it is costing someone. The drama moves; the reported facts hold still.",
+    "act_beats": "Order the beats so the pressure compounds: each one raises the cost of the last, and none repeats a move already made. Give each beat one intent someone can speak. Put a source fact where a beat actually turns on it, never as decoration. Carry the act from its entry state to its exit state without skipping the step that makes the turn believable. Beats are intents, not lines. Planning text only, never dialogue.",
+    "act_dialogue": "Write what these people say out loud, beat by beat in the order given, using only the locked characters - never the announcer. Let each one speak in the register the treatment gave them, so a listener knows who is talking without being told. Put every assigned fact into somebody's mouth, in that character's own words and reasoning. People near this work argue in specifics. Let a want and a pressure collide inside a single answer.",
+    "act_cleanup": "Leave a row alone when it already holds only spoken words. Turn a stage direction into what that same character says out loud about it, into radio business someone can voice, or into a music cue; drop only what can become neither. Strip a speaker label copied into a line and keep the words after it. Keep instrument names, units and readings exactly as written - they are the source facts. Never reword a line that already speaks.",
+    "announcer_open": "Open as the host of a science-fiction anthology. Say the title, the setting, the scene time, and every character name exactly as given, letter for letter. Name the real thing at the center - the instrument, the finding, the reading - then hand the listener the question the hour will answer. Promise the size of the story without giving away its turn or its price. Spoken words only, in the announcer's own voice.",
+    "announcer_news_coda": "Turn from the drama back to the real report in one spoken bridge, then say the supplied closing claim word for word, exactly as given. Read it calm and era-neutral, the way a wire report reads. Claim nothing the source does not support, and never name a character from the story. When the evidence is thin, say less rather than filling it in. No moral, no lesson, no URL or feed name aloud."
+  },
+  "examples": [
+    "A night operator alone on duty when the anomaly arrives carries a small room against a very large sky.",
+    "The assistant who knows the machine better than its celebrated inventor weighs loyalty against credit in a chamber drama.",
+    "Two people with competing aims argue over one instrument reading, and the one who wins pays for winning."
+  ],
+  "tone_guardrails": [
+    "This is the ambitious lane: reach for the bigger, more layered story and pay off every thread you open.",
+    "Cosmic causes, domestic effects. The science is beautiful before it is trouble.",
+    "Every character has a reason to speak and an audible way of speaking that tells them apart.",
+    "The ending is priced: somebody chooses, and the choice costs something concrete.",
+    "Copy the source, never invent it. Human pressure is the subject; the hardware is only the occasion.",
+    "The drama is fiction and the closing fact is real; keep the line between them audible."
+  ],
+  "forbidden_plot_patterns": [
+    "invented finding the source does not report",
+    "twist that cancels the priced ending",
+    "a cast member with nothing at stake",
+    "explaining the science instead of dramatizing it",
+    "the drama presented as a true news account"
+  ],
+  "forbidden_leakage_terms": [
+    "archive material",
+    "source attribution note",
+    "public-domain source text",
+    "restoration",
+    "the original author",
+    "Folger",
+    "frame card",
+    "editorial stance"
+  ],
+  "source_requirements": [
+    "Science RSS article or non-empty science custom premise."
+  ],
+  "ledger_validation_notes": [],
+  "schema_version": "v2.0"
+}

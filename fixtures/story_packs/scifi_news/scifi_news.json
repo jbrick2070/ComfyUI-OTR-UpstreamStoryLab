@@ -1,6 +1,6 @@
 {
-  "source_bank_id": "science_news",
-  "story_model_id": "science_news_default",
+  "source_bank_id": "scifi_news",
+  "story_model_id": "scifi_news",
   "story_pipeline_id": "legacy_many_pass",
   "label": "Science RSS Default",
   "status": "ready_fixture",

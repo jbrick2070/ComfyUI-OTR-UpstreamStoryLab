@@ -81,7 +81,7 @@ Planned source-bank dropdown labels:
 
 - `science_news`: "Sci-Fi Science News"
 - `media_archive`: "Media RSS / Archive"
-- `public_domain_story`: "Public Domain"
+- `public_domain`: "Public Domain"
 - `custom_source_bank`: "+ Add Your Own"
 
 Suggested tooltip for `custom_source_bank`:

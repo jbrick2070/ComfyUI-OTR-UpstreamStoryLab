@@ -80,8 +80,8 @@ def main() -> int:
         note = ("Fill every empty prompt_stages seam (the registry refuses "
                 "empty required seams) and see docs/PACK_AUTHOR_CHECKLIST.md.")
 
-    folder = {"science_news": "science_news", "media_archive": "media_archive",
-              "public_domain_story": "public_domain"}.get(args.bank, "experimental")
+    folder = {"scifi_news": "scifi_news", "media_archive": "media_archive",
+              "public_domain": "public_domain"}.get(args.bank, "experimental")
     out = FIXTURES / "story_packs" / folder / f"{args.model}.json"
     with open(out, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(json.dumps(skeleton, indent=2, ensure_ascii=False) + "\n")

@@ -56,13 +56,18 @@ def _base_kwargs(packet: SourceMaterialPacket, story_model_id: str) -> dict[str,
     }
 
 
-def interpret_fixture_science_news(packet: SourceMaterialPacket,
-                                   bank: SourceBankSpec,
-                                   llm_fns: LlmFns | None = None,
-                                   *, story_model_id: str) -> StoryInputPacket:
-    if packet.source_bank_id != "science_news":
+def interpret_fixture_scifi_news(packet: SourceMaterialPacket,
+                                 bank: SourceBankSpec,
+                                 llm_fns: LlmFns | None = None,
+                                 *, story_model_id: str) -> StoryInputPacket:
+    """Science-article lane. Serves every sci-fi news bank (scifi_news and the
+    quality lane scifi_news_pro): the packet is checked against the bank it was
+    resolved for, not against one hardcoded id."""
+
+    if packet.source_bank_id != bank.source_bank_id:
         raise InterpreterError(
-            f"science interpreter got bank {packet.source_bank_id!r}"
+            f"sci-fi news interpreter for bank {bank.source_bank_id!r} got a "
+            f"packet declaring {packet.source_bank_id!r}"
         )
     kwargs = _base_kwargs(packet, story_model_id)
     if not kwargs["key_terms"]:
@@ -91,7 +96,7 @@ def interpret_fixture_public_domain(packet: SourceMaterialPacket,
                                     bank: SourceBankSpec,
                                     llm_fns: LlmFns | None = None,
                                     *, story_model_id: str) -> StoryInputPacket:
-    if packet.source_bank_id != "public_domain_story":
+    if packet.source_bank_id != "public_domain":
         raise InterpreterError(
             f"public_domain interpreter got bank {packet.source_bank_id!r}"
         )
@@ -114,12 +119,81 @@ def interpret_fixture_public_domain(packet: SourceMaterialPacket,
     return StoryInputPacket(**kwargs)
 
 
+def interpret_fixture_shakespeare(packet: SourceMaterialPacket,
+                                  bank: SourceBankSpec,
+                                  llm_fns: LlmFns | None = None,
+                                  *, story_model_id: str) -> StoryInputPacket:
+    """Curated-scene adaptation lane. The Folger scenes are vendored under
+    fixtures/source_banks/shakespeare/ with provenance digests and a
+    non-commercial license label, so the packet must point at a scene rather
+    than carry an invented one."""
+
+    if packet.source_bank_id != "shakespeare":
+        raise InterpreterError(
+            f"shakespeare interpreter got bank {packet.source_bank_id!r}"
+        )
+    if packet.rights_status not in ("public_domain", "licensed"):
+        raise InterpreterError(
+            f"shakespeare packet has rights_status {packet.rights_status!r}; "
+            "a curated scene is either 'public_domain' or 'licensed' (the "
+            "Folger editions carry a non-commercial license)"
+        )
+    kwargs = _base_kwargs(packet, story_model_id)
+    if not (packet.raw_text.strip() or packet.source_text_ref.strip()):
+        raise InterpreterError(
+            "shakespeare packet must carry raw_text or source_text_ref naming "
+            "the curated scene this lane adapts"
+        )
+    kwargs["script_brief"] = packet.raw_text.strip() or kwargs["script_brief"]
+    kwargs["adaptation_trace"] = {
+        "fixture": True,
+        "story_model_id": story_model_id,
+        "source_kind": packet.source_kind,
+    }
+    return StoryInputPacket(**kwargs)
+
+
+def interpret_fixture_original(packet: SourceMaterialPacket,
+                               bank: SourceBankSpec,
+                               llm_fns: LlmFns | None = None,
+                               *, story_model_id: str) -> StoryInputPacket:
+    """No-source lane. Nothing is being adapted, so a packet that points at
+    external source material is a lane error rather than extra grounding: the
+    premise in source_summary IS the material."""
+
+    if packet.source_bank_id != "original":
+        raise InterpreterError(
+            f"original interpreter got bank {packet.source_bank_id!r}"
+        )
+    if packet.source_text_ref.strip() or packet.source_url.strip():
+        raise InterpreterError(
+            "original packet references external source material "
+            f"(source_text_ref={packet.source_text_ref!r}, "
+            f"source_url={packet.source_url!r}); this lane invents its premise "
+            "and declares it in source_summary"
+        )
+    if not packet.source_summary.strip():
+        raise InterpreterError(
+            "original packet must carry source_summary - the concept premise "
+            "stands in for source text in this lane"
+        )
+    kwargs = _base_kwargs(packet, story_model_id)
+    kwargs["adaptation_trace"] = {
+        "fixture": True,
+        "story_model_id": story_model_id,
+        "adapts_a_source": False,
+    }
+    return StoryInputPacket(**kwargs)
+
+
 #: The explicit binding allowlist. banks.json names one of these; an unknown
 #: binding is a hard error naming the bank (no hidden engines).
 INTERPRETER_BINDINGS: dict[str, Callable[..., StoryInputPacket]] = {
-    "fixture_science_news": interpret_fixture_science_news,
+    "fixture_scifi_news": interpret_fixture_scifi_news,
     "fixture_media_archive": interpret_fixture_media_archive,
     "fixture_public_domain": interpret_fixture_public_domain,
+    "fixture_shakespeare": interpret_fixture_shakespeare,
+    "fixture_original": interpret_fixture_original,
 }
 
 

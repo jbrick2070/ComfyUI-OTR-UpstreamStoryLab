@@ -1,0 +1,30 @@
+{
+  "packet_version": 1,
+  "source_bank_id": "shakespeare",
+  "source_mode": "fixture",
+  "source_kind": "shakespeare_scene",
+  "source_label": "Folger Shakespeare curated scene fixture",
+  "rights_status": "licensed",
+  "source_title": "Macbeth, Act 1, Scene 3 - the prophecy on the heath",
+  "source_author": "William Shakespeare",
+  "source_url": "https://www.folger.edu/explore/shakespeares-works/macbeth/read/1/3/",
+  "source_hash": "3c43545567602aff2fbe54102c65606b933c1e6bb4663f781771dda30246c561",
+  "source_text_ref": "fixtures/source_banks/shakespeare/sources/macbeth__act1_scene3.txt",
+  "source_summary": "Three watchers greet Macbeth with titles he has not yet received, and the promise unsettles both his ambition and Banquo's caution.",
+  "raw_text": "",
+  "fixture_casting_brief": "Cast the scene's essential speakers: MACBETH, BANQUO, the Weird Sisters, and the messengers ROSS and ANGUS who confirm the first title.",
+  "fixture_script_brief": "",
+  "fixture_close_brief": "Source attribution: adapted from the Folger Shakespeare edition of Macbeth, Act 1, Scene 3, used under CC BY-NC 3.0.",
+  "fixture_key_terms": [
+    "Macbeth",
+    "Banquo",
+    "the Weird Sisters",
+    "thane of Cawdor"
+  ],
+  "fixture_fidelity_rules": [
+    "Carry the speakers the scene names, in the scene's own order of address.",
+    "Where the scene gives a character words, carry those words rather than a paraphrase.",
+    "Preserve the turn the scene already contains: the prophecy, and the title that arrives to confirm it."
+  ],
+  "schema_version": "v2.0"
+}

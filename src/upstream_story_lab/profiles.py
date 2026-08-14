@@ -8,6 +8,7 @@ a hard error naming the pack file.
 from __future__ import annotations
 
 from .contracts import (
+    AUTHORING_JOB_SEAMS,
     CODA_MODES,
     BankDefaults,
     SourceBankSpec,
@@ -57,11 +58,18 @@ def resolve_profile(registry: Registry, source_bank_id: str, story_model_id: str
             "the pack labels block or the bank defaults (JSON owns content)."
         )
 
+    # A pack carries its bank direction ONE of two ways: the retired many-pass
+    # seams (line_grounding among them), or the eight authoring job_prompts the
+    # staged executor actually runs. Demanding line_grounding of a
+    # job_prompts-only pack would force invented prose for a seam its pipeline
+    # never reaches, so the requirement follows the seams, not the pack.
     line_grounding = pack.prompt_stages.get("line_grounding", "").strip()
-    if not line_grounding:
+    if not line_grounding and set(pack.job_prompts) != set(AUTHORING_JOB_SEAMS):
         raise RegistryError(
-            f"{pack_path}: prompt_stages.line_grounding is required and empty - "
-            "no grounding instruction is invented in Python."
+            f"{pack_path}: carries neither prompt_stages.line_grounding nor the "
+            f"full job_prompts set {sorted(AUTHORING_JOB_SEAMS)} - a pack must "
+            "declare its bank direction one way or the other; no grounding "
+            "instruction is invented in Python."
         )
 
     def stage(name: str) -> str | None:

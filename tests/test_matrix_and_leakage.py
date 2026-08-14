@@ -18,7 +18,8 @@ from upstream_story_lab.preview import (
 from upstream_story_lab.profiles import resolve_profile
 from upstream_story_lab.registry import UnknownIdError
 
-RUNNABLE_BANKS = ("science_news", "media_archive", "public_domain_story")
+RUNNABLE_BANKS = ("scifi_news", "scifi_news_pro", "media_archive",
+                  "public_domain", "shakespeare", "original")
 
 #: Terms no NON-SCIENCE story preview may contain (the science lane is the
 #: only lane where science/news words are allowed).
@@ -62,7 +63,8 @@ def test_declared_matrix_resolves_and_previews(registry) -> None:
             assert render_prompt_preview(spec)
             assert render_visual_preview(spec)
             combos += 1
-    assert combos >= 55  # 11 runnable-bank packs x 5 styles
+    # Six runnable banks, one pack each, across five visual styles.
+    assert combos >= 30
     assert time.monotonic() - start < 10.0
 
 
@@ -88,7 +90,8 @@ def test_one_negative_per_axis(registry) -> None:
 
 def test_non_science_story_previews_are_clean(registry) -> None:
     for (bank_id, model_id, pipeline_id), _ in registry.packs.items():
-        if bank_id not in ("media_archive", "public_domain_story"):
+        if bank_id not in ("media_archive", "public_domain",
+                           "shakespeare", "original"):
             continue
         spec = build_spec(
             registry, source_bank_id=bank_id, story_model_id=model_id,
@@ -102,7 +105,7 @@ def test_non_science_story_previews_are_clean(registry) -> None:
 
 
 def test_science_lane_still_speaks_science(registry) -> None:
-    profile = resolve_profile(registry, "science_news", "science_news_default",
+    profile = resolve_profile(registry, "scifi_news", "scifi_news",
                               "legacy_many_pass")
     assert "science" in profile.story_form_label
     assert profile.coda_mode == "real_news_report"

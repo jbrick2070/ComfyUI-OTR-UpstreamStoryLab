@@ -28,7 +28,8 @@ def _artifact_dict(registry, bank="media_archive"):
 
 
 def test_adapter_accepts_real_bridge_artifacts(registry) -> None:
-    for bank in ("science_news", "media_archive", "public_domain_story"):
+    for bank in ("scifi_news", "scifi_news_pro", "media_archive", "public_domain",
+     "shakespeare", "original"):
         adapter.validate_bridge_artifact(_artifact_dict(registry, bank))
 
 
@@ -67,7 +68,7 @@ def test_profile_helpers_produce_locked_kwargs(registry) -> None:
 
 
 def test_science_profile_leaves_style_picker_constants(registry) -> None:
-    data = _artifact_dict(registry, "science_news")
+    data = _artifact_dict(registry, "scifi_news")
     profile = data["ledger_writing_spec"]["prompt_profile"]
     overrides = spp.style_picker_overrides(profile)
     assert overrides == {
@@ -100,11 +101,11 @@ def test_facade_routes_and_refuses(registry) -> None:
     with pytest.raises(facade.SourceInterpreterError, match="packet-driven"):
         facade.interpret_source("media_archive")
     with pytest.raises(facade.SourceInterpreterError, match="news_briefs_builder"):
-        facade.interpret_source("science_news")
+        facade.interpret_source("scifi_news")
     with pytest.raises(facade.SourceInterpreterError, match="not runnable"):
         facade.interpret_source("custom_source_bank")
     with pytest.raises(facade.SourceInterpreterError, match="cross-lane"):
-        facade.interpret_source("public_domain_story", bridge_story_input=story_input)
+        facade.interpret_source("public_domain", bridge_story_input=story_input)
 
 
 def test_facade_science_wraps_builder_verbatim() -> None:
@@ -122,7 +123,7 @@ def test_facade_science_wraps_builder_verbatim() -> None:
         return FakeBriefs()
 
     out = facade.interpret_source(
-        "science_news",
+        "scifi_news",
         article={"headline": "h", "summary": "sum", "full_text": "ft",
                  "source": "Outlet", "date": "2026-07-02", "link": "",
                  "seed_text": "h sum"},

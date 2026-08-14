@@ -26,7 +26,8 @@ from upstream_story_lab.story_authoring import StoryAuthoringError
 
 
 def test_bridge_mirrors_are_complete_and_mapped(registry) -> None:
-    for bank in ("science_news", "media_archive", "public_domain_story"):
+    for bank in ("scifi_news", "scifi_news_pro", "media_archive", "public_domain",
+     "shakespeare", "original"):
         spec = build_spec(registry, source_bank_id=bank, act_count=3)
         artifact = build_bridge_artifact(spec)
         news = artifact.meta_mirrors.news
@@ -68,9 +69,12 @@ def test_every_bank_routes_through_one_exact_act_scheduler(
     act_count: int,
 ) -> None:
     for bank in (
-        "science_news",
+        "scifi_news",
+        "scifi_news_pro",
         "media_archive",
-        "public_domain_story",
+        "public_domain",
+        "shakespeare",
+        "original",
     ):
         spec = build_spec(
             registry,
@@ -142,7 +146,7 @@ def test_runner_names_the_exact_failing_pass(registry, fail_at) -> None:
 
 
 def test_runner_refuses_descriptive_pipeline(registry) -> None:
-    pack = registry.pack("media_archive", "gentle_thriller", "legacy_many_pass")
+    pack = registry.pack("media_archive", "media_restoration_adventure", "legacy_many_pass")
     pipeline = registry.pipeline("legacy_many_pass")
     with pytest.raises(PipelineRunError, match="descriptive"):
         run_pipeline(pack, pipeline, lambda *a: "ok")

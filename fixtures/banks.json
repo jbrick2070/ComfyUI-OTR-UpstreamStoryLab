@@ -2,13 +2,13 @@
   "schema_version": "v2.0",
   "banks": [
     {
-      "source_bank_id": "science_news",
-      "label": "Sci-Fi Science News",
-      "dropdown_label": "Sci-Fi Science News",
+      "source_bank_id": "scifi_news",
+      "label": "Sci-Fi News - Proof-Pressure Radio",
+      "dropdown_label": "Sci-Fi News - Proof-Pressure Radio",
       "source_kind": "article",
-      "interpreter": "fixture_science_news",
+      "interpreter": "fixture_scifi_news",
       "fetcher": "science_rss",
-      "default_story_model": "science_news_default",
+      "default_story_model": "scifi_news",
       "default_visual_style": "sci_fi_radio",
       "default_story_pipeline": "legacy_many_pass",
       "defaults": {
@@ -36,6 +36,37 @@
         "coda_system",
         "title_system"
       ],
+      "runnable": true,
+      "guide_ref": ""
+    },
+    {
+      "source_bank_id": "scifi_news_pro",
+      "label": "Sci-Fi News Pro (LLM-first multipass)",
+      "dropdown_label": "Sci-Fi News Pro (LLM-first multipass)",
+      "source_kind": "article",
+      "interpreter": "fixture_scifi_news",
+      "fetcher": "science_rss",
+      "default_story_model": "scifi_news_pro",
+      "default_visual_style": "sci_fi_radio",
+      "default_story_pipeline": "legacy_many_pass",
+      "defaults": {
+        "story_form_label": "science-fiction audio drama",
+        "source_material_label": "Science story",
+        "source_develop_verb": "extrapolate dramatically from this science story",
+        "source_grounding_label": "news facts",
+        "key_terms_label": "NEWS KEY TERMS",
+        "close_brief_label": "closing news read",
+        "title_form_label": "sci-fi radio drama",
+        "coda_mode": "real_news_report"
+      },
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
+      },
+      "required_seams": [],
       "runnable": true,
       "guide_ref": ""
     },
@@ -81,7 +112,7 @@
       "guide_ref": ""
     },
     {
-      "source_bank_id": "public_domain_story",
+      "source_bank_id": "public_domain",
       "label": "Public Domain",
       "dropdown_label": "Public Domain",
       "source_kind": "public_domain_source",
@@ -118,6 +149,68 @@
         "style_pick_inventor",
         "style_pick_chooser"
       ],
+      "runnable": true,
+      "guide_ref": ""
+    },
+    {
+      "source_bank_id": "shakespeare",
+      "label": "Shakespeare / Folger",
+      "dropdown_label": "Shakespeare / Folger",
+      "source_kind": "shakespeare_scene",
+      "interpreter": "fixture_shakespeare",
+      "fetcher": "",
+      "default_story_model": "folger_scene_adaptation",
+      "default_visual_style": "archival_documentary",
+      "default_story_pipeline": "legacy_many_pass",
+      "defaults": {
+        "story_form_label": "Shakespeare radio adaptation",
+        "source_material_label": "Shakespeare scene",
+        "source_develop_verb": "adapt this scene while preserving its speakers, its turn, and its language",
+        "source_grounding_label": "scene text",
+        "key_terms_label": "SCENE KEY TERMS",
+        "close_brief_label": "source attribution note",
+        "title_form_label": "Shakespeare radio adaptation",
+        "coda_mode": "source_attribution"
+      },
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
+      },
+      "required_seams": [],
+      "runnable": true,
+      "guide_ref": ""
+    },
+    {
+      "source_bank_id": "original",
+      "label": "Original Radio Drama",
+      "dropdown_label": "Original Radio Drama",
+      "source_kind": "original_llm",
+      "interpreter": "fixture_original",
+      "fetcher": "",
+      "default_story_model": "original_radio_drama",
+      "default_visual_style": "archival_documentary",
+      "default_story_pipeline": "legacy_many_pass",
+      "defaults": {
+        "story_form_label": "original radio drama",
+        "source_material_label": "Original concept",
+        "source_develop_verb": "invent the whole story from this concept",
+        "source_grounding_label": "concept premise",
+        "key_terms_label": "CONCEPT KEY TERMS",
+        "close_brief_label": "origin note",
+        "title_form_label": "original radio drama",
+        "coda_mode": "source_attribution"
+      },
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
+      },
+      "required_seams": [],
       "runnable": true,
       "guide_ref": ""
     },

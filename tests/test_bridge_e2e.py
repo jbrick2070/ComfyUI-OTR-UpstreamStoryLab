@@ -23,7 +23,8 @@ from upstream_story_lab.bridge import (  # noqa: E402
 
 
 def test_emit_to_adapter_roundtrip(registry, tmp_path) -> None:
-    for bank in ("science_news", "media_archive", "public_domain_story"):
+    for bank in ("scifi_news", "scifi_news_pro", "media_archive", "public_domain",
+     "shakespeare", "original"):
         spec = build_spec(registry, source_bank_id=bank, act_count=3)
         artifact = build_bridge_artifact(spec)
         path = emit_bridge_artifact(artifact, tmp_path / f"{bank}.json")
@@ -51,7 +52,7 @@ def test_close_brief_round_trip_survives_both_mappings(registry) -> None:
 
     import _otr_source_interpreter as facade
 
-    spec = build_spec(registry, source_bank_id="science_news", act_count=3)
+    spec = build_spec(registry, source_bank_id="scifi_news", act_count=3)
     artifact = build_bridge_artifact(spec)
 
     class Briefs:
@@ -63,7 +64,7 @@ def test_close_brief_round_trip_survives_both_mappings(registry) -> None:
             }
 
     out = facade.interpret_source(
-        "science_news", news_briefs_builder=lambda **kw: Briefs(),
+        "scifi_news", news_briefs_builder=lambda **kw: Briefs(),
     )
     assert out["close_brief"] == spec.story_input.close_brief
 

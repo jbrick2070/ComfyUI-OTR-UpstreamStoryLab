@@ -15,6 +15,7 @@ from pathlib import PurePosixPath
 
 from .compat import file_sha256
 from .contracts import (
+    AUTHORING_JOB_SEAMS,
     PipelineSpec,
     PublicDomainSourceManifest,
     Resolution,
@@ -174,6 +175,23 @@ class Registry:
                         f"pack {path} missing required seams for bank "
                         f"{bank_id!r}: {missing} (no default prose is invented)"
                     )
+                # A bank may retire every legacy seam (required_seams: []), so
+                # the seam check above cannot be the only per-pack content
+                # gate. Bank direction reaches a model ONLY through
+                # job_prompts, and every job the staged executor runs must
+                # hear from the pack - otherwise a runnable lane ships with no
+                # voice at all and nothing complains.
+                if bank.runnable:
+                    absent = sorted(
+                        set(AUTHORING_JOB_SEAMS) - set(pack.job_prompts)
+                    )
+                    if absent:
+                        raise RegistryError(
+                            f"pack {path} is on runnable bank {bank_id!r} but "
+                            f"declares no job_prompts for {absent}; every "
+                            "authoring job must carry this bank's direction "
+                            "(no default prose is invented)"
+                        )
             # Executable pipelines must have FULL seam coverage in the pack
             # (roundtable pass01, DeepSeek: pipelines and packs were validated
             # atomically, never in combination - a missing seam only surfaced

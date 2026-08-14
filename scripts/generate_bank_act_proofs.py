@@ -4,7 +4,7 @@ Each of the four banks authors one complete three-act story through the same
 staged executor, with the guidance its own `fixtures/banks.json` entry
 declares, and is admitted through the code-owned verifier registry.  This is
 the receipt that every bank now runs on simplified act logic rather than
-word-count logic while obeying the ledger.  The `science_news` proof is the
+word-count logic while obeying the ledger.  The `scifi_news` proof is the
 original executor fixture owned by `generate_staged_authoring_fixture.py`.
 """
 
@@ -47,7 +47,7 @@ BANK_PROOFS: dict[str, dict[str, str | tuple[tuple[str, str], ...]]] = {
             ("c03", "TOM BELL"),
         ),
     },
-    "public_domain_story": {
+    "public_domain": {
         "episode_id": "bank_act_proof_public_domain_20260814",
         "packet_file": "public_domain_tell_tale_heart_20260814.json",
         "characters": (
@@ -61,6 +61,32 @@ BANK_PROOFS: dict[str, dict[str, str | tuple[tuple[str, str], ...]]] = {
         "characters": (
             ("c02", "JUNE HALE"),
             ("c03", "KEEPER ROSS"),
+        ),
+    },
+    "scifi_news_pro": {
+        "episode_id": "bank_act_proof_scifi_news_pro_20260814",
+        "packet_file": "scifi_news_pro_slow_clock_20260814.json",
+        "characters": (
+            ("c02", "VERA LINDQVIST"),
+            ("c03", "AMOS TATE"),
+        ),
+    },
+    # The proof cast is the scene's own: this lane adapts a named Folger scene
+    # rather than inventing speakers for it.
+    "shakespeare": {
+        "episode_id": "bank_act_proof_shakespeare_20260814",
+        "packet_file": "shakespeare_macbeth_heath_20260814.json",
+        "characters": (
+            ("c02", "MACBETH"),
+            ("c03", "BANQUO"),
+        ),
+    },
+    "original": {
+        "episode_id": "bank_act_proof_original_20260814",
+        "packet_file": "original_night_switchboard_20260814.json",
+        "characters": (
+            ("c02", "IRENE MADDOX"),
+            ("c03", "WALT PEARSON"),
         ),
     },
 }

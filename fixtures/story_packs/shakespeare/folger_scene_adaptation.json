@@ -1,0 +1,56 @@
+{
+  "source_bank_id": "shakespeare",
+  "story_model_id": "folger_scene_adaptation",
+  "story_pipeline_id": "legacy_many_pass",
+  "label": "Folger Scene Radio Adaptation",
+  "status": "ready_fixture",
+  "job_prompts": {
+    "story_seed": "You are putting a microphone on a scene that has held a stage for four hundred years. Name the scene's own speakers and the pressure the scene itself puts on them. Take the episode title from a concrete thing in the scene: a place, an omen, a letter, a word spoken there. Do not invent a framing story, a modern stand-in, or a new dramatic question. Planning text only, never dialogue.",
+    "story_arc": "The scene's own shape is the episode's shape. Give each act one premise drawn from the scene's own movement, in the order the scene moves, so the acts read as an approach, a turn, and a consequence. Land the reversal the scene already contains; never supply a turn of your own. Merge adjacent exchanges around the pressure they share. Add no event the scene lacks. Planning text only, never dialogue.",
+    "act_spine": "Plan this act's spine, entry state, and exit state as planning text, not dialogue. Take the spine from the scene's own movement across this stretch of the quoted passage, and say what the scene has changed by the act's end. Let each character want what the scene gives them to want, and keep the play-world stakes: rank, blood, vow, crown, exile. Invent no device the scene does not use.",
+    "act_beats": "Each beat is one move the scene itself makes, in the scene's order: an argument pressed, a prophecy spoken, a letter read, a line overheard. Where the passage gives only a stage direction, make the beat something a character in this act does or says. Do not add a beat to bridge a gap; merge neighboring exchanges around the pressure they share. Beat intents are planning text, not lines.",
+    "act_dialogue": "The quoted passage is the scene this act adapts. Where it gives a character words, carry them: keep the heightened register, the argument, the imagery. Never flatten verse into naturalism; the rhetoric is the subtext. Modernize a word only where it would be unhearable on radio. Let these people answer each other directly and fully, as the scene has them do. Never explain the theme. Carry the scene's violence as the author staged it.",
+    "act_cleanup": "Leave a character's own words exactly as the scene wrote them, verse and all. Turn a stage direction into words that same character says out loud, into concrete radio business, or into a music cue. Strip a speech prefix the draft copied in front of a line. Never smooth heightened language into plain speech. Change nothing else.",
+    "announcer_open": "Open the program as a period radio host: warm, measured, a little mysterious. Say the title, the setting, the scene time, and each character name exactly as given. Set the play-world place and who stands in it, and raise the choice or omen the scene turns on. Use only the names you are given. Do not reveal how it ends. Spoken words only.",
+    "announcer_news_coda": "Speak one short bridge that turns from tonight's tale to the source behind it, then say the supplied closing claim word for word. Name the tale by its place or its subject, never by the play or the author; the claim carries that. Land your bridge on a concrete final image from the adapted scene. State no moral. Do not open with a stock phrase. Never read a URL, a file name, or license text aloud."
+  },
+  "examples": [
+    "The prophecy on the heath plays as radio: the watchers' verse carried as written, Banquo's caution answering Macbeth's ambition head on, and the thunder heard as a music cue.",
+    "A scene adaptation preserves the source's named speakers and its own dramatic turn while compressing adjacent exchanges around the pressure they share.",
+    "A locked door in Ephesus becomes pure argument and sound, its stage business spoken by the people shut out of the house."
+  ],
+  "tone_guardrails": [
+    "Put a microphone on the scene; do not re-plot it.",
+    "Scene pressure outranks novelty.",
+    "Faithfulness outranks craft rules. A craft rule that would rewrite a proven scene is wrong.",
+    "The rhetoric is the subtext. Never flatten the verse into naturalism.",
+    "Dramatize the scene's own devices - the prophecy, the letter, the disguise, the overheard line - and land the turn the scene already contains.",
+    "Shakespeare's people answer each other directly and in public. Let them; do not impose modern indirection or withheld answers.",
+    "Whatever the scene itself stages - including its violence - belongs in the adaptation; carry it as the author staged it.",
+    "Compression is allowed; replacement is not.",
+    "Cast the scene's essential speakers; fold or drop minor figures rather than crowd the ledger.",
+    "Convert a stage direction into spoken implication, concrete radio business, or a music cue."
+  ],
+  "forbidden_plot_patterns": [
+    "invented protagonist",
+    "modern stand-in for a source speaker",
+    "changed ending",
+    "unrelated framing story",
+    "invented device the scene does not use",
+    "explained theme"
+  ],
+  "forbidden_leakage_terms": [
+    "science-fiction audio drama",
+    "real science",
+    "news facts",
+    "news report",
+    "RSS",
+    "archive material",
+    "public-domain radio adaptation"
+  ],
+  "source_requirements": [
+    "Curated Folger scene text with its provenance digest and CC BY-NC license label."
+  ],
+  "ledger_validation_notes": [],
+  "schema_version": "v2.0"
+}

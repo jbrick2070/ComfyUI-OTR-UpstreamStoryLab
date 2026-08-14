@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_BANKS = ROOT / "fixtures" / "source_banks"
-PUBLIC_DOMAIN = SOURCE_BANKS / "public_domain_story"
+PUBLIC_DOMAIN = SOURCE_BANKS / "public_domain"
 SHAKESPEARE = SOURCE_BANKS / "shakespeare"
 
 MANIFEST_SCHEMA_VERSION = "otr_story_lab.source_manifest.v1"

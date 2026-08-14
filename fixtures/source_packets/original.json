@@ -1,0 +1,25 @@
+{
+  "packet_version": 1,
+  "source_bank_id": "original",
+  "source_mode": "fixture",
+  "source_kind": "original_llm",
+  "source_label": "Original concept fixture",
+  "rights_status": "unknown",
+  "source_title": "The Night Switchboard",
+  "source_author": "",
+  "source_url": "",
+  "source_hash": "fixture-original-001",
+  "source_text_ref": "",
+  "source_summary": "A concept premise only: an operator works a switchboard where one line has been ringing every night for a week, and nobody on staff will admit to installing it.",
+  "raw_text": "",
+  "fixture_casting_brief": "Original-lane casting brief: a small cast, each of them hearable in the scene and holding their own register.",
+  "fixture_script_brief": "Invent the whole drama from this premise. Nothing is being adapted, so there is no fidelity debt and nowhere to hide.",
+  "fixture_close_brief": "Origin note: tonight's drama was written for this broadcast from an original premise.",
+  "fixture_key_terms": [
+    "switchboard",
+    "night shift",
+    "an unlisted line"
+  ],
+  "fixture_fidelity_rules": [],
+  "schema_version": "v2.0"
+}

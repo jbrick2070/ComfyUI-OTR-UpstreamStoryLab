@@ -1,6 +1,6 @@
 {
   "packet_version": 1,
-  "source_bank_id": "science_news",
+  "source_bank_id": "scifi_news",
   "source_mode": "fixture",
   "source_kind": "article",
   "source_label": "Science news fixture",

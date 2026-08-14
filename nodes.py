@@ -156,10 +156,13 @@ class OTR_UpstreamStoryLabValidator:
                 story_pipeline_id=pipeline_id, act_count=3,
             )
             combos += 1
-            if bank_id != "science_news":
-                found = scan_story_leakage(registry, spec)
-                if found:
-                    leaks.append(f"{bank_id}/{model_id}: {found}")
+            # scan_story_leakage reads the ACTIVE pack's own
+            # forbidden_leakage_terms, so every lane is scanned against its own
+            # list; a lane that declares no terms simply finds nothing. No bank
+            # id is exempted by name.
+            found = scan_story_leakage(registry, spec)
+            if found:
+                leaks.append(f"{bank_id}/{model_id}: {found}")
             visual_found = scan_visual_leakage(spec)
             if visual_found:
                 leaks.append(f"{bank_id}/{model_id} visual: {visual_found}")

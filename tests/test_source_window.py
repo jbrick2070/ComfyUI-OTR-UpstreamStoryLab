@@ -182,7 +182,7 @@ def test_long_source_is_bounded_for_a_small_local_model() -> None:
     """
 
     longest = max(
-        (ROOT / "fixtures" / "source_banks" / "public_domain_story" / "sources").glob("*.txt"),
+        (ROOT / "fixtures" / "source_banks" / "public_domain" / "sources").glob("*.txt"),
         key=lambda path: path.stat().st_size,
     )
     document = build_lab_source_document(
@@ -204,7 +204,7 @@ def test_excerpt_receipt_describes_what_was_actually_sent() -> None:
     """A receipt must never claim more coverage than the model was shown."""
 
     longest = max(
-        (ROOT / "fixtures" / "source_banks" / "public_domain_story" / "sources").glob("*.txt"),
+        (ROOT / "fixtures" / "source_banks" / "public_domain" / "sources").glob("*.txt"),
         key=lambda path: path.stat().st_size,
     )
     document = build_lab_source_document(

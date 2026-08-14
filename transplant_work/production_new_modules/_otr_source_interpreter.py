@@ -9,12 +9,12 @@ Declared contract (kibitz r1/r2):
                      news_briefs_builder=None, **builder_kwargs)
         -> {"casting_brief", "script_brief", "close_brief", "key_terms"}
 
-- science_news REQUIRES news_briefs_builder (production wires
+- scifi_news / scifi_news_pro REQUIRE news_briefs_builder (production wires
   news_interpreter.build_news_briefs verbatim; this facade never re-implements
   the science brain and adds no science prose).
-- media_archive / public_domain_story are PACKET-DRIVEN in v1: they REQUIRE
-  bridge_story_input (the validated bridge artifact's story_input block).
-  Live archive fetching is a later declared binding, not v1.
+- media_archive / public_domain / shakespeare / original are PACKET-DRIVEN:
+  they REQUIRE bridge_story_input (the validated bridge artifact's
+  story_input block). Live archive fetching is a later declared binding.
 - Anything else: loud error. No lane ever borrows another lane's brain.
 """
 
@@ -22,7 +22,9 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
-PACKET_DRIVEN_BANKS = ("media_archive", "public_domain_story")
+PACKET_DRIVEN_BANKS = ("media_archive", "public_domain", "shakespeare",
+                       "original")
+SCIENCE_BANKS = ("scifi_news", "scifi_news_pro")
 LOGICAL_FIELDS = ("casting_brief", "script_brief", "close_brief", "key_terms")
 
 
@@ -68,10 +70,10 @@ def interpret_source(
     **builder_kwargs: Any,
 ) -> dict[str, Any]:
     bank = (bank_id or "").strip()
-    if bank == "science_news":
+    if bank in SCIENCE_BANKS:
         if news_briefs_builder is None:
             raise SourceInterpreterError(
-                "science_news requires news_briefs_builder "
+                f"{bank} requires news_briefs_builder "
                 "(wire news_interpreter.build_news_briefs); the facade never "
                 "re-implements the science brain"
             )

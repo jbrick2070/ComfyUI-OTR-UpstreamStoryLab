@@ -1,0 +1,53 @@
+{
+  "source_bank_id": "original",
+  "story_model_id": "original_radio_drama",
+  "story_pipeline_id": "legacy_many_pass",
+  "label": "Original Radio Drama",
+  "status": "ready_fixture",
+  "job_prompts": {
+    "story_seed": "Nothing is adapted here. The place, hour and people are given; invent what happens among them. Fix on one thing they all want or fear - an object, a debt, a name nobody says - and put it where a listener can hear it. Build the story so the claim in facts is already true of it. Keep it timeless: no dates, no decades, no modern machinery. Title the episode from something audible. Planning text only, never dialogue.",
+    "story_arc": "Give the episode a beginning, a turn and an end that these people can carry alone. Each act premise raises what the invented pressure costs them, and no act repeats the last one. Let one sound or repeated phrase return across the acts and mean something new each time. The ending lands ironic and earned, never explained. Keep it timeless throughout. Planning text only, never dialogue.",
+    "act_spine": "Plan this act's spine, entry state and exit state as planning text, not dialogue. Say what each person wants from the others right now and what it costs to ask. Begin exactly where the last act left them, and change something by the end that cannot be changed back. Keep the pressure on the invented thing at the center; this story owes nothing to any source.",
+    "act_beats": "Order the beats so the act tightens: each one moves the pressure closer to somebody who cannot dodge it. Every beat must be one people can speak - an arrival, a refusal, an admission, a bargain - never an action nobody voices. Let a beat turn on the one object or sound this episode keeps returning to. Beats are intents, not lines. Planning text only, never dialogue.",
+    "act_dialogue": "Write what these people say out loud, in the order of the beats you were given. People here rarely say the thing straight: let one answer dodge the question, and let pressure show through an object somebody is holding. Keep each voice its own - a clipped speaker stays clipped, an ornate one stays ornate. Timeless words: no modern slang, no brand names, no dates. Put any assigned fact into a character's own words.",
+    "act_cleanup": "Leave a row alone when it is already spoken words. Turn a stage direction into what that character would say about it out loud, into radio business someone can hear, or into a music cue. Drop only what can become neither. Strip a speaker label copied into a line. Nothing here comes from a source, so keep the wording the writer chose and never tidy the subtext out of a line.",
+    "announcer_open": "Speak as the host of an anthology hour opening tonight's own story. Say the title, the setting, the scene time and every character name exactly as given, letter for letter. Be warm, measured, a little mysterious: hint at what waits and give away no turn and no ending. Do not speak a character's lines or use quotation marks. Never say where the story came from. Spoken words only.",
+    "announcer_news_coda": "Close the way an anthology host closes: from outside the tale, dry and knowing, never a moral and never a summary. Land first on one concrete thing from tonight - a person, an object, a room - seen once more in colder light. Then say the closing claim word for word, exactly as given, and return the closing fact id with it. Never read a locator or a file name aloud. Spoken words only."
+  },
+  "examples": [
+    "A lock keeper and a rural postman spend one night over an unclaimed prize medal, and the knock at the door turns out to be a name neither of them will say.",
+    "A ferrywoman who never learned to swim carries a passenger's ledger across one crossing, and by the far bank the razored-out page is the only thing anybody will talk about."
+  ],
+  "tone_guardrails": [
+    "This lane invents its premise and tags it; it never chooses one from a catalog.",
+    "Timeless by authoring rule: the period feel comes from delivery, not from dates, technology, or institutions.",
+    "The conflict has to be audible - it lives in what people say to each other.",
+    "A small cast, and every one of them hearable in the scene.",
+    "Imply more than you state; people rarely say what they mean.",
+    "Every character keeps their own register; never blur two people into one voice.",
+    "The host comments on the tale from outside it - wry, distanced, never a moral or a lesson.",
+    "Nothing is being adapted: no fidelity debt, and no permission to hedge because there is no source to hide behind."
+  ],
+  "forbidden_plot_patterns": [
+    "news framing",
+    "true-story framing",
+    "premise chosen from a catalog",
+    "modern technology or dated institutions as a plot device",
+    "an ending that explains itself"
+  ],
+  "forbidden_leakage_terms": [
+    "news facts",
+    "real science",
+    "science-fiction audio drama",
+    "archive material",
+    "restoration deadline",
+    "public-domain source text",
+    "RSS",
+    "tonight's science wire"
+  ],
+  "source_requirements": [
+    "No external source; a concept premise stands in for source text."
+  ],
+  "ledger_validation_notes": [],
+  "schema_version": "v2.0"
+}

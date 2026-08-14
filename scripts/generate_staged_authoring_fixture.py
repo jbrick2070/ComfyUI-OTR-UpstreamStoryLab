@@ -31,13 +31,16 @@ from upstream_story_lab.scripted_provider import (  # noqa: E402
     ScriptedStoryProvider,
 )
 
+# The scifi_news twin of the July capture. Its science_news-era original is
+# FROZEN: v2/normative_ledger_envelope.json and the whole v1 chain bind that
+# file's digest and have no generator to re-seal them.
 PACKET_PATH = (
     ROOT
     / "fixtures"
     / "story_recovery"
     / "v2"
     / "source_packets"
-    / "science_news_folder_red_stamps_20260716.json"
+    / "scifi_news_folder_red_stamps_20260716.json"
 )
 FIXTURE_PATH = (
     ROOT / "fixtures" / "story_recovery" / "v2" / "staged_authoring_three_act.json"

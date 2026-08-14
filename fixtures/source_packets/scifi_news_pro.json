@@ -1,0 +1,25 @@
+{
+  "packet_version": 1,
+  "source_bank_id": "scifi_news_pro",
+  "source_mode": "fixture",
+  "source_kind": "article",
+  "source_label": "Science news fixture (quality lane)",
+  "rights_status": "unknown",
+  "source_title": "Deep-Field Array Records A Signal That Repeats On A Slow Clock",
+  "source_author": "",
+  "source_url": "https://example.invalid/science/slow-clock-repeater",
+  "source_hash": "fixture-scifi-news-pro-001",
+  "source_text_ref": "",
+  "source_summary": "An observatory array records a repeating signal whose period is measured in years, and the team argues over how long to keep the instrument pointed at it.",
+  "raw_text": "Fixture only. Represents the sci-fi news quality lane without network access.",
+  "fixture_casting_brief": "Sci-fi news quality-lane casting brief: the people who hold the instrument time and the people who answer for it.",
+  "fixture_script_brief": "",
+  "fixture_close_brief": "Science note: fixture close brief for the sci-fi news quality lane.",
+  "fixture_key_terms": [
+    "observatory",
+    "repeating signal",
+    "instrument time"
+  ],
+  "fixture_fidelity_rules": [],
+  "schema_version": "v2.0"
+}

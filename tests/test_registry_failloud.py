@@ -19,15 +19,44 @@ def _copy_fixtures(tmp_path: Path) -> Path:
     return root
 
 
+#: The authoritative source-bank roster, mirroring production. Every id, its
+#: operator-visible label, and whether the lane can actually be run.
+#: custom_source_bank is the add-your-own lane: visible, never runnable until
+#: the operator supplies their own schema, packet, and pack.
+BANK_ROSTER = {
+    "scifi_news": ("Sci-Fi News - Proof-Pressure Radio", True),
+    "scifi_news_pro": ("Sci-Fi News Pro (LLM-first multipass)", True),
+    "media_archive": ("Media RSS / Archive", True),
+    "public_domain": ("Public Domain", True),
+    "shakespeare": ("Shakespeare / Folger", True),
+    "original": ("Original Radio Drama", True),
+    "custom_source_bank": ("+ Add Your Own", False),
+}
+
+
 def test_registry_loads_real_fixtures(registry) -> None:
-    assert set(registry.banks) == {
-        "science_news", "media_archive", "public_domain_story", "custom_source_bank",
-    }
-    assert len(registry.packs) == 12
+    assert set(registry.banks) == set(BANK_ROSTER)
+    for bank_id, (label, runnable) in BANK_ROSTER.items():
+        bank = registry.bank(bank_id)
+        assert bank.label == label, bank_id
+        assert bank.dropdown_label == label, bank_id
+        assert bank.runnable is runnable, bank_id
+    # One pack per bank: the bake-off chose a winner per lane.
+    assert len(registry.packs) == len(BANK_ROSTER)
     assert set(registry.styles) == {
         "anime", "archival_documentary", "cartoon", "paper_origami", "sci_fi_radio",
     }
     assert set(registry.pipelines) == {"legacy_many_pass", "simple_4_prompt_experimental"}
+
+
+def test_every_runnable_bank_has_a_source_packet(registry) -> None:
+    """A runnable lane that cannot resolve its own packet is a broken lane."""
+
+    for bank_id, (_label, runnable) in BANK_ROSTER.items():
+        if not runnable:
+            continue
+        packet, path = registry.source_packet(bank_id)
+        assert packet.source_bank_id == bank_id, path
 
 
 def test_unknown_ids_raise(registry) -> None:
@@ -60,8 +89,8 @@ def test_missing_style_file_is_not_silently_served(tmp_path) -> None:
 
 def test_duplicate_pack_key_fails(tmp_path) -> None:
     root = _copy_fixtures(tmp_path)
-    src = root / "fixtures" / "story_packs" / "media_archive" / "gentle_thriller.json"
-    dup = src.with_name("gentle_thriller_copy.json")
+    src = root / "fixtures" / "story_packs" / "media_archive" / "media_restoration_adventure.json"
+    dup = src.with_name("media_restoration_adventure_copy.json")
     dup.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
     with pytest.raises(RegistryError, match="duplicate story pack key"):
         Registry(root)
@@ -69,7 +98,7 @@ def test_duplicate_pack_key_fails(tmp_path) -> None:
 
 def test_undeclared_template_variable_fails_at_load(tmp_path) -> None:
     root = _copy_fixtures(tmp_path)
-    path = root / "fixtures" / "story_packs" / "media_archive" / "gentle_thriller.json"
+    path = root / "fixtures" / "story_packs" / "media_archive" / "media_restoration_adventure.json"
     pack = json.loads(path.read_text(encoding="utf-8"))
     pack["prompt_stages"]["line_grounding"] = "Ground this in {sourec_label}."
     path.write_text(json.dumps(pack), encoding="utf-8")

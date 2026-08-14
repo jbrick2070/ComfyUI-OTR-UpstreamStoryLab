@@ -59,7 +59,7 @@ FORBIDDEN_WORD_AUTHORITY = (
     "word budget",
 )
 
-ALL_BANK_IDS = ("science_news", *BANK_PROOFS)
+ALL_BANK_IDS = ("scifi_news", *BANK_PROOFS)
 
 
 class RecordingProvider(ScriptedStoryProvider):
@@ -72,25 +72,25 @@ class RecordingProvider(ScriptedStoryProvider):
 
 
 def bank_brief(source_bank_id: str):
-    if source_bank_id == "science_news":
+    if source_bank_id == "scifi_news":
         return build_fixture_brief()
     return build_bank_brief(source_bank_id)
 
 
 def bank_fixture_path(source_bank_id: str) -> Path:
-    if source_bank_id == "science_news":
+    if source_bank_id == "scifi_news":
         return FIXTURE_PATH
     return proof_path(source_bank_id)
 
 
 def bank_packet_path(source_bank_id: str) -> Path:
-    if source_bank_id == "science_news":
+    if source_bank_id == "scifi_news":
         return PACKET_PATH
     return PACKETS_DIR / str(BANK_PROOFS[source_bank_id]["packet_file"])
 
 
 def author_proof(source_bank_id: str):
-    if source_bank_id == "science_news":
+    if source_bank_id == "scifi_news":
         return author_fixture(save_path=None)
     return author_bank_proof(source_bank_id, save_path=None)
 

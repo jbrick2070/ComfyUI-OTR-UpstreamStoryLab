@@ -146,7 +146,7 @@ class PublicDomainSourceManifest(BaseModel):
 
     schema_version: str = SCHEMA_VERSION
     source_id: str
-    source_bank_id: Literal["public_domain_story"] = "public_domain_story"
+    source_bank_id: Literal["public_domain"] = "public_domain"
     source_kind: str
     title: str
     author: str = ""
@@ -188,7 +188,7 @@ class SourceBankSpec(BaseModel):
     #: allowlist registry. Unknown binding = hard error.
     interpreter: str
     #: Fetcher binding; empty string means packet-driven only (v1 scope:
-    #: only science_news declares a fetcher).
+    #: only scifi_news declares a fetcher).
     fetcher: str = ""
     default_story_model: str
     default_visual_style: str
@@ -307,7 +307,9 @@ class StoryPromptProfile(BaseModel):
         "real_news_report", "archive_source_note", "source_attribution", "none"
     ]
     title_form_label: str
-    line_grounding_instruction: str
+    #: Empty for a job_prompts-only pack: the retired many-pass line seam has
+    #: no counterpart in the staged executor's job vocabulary.
+    line_grounding_instruction: str = ""
     outline_rules_extra: str = ""
     tone_guardrails: list[str] = Field(default_factory=list)
     forbidden_plot_patterns: list[str] = Field(default_factory=list)

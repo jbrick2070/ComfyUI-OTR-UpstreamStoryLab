@@ -55,7 +55,7 @@ def _valid_body_dict() -> dict:
         },
         "source_packet": {
             "packet_id": "packet_001",
-            "source_bank_id": "science_news",
+            "source_bank_id": "scifi_news",
             "packet_sha256": ZERO_SHA,
             "sources": [
                 {
