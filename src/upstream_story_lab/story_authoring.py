@@ -42,12 +42,18 @@ DIALOGUE_JOB_INSTRUCTIONS = (
 #: draft into speakable rows: convert a stage direction into spoken
 #: implication, radio business, or a music cue, drop what cannot become
 #: either, and strip a speaker label that was copied into a line.
+#: Written for a small local model and a frontier model alike: plain,
+#: imperative, one decision per line, and defaulting to leaving text alone.
+#: Each line also guards a real acceptance rule, so following it literally
+#: produces an admissible act rather than a rejected one.
 CLEANUP_JOB_INSTRUCTIONS = (
-    "Return rows containing only words spoken aloud, plus music cues.",
-    "Convert any stage direction, action, or narration into spoken implication, concrete radio business, or a music cue; drop it if it can become neither.",
-    "Strip any speaker label, speech prefix, or delivery note that was copied into a line, keeping the spoken words.",
-    "Preserve each row's assigned beat, speaker, and fact references; never invent a new beat, speaker, or fact.",
-    "Change wording only where a row is not speakable as written.",
+    "Your only job is to make every row speakable: each row you return holds either words a character says out loud or a music cue. Leave any row that already holds only spoken words exactly as it is, and when you are unsure about a row, leave it as it is.",
+    "Turn any stage direction, action line, narration, production cue, or delivery note into words that same row's character says out loud, or into a music cue; remove it only when it can become neither. Words you write in place of a direction must still do the job that row's beat intent describes, and must fit this act's spine and its entry and exit state.",
+    "Remove a speaker name, speech prefix, bracketed note, or parenthetical note that was copied into a line, and keep every spoken word that remains. text holds the bare spoken words, with no speaker name and no quotation marks around them. Never return a row whose text is empty: if nothing spoken is left, make the row a music cue or leave the row out.",
+    "Never delete a row that has anything in fact_ids, and never turn such a row into a music cue, because a music cue carries no facts. Never delete the last remaining spoken row of a beat; rewrite its words instead. Never make a music cue the first row of act 1 or the last row of the final act.",
+    "Keep every spoken row's beat_id, char_id, and fact_ids exactly as the draft gave them, and never invent a beat, a character, or a fact. Return the rows in the order you received them, and never move a row so that it goes back to an earlier beat.",
+    "When the act adapts a source passage, keep the character's own words exactly as the source wrote them, however blunt or violent they are; do not reword, replace, cut, or soften any of them. Strip only a speaker label the draft copied in front of the line.",
+    "Edit only to remove what is not spoken aloud. Never trim, tighten, condense, or summarize a spoken line, and never rewrite one just to make it read better; do not pad a line or add rows either.",
 )
 
 _MODEL_JOB_KINDS = frozenset(

@@ -468,13 +468,20 @@ _OUTPUT_CONTRACTS: dict[str, str] = {
         "beat order. text carries only words spoken aloud by that character."
     ),
     "act_cleanup": (
-        'Return one JSON object: {"rows": [...]} in the same shape as the '
-        "dialogue job. Return every row of the draft, in order, with anything "
-        "unspeakable made speakable: a stage direction becomes spoken "
-        "implication, radio business, or a music_inter row; a copied speaker "
-        "label or delivery note is stripped, keeping the words; anything that "
-        "can become neither is dropped. Keep each row's beat_id, char_id and "
-        "fact_ids. Leave speakable rows exactly as they are."
+        'Return one JSON object and nothing else: {"rows": [...]}. No markdown '
+        "fences, no commentary, no extra keys. Every element of rows is exactly "
+        'one of two shapes. A spoken line is {"role": "character_dialogue", '
+        '"beat_id": "...", "char_id": "...", "text": "...", "fact_ids": '
+        '["..."]}, where beat_id, char_id and fact_ids are copied unchanged '
+        "from that draft row and text holds only the bare words spoken aloud. "
+        'A music cue is {"role": "music_inter", "description": "...", '
+        '"generation_prompt": "..."}, where both fields are filled in and the '
+        "row carries no beat_id, no char_id and no fact_ids. Use no other role "
+        "and no other field; never add an action, stage_direction, narration "
+        "or delivery_note field to any row. Keep the rows in the order the "
+        "draft gave them. A row that could become neither spoken words nor a "
+        "music cue is simply left out of the array; never replace it with an "
+        "empty row, a placeholder, or an explanation."
     ),
     "announcer_open": (
         'Return one JSON object: {"text": "..."} containing only the '
