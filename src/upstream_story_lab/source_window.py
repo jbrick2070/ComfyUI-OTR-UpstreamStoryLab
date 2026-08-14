@@ -36,6 +36,13 @@ LAB_SOURCE_BLOCK_VERSION = "otr.lab_source_block.v1"
 #: refuses rather than handing a model a fragment and pretending.
 MIN_WINDOW_CHARS = 240
 
+#: Upper bound on the source text placed in one prompt.  A whole act of a long
+#: work can run to tens of thousands of tokens, which a small local model
+#: cannot hold; the vendored corpus reaches 140,000 characters.  The excerpt
+#: is anchored at the start of the act's own window and its receipt reports
+#: the real, smaller span, so nothing is silently misdescribed.
+MAX_BLOCK_CHARS = 8000
+
 _APOSTROPHES = dict.fromkeys(map(ord, "'ʼ‘‛´`"), "’")
 _TRAILING_SPACE_RE = re.compile(r"[ \t]+$", re.MULTILINE)
 _BLANK_RUN_RE = re.compile(r"\n{3,}")
@@ -312,12 +319,21 @@ def build_act_windows(
 
 
 def select_act_window(
-    document: LabSourceDocument, *, act_number: int, act_count: int
+    document: LabSourceDocument,
+    *,
+    act_number: int,
+    act_count: int,
+    max_chars: int | None = MAX_BLOCK_CHARS,
 ) -> LabSourceSpan:
     """Return the frozen window act ``act_number`` must ground on.
 
     Derived from the body and the act numbers alone, so a retry of the same
     act quotes exactly the same region as the attempt it replaces.
+
+    ``max_chars`` bounds what one prompt carries so a small local model can
+    hold it.  The excerpt keeps the start of the act's own window and reports
+    its true span, so a receipt never claims more coverage than was shown.
+    Pass ``None`` to hand over the whole window.
     """
 
     if type(act_number) is not int or not 1 <= act_number <= act_count:
@@ -328,7 +344,21 @@ def select_act_window(
             f"act {act_number} window is only {window.char_count} characters; "
             "refusing to ground an act on a fragment"
         )
-    return window
+    if max_chars is None or window.char_count <= max_chars:
+        return window
+    if max_chars < MIN_WINDOW_CHARS:
+        raise LabSourceError(
+            f"max_chars {max_chars} is below the {MIN_WINDOW_CHARS}-character "
+            "floor for an honest window"
+        )
+    end = _nudge_to_word_boundary(
+        document.canonical_body,
+        window.start + max_chars,
+        max(1, max_chars // 20),
+    )
+    return LabSourceSpan(
+        document, window.start, end, f"{window.label}_excerpt"
+    )
 
 
 def render_source_block(span: LabSourceSpan) -> str:
@@ -365,6 +395,7 @@ def render_source_block(span: LabSourceSpan) -> str:
 __all__ = [
     "LAB_NORMALIZATION_VERSION",
     "LAB_SOURCE_BLOCK_VERSION",
+    "MAX_BLOCK_CHARS",
     "MIN_WINDOW_CHARS",
     "LabSourceDocument",
     "LabSourceError",

@@ -69,6 +69,7 @@ from .ledger_verifiers import (
     build_trusted_receipt_verifiers,
 )
 from .source_window import (
+    MAX_BLOCK_CHARS,
     LabSourceDocument,
     render_source_block,
     select_act_window,
@@ -159,6 +160,11 @@ class AuthoringBrief(StrictExecutorModel):
     #: Handed to the cleanup pass as context so a model can strip a leaked
     #: label; never used as a Python rejection rule.
     source_speaker_labels: tuple[str, ...] = ()
+    #: Bound on the source text carried in one prompt, so a small local model
+    #: can hold it.  ``None`` hands over the act's whole window.
+    source_window_max_chars: int | None = Field(
+        default=MAX_BLOCK_CHARS, strict=True
+    )
     guidance: StagedAuthoringGuidance = Field(
         default_factory=StagedAuthoringGuidance
     )
@@ -753,6 +759,7 @@ class _StagedRun:
             self.source_document,
             act_number=act_number,
             act_count=self.brief.act_count,
+            max_chars=self.brief.source_window_max_chars,
         )
 
     def _common_context(self) -> dict[str, Any]:

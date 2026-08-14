@@ -15,6 +15,7 @@ if str(ROOT / "src") not in sys.path:
 
 from upstream_story_lab.source_window import (  # noqa: E402
     LAB_NORMALIZATION_VERSION,
+    MAX_BLOCK_CHARS,
     MIN_WINDOW_CHARS,
     LabSourceDocument,
     LabSourceError,
@@ -171,6 +172,55 @@ def test_contains_proves_carried_text(macbeth: LabSourceDocument) -> None:
 def test_act_count_bounds_are_strict(macbeth: LabSourceDocument, act_count) -> None:
     with pytest.raises(LabSourceError, match="strict integer"):
         build_act_windows(macbeth, act_count=act_count)
+
+
+def test_long_source_is_bounded_for_a_small_local_model() -> None:
+    """A whole act of a long work will not fit a 7B model's context.
+
+    The vendored corpus reaches 140,000 characters, which is ~35,000 tokens of
+    source in one prompt at act_count=1.  The excerpt keeps that bounded.
+    """
+
+    longest = max(
+        (ROOT / "fixtures" / "source_banks" / "public_domain_story" / "sources").glob("*.txt"),
+        key=lambda path: path.stat().st_size,
+    )
+    document = build_lab_source_document(
+        longest.stem, longest.read_text(encoding="utf-8")
+    )
+    for act_count in (1, 3, 8):
+        whole = select_act_window(
+            document, act_number=1, act_count=act_count, max_chars=None
+        )
+        excerpt = select_act_window(
+            document, act_number=1, act_count=act_count
+        )
+        assert excerpt.char_count <= MAX_BLOCK_CHARS < whole.char_count
+        assert excerpt.start == whole.start
+        assert excerpt.label.endswith("_excerpt")
+
+
+def test_excerpt_receipt_describes_what_was_actually_sent() -> None:
+    """A receipt must never claim more coverage than the model was shown."""
+
+    longest = max(
+        (ROOT / "fixtures" / "source_banks" / "public_domain_story" / "sources").glob("*.txt"),
+        key=lambda path: path.stat().st_size,
+    )
+    document = build_lab_source_document(
+        longest.stem, longest.read_text(encoding="utf-8")
+    )
+    excerpt = select_act_window(document, act_number=2, act_count=3)
+    receipt = excerpt.receipt()
+    assert receipt["end"] - receipt["start"] == excerpt.char_count
+    assert document.canonical_body[excerpt.start : excerpt.end] == excerpt.text
+    # Carriage is proven against the excerpt actually shown, not the window.
+    assert excerpt.contains(excerpt.text[50:150])
+
+
+def test_excerpt_bound_refuses_a_dishonest_floor(macbeth: LabSourceDocument) -> None:
+    with pytest.raises(LabSourceError, match="floor"):
+        select_act_window(macbeth, act_number=1, act_count=1, max_chars=10)
 
 
 def test_every_vendored_scene_windows_cleanly() -> None:
