@@ -711,6 +711,74 @@ def test_rejected_cleanup_leaves_the_act_intact() -> None:
     assert covered == act_two_beats, "every beat survived the rejected pass"
 
 
+def test_unsayable_title_is_caught_where_it_is_authored() -> None:
+    """The announcer must literally say the title.
+
+    A title with no pronounceable word can never satisfy that, so without this
+    guard the whole run dies at announcer_open - after every act has been paid
+    for, with no attempt left to spend on a defect authored at the very start.
+    """
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        payload["episode_title"] = "***"
+        return payload
+
+    provider = TamperingProvider("story_seed", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "story_seed")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("pronounceable" in reason for reason in records[0].reasons)
+
+
+@pytest.mark.parametrize(
+    ("job_id", "key"),
+    [
+        ("story_seed", "episode_title"),
+        ("story_arc", "summary"),
+        ("act_01.spine", "spine"),
+    ],
+)
+def test_composed_text_is_rejected_by_the_job_that_wrote_it(
+    job_id: str, key: str
+) -> None:
+    """Canonical story bytes must be NFC, and the seal only says so at the end.
+
+    Discovering it at final_admission loses the entire run; discovering it here
+    costs one attempt.  Rejected with feedback, never silently normalized.
+    """
+
+    import unicodedata
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        payload[key] = unicodedata.normalize("NFD", "Café Nocturne rises")
+        return payload
+
+    provider = TamperingProvider(job_id, {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, job_id)
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("NFC" in reason for reason in records[0].reasons)
+
+
+def test_coda_reports_both_faults_on_the_same_attempt() -> None:
+    """Reporting one fault at a time would cost an attempt the run lacks."""
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        payload["fact_id"] = "F01"
+        payload["text"] = "And now, the news."
+        return payload
+
+    provider = TamperingProvider("announcer_news_coda", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "announcer_news_coda")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    reasons = records[0].reasons
+    assert len(reasons) == 2
+    assert any("closing fact" in reason for reason in reasons)
+    # The expected claim is echoed, so the retry can carry it verbatim.
+    assert any("Wildfires continue to spread" in reason for reason in reasons)
+
+
 def test_committed_fixture_is_current_and_loadable() -> None:
     result = author_fixture(save_path=None)
     expected = canonical_bytes(result.envelope) + b"\n"

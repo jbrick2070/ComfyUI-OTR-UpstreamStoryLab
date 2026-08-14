@@ -412,6 +412,26 @@ def _decode_runaway_reasons(surfaces: Mapping[str, str]) -> list[str]:
     return reasons
 
 
+def _unsealable_text_reasons(surfaces: Mapping[str, str]) -> list[str]:
+    """Reject model text the seal would refuse, while a retry is still cheap.
+
+    Canonical story bytes must already be NFC, and that is only discovered at
+    ``final_admission`` - after every act has been paid for, with no retry left
+    to spend.  Catching it on the job that produced it turns a dead run into
+    one more attempt.  Rejected, never silently normalized: repairing an
+    author's text is a model's job, not the compiler's.
+    """
+
+    reasons: list[str] = []
+    for label, text in surfaces.items():
+        if unicodedata.normalize("NFC", text) != text:
+            reasons.append(
+                f"{label}: text must already be Unicode NFC; rewrite the "
+                "composed characters in their normalized form"
+            )
+    return reasons
+
+
 class _AcceptedSpeechRow(StrictExecutorModel):
     beat_id: str
     char_id: str
@@ -977,12 +997,21 @@ class _StagedRun:
             seed = SeedPayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
-        reasons = _decode_runaway_reasons(
-            {
-                "episode_title": seed.episode_title,
-                "story_seed": seed.story_seed,
-            }
-        )
+        surfaces = {
+            "episode_title": seed.episode_title,
+            "story_seed": seed.story_seed,
+        }
+        reasons = _decode_runaway_reasons(surfaces)
+        reasons += _unsealable_text_reasons(surfaces)
+        # The announcer opening must literally name the title.  A title with no
+        # pronounceable word can never satisfy that, so announcer_open would
+        # burn every attempt on a defect authored here, long after this job
+        # looked successful.
+        if not _normalized_words(seed.episode_title):
+            reasons.append(
+                "episode_title: the announcer has to say the title out loud, "
+                "so it needs at least one pronounceable word"
+            )
         if reasons:
             return tuple(reasons), ()
         self.seed = seed
@@ -1002,15 +1031,15 @@ class _StagedRun:
                     f"premises, got {len(arc.act_premises)}"
                 ),
             ), ()
-        reasons = _decode_runaway_reasons(
-            {
-                "summary": arc.summary,
-                **{
-                    f"act_premises[{index}]": premise
-                    for index, premise in enumerate(arc.act_premises)
-                },
-            }
-        )
+        surfaces = {
+            "summary": arc.summary,
+            **{
+                f"act_premises[{index}]": premise
+                for index, premise in enumerate(arc.act_premises)
+            },
+        }
+        reasons = _decode_runaway_reasons(surfaces)
+        reasons += _unsealable_text_reasons(surfaces)
         if reasons:
             return tuple(reasons), ()
         self.arc = arc
@@ -1024,13 +1053,13 @@ class _StagedRun:
             spine = ActSpinePayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
-        reasons = _decode_runaway_reasons(
-            {
-                "spine": spine.spine,
-                "entry_state": spine.entry_state,
-                "exit_state": spine.exit_state,
-            }
-        )
+        surfaces = {
+            "spine": spine.spine,
+            "entry_state": spine.entry_state,
+            "exit_state": spine.exit_state,
+        }
+        reasons = _decode_runaway_reasons(surfaces)
+        reasons += _unsealable_text_reasons(surfaces)
         if reasons:
             return tuple(reasons), ()
         self.spines[job.act_number] = spine
@@ -1045,12 +1074,12 @@ class _StagedRun:
             beats = ActBeatsPayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
-        runaway = _decode_runaway_reasons(
-            {
-                f"beat_intents[{index}]": intent
-                for index, intent in enumerate(beats.beat_intents)
-            }
-        )
+        surfaces = {
+            f"beat_intents[{index}]": intent
+            for index, intent in enumerate(beats.beat_intents)
+        }
+        runaway = _decode_runaway_reasons(surfaces)
+        runaway += _unsealable_text_reasons(surfaces)
         if runaway:
             return tuple(runaway), ()
         # b001 is the compiler-owned announcer opening beat; act beats are
@@ -1431,17 +1460,19 @@ class _StagedRun:
                 provisional_line_id="announcer_news_coda.draft",
             )
         )
+        # Both checks run every time.  Reporting only the fact_id first would
+        # cost a third attempt to discover the claim was also wrong, and there
+        # is no third attempt to spend.
         if coda.fact_id != self.closing_fact_id:
             reasons.append(
                 f"coda must cite the assigned closing fact "
                 f"{self.closing_fact_id!r}, got {coda.fact_id!r}"
             )
-        elif not _contains_normalized_phrase(
-            coda.text, self.fact_claims[self.closing_fact_id]
-        ):
+        closing_claim = self.fact_claims[self.closing_fact_id]
+        if not _contains_normalized_phrase(coda.text, closing_claim):
             reasons.append(
                 "coda must contain the complete claim of the closing fact "
-                "verbatim"
+                f"word for word; the claim is: {closing_claim}"
             )
         if reasons:
             return tuple(reasons), ()
