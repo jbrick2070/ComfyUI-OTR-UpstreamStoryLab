@@ -23,7 +23,7 @@
     },
     {
       "fact_id": "F02",
-      "claim": "Tonight's drama was adapted from Act 1, Scene 3 of Macbeth by William Shakespeare, in the Folger Shakespeare edition used under CC BY-NC 3.0.",
+      "claim": "Tonight's drama was adapted from Act 1, Scene 3 of Macbeth, written by William Shakespeare around 1606.",
       "source_refs": [
         {
           "source_id": "folger_macbeth_act1_scene3",

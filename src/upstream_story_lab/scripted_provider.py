@@ -210,8 +210,12 @@ class ScriptedStoryProvider:
 
     def _announcer_news_coda(self, context: dict[str, Any]) -> dict[str, Any]:
         return {
+            # Lane-neutral on purpose: this fake writer serves every bank, and
+            # "the news is real" is a news phrase that leaked into Shakespeare
+            # and archive codas. A real model writes a bridge specific to its
+            # own tale; this one must at least not lie about the lane.
             "text": (
-                "And beyond tonight's story, the news is real: "
+                "The record behind tonight's drama: "
                 f"{context['closing_fact_claim']}"
             ),
             "fact_id": context["closing_fact_id"],
