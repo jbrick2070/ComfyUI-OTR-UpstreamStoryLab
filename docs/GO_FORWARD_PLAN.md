@@ -1,5 +1,84 @@
 # GO FORWARD PLAN — OTR Act-Based Story Lab
 
+## HANDOFF — read this first (2026-08-14, late session)
+
+Repo `main` = `origin/main`. Suite 450 passing, every gate green. Production
+OTR untouched.
+
+**What this lab is for.** Production (SIGNAL LOST) turns a source into a
+finished radio-drama video: script → IndexTTS2 character voices + Kokoro
+announcer + Stable Audio themes → 48 kHz master → video → MP4. The downstream
+is rich and works. The **storywriting** broke, and it is the most upstream
+part, so it is being fixed here and transplanted back once it is good.
+Every sealed line becomes spoken audio — which is why a stage direction or a
+licence string in the ledger is not a cosmetic bug.
+
+**Where it stands.** The staged executor authors one sealed ledger per bank
+through a fixed schedule of `4 * act_count + 7` jobs, acts written one at a
+time. All seven banks have a sealed three-act proof with the identical program
+shape: music → announcer → character dialogue (optional music beats) →
+announcer coda stating the source truthfully → music. Shakespeare's proof
+grounds on real Folger text and exercises the v4 carriage verifier.
+
+**The honest gap.** No story worth listening to has been produced yet. Every
+proof uses a scripted writer that cycles eight fixed lines and repeats an
+exchange inside one act. The machinery is proven; the writing is not, because
+there has been no real writer.
+
+### Next, in order
+
+1. **Work the transplant plan** in
+   `docs/2026-08-14-prod-to-lab-transplant-plan.md` — nine slices from a
+   four-lane diff of production, ordered by story gain. Slice 1 (the close) is
+   prompt-only and highest value; slice 2 is a small executor change that
+   gives the coda job the story's ending, which it currently never sees.
+2. **Run a real story.** ComfyUI hosts the model; the seam is built.
+   `GenerateFnProvider` adapts production's existing
+   `generate_fn(messages, *, temperature, max_new_tokens, stop)` so the lab
+   loads no second model. Then read it:
+   `python scripts/read_story.py <ledger.json> --plan`. That is the thirty
+   seconds that tells us whether storywriting is actually fixed.
+3. **Sonnet final QA** over the finished state (task 15). The Codex lane was
+   dropped — no credits — so the kibitz campaign is honestly two-lane; the
+   scope receipt in `kibitz-runs/2026-08-14-story-lab-qa/` names the rounds
+   not run.
+4. **Seal `presented_gender`** on `CastMember` per
+   `docs/2026-08-14-cast-and-voice-decision.md`. Measured at 128 of 404 tests
+   failing on one digest cause; wants a quiet tree.
+5. **Then transplant into OTR**, not before.
+
+### Standing operator rules (do not relearn these the hard way)
+
+- The sealed ledger holds only announcer speech, character dialogue and music
+  cues. Never a stage direction, action row, narration or delivery note.
+- Before the seal a draft may be rewritten freely; after it, nothing may be.
+  The rewriting is done by **model passes, never by code**. `act_cleanup` is
+  that pass. Code detects and explains; it never edits prose.
+- **No word-count authority anywhere.** No target, budget, cap or gate.
+- **No content guardrails anywhere.** A source's own violence is carried as
+  the author wrote it.
+- **One prompt for every model tier** — small local through frontier, local or
+  remote. No tiering, no per-model variants, no conditional branches.
+- Runaway guards (decode-loop and repetition detection) are code-side and
+  stay; they are not length limits and never appear as prompt rules.
+- No bare `assert` in shipped code — `python -O` strips it.
+- Seven banks, one pack each, all peers. A bake-off chose the winner per lane.
+- Licence and non-commercial notices ride the credits roll, never the audio.
+
+### Open decisions
+
+- Retire the legacy many-pass runner (`runner.py`, `profiles.py` seam path)?
+  Doing so releases the last ~5,500 characters of dead `prompt_stages` text
+  still carried in four packs.
+- `coda_mode` values (`real_news_report`, `archive_source_note`,
+  `source_attribution`) are decoration — nothing enforces them, while the one
+  real rule is the verbatim fact claim. Make them real or retire them.
+- The `original` lane has no external source, so its "state the source
+  truthfully" close claims only that the play is original. Confirm that reads
+  right on air.
+
+
+
 Updated: 2026-08-14 (second pass). This is the current handoff. The Story Lab
 ledger is enshrined, and the provider-neutral staged authoring executor now
 exists and is proven with a deterministic fake model. Production OTR has not
