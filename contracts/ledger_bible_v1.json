@@ -32,6 +32,7 @@
     "envelope": "otr.ledger_envelope.v1",
     "story_ledger": "otr.story_ledger.v1",
     "story_seal": "otr.story_seal.v1",
+    "captured_source_packet": "otr.captured_source_packet.v1",
     "production_state": "otr.production_state.v1",
     "final_seal": "otr.final_seal.v1",
     "minimum_contract": "otr.minimum_ship.v1",
@@ -91,6 +92,27 @@
     "announcer_open": "a typed line ref must name the exact announcer_open line",
     "announcer_news_coda": "typed refs must name the exact coda line and at least one fact cited by that line",
     "music_bookends": "typed music_cue refs must name the exact music_open and music_close cues"
+  },
+  "trusted_semantic_validators": {
+    "ownership": "code_owned_immutable_registry_with_caller_injected_packet_bytes",
+    "validator_version": "1",
+    "identities": {
+      "ledger_integrity": "otr.story_validator.ledger_integrity",
+      "news_capture": "otr.story_validator.news_capture",
+      "announcer_open": "otr.story_validator.announcer_open",
+      "announcer_news_coda": "otr.story_validator.announcer_news_coda",
+      "music_bookends": "otr.story_validator.music_bookends"
+    },
+    "policies": {
+      "ledger_integrity": "fresh strict StoryBody validation with identical canonical bytes",
+      "news_capture": "exact external captured-packet raw-byte SHA-256 plus strict full projection equality and receipt-named packet/facts",
+      "announcer_open": "first spoken announcer line contains normalized literal premise, setting, scene time, and every character name",
+      "announcer_news_coda": "last spoken announcer line contains the normalized complete claim of at least one receipt-named fact cited by that line",
+      "music_bookends": "receipt names the exact compiler-owned cues at sequence index zero and the terminal index"
+    },
+    "captured_packet_schema": "otr.captured_source_packet.v1",
+    "prose_policy_change": "new validator_version_required",
+    "network_or_llm_calls": "forbidden"
   },
   "story_plane": {
     "root": "story_ledger",

@@ -51,6 +51,7 @@ Version vocabulary is exact:
 | envelope | `otr.ledger_envelope.v1` |
 | story plane | `otr.story_ledger.v1` |
 | story seal | `otr.story_seal.v1` |
+| captured source packet | `otr.captured_source_packet.v1` |
 | production plane | `otr.production_state.v1` |
 | final seal | `otr.final_seal.v1` |
 | minimum outcomes | `otr.minimum_ship.v1` |
@@ -156,6 +157,25 @@ music receipt names the exact opening and closing cues. `ledger_integrity` may
 use the bound body hash alone. All five are bound to the same `body_sha256`. A
 receipt cannot survive a changed line, fact, speaker, cue, or order.
 
+The trusted v1 registry is code-owned and contains exactly five identities at
+validator version `1`: `otr.story_validator.ledger_integrity`,
+`otr.story_validator.news_capture`, `otr.story_validator.announcer_open`,
+`otr.story_validator.announcer_news_coda`, and
+`otr.story_validator.music_bookends`. The prose policy is deliberately
+conservative and deterministic. After Unicode normalization and case folding,
+the opening must literally contain the premise, setting, opening-scene time,
+and every character name. The coda must literally contain the complete claim
+of at least one receipt-named fact cited by that line. A fuzzy or
+model-assisted policy requires a new validator version; it is never a silent
+implementation change.
+
+The news validator is constructed with caller-supplied captured-packet bytes
+keyed by their declared SHA-256. It hashes the exact raw bytes, parses the
+strict `otr.captured_source_packet.v1` artifact, and requires its complete
+source/fact projection to equal the accepted story projection. It performs no
+network lookup. The historical recovery control and challenger calibrate the
+positive and negative semantics; neither is itself promoted into v1.
+
 ## Referential integrity
 
 The v1 graph fails closed unless:
@@ -192,8 +212,10 @@ Story v1 canonicalization is deliberately small:
 The canonicalization ID is `otr.canonical-json.v1`. Structural parsing is not
 acceptance: the seal builder first revalidates a fresh serialization and runs
 every receipt through a caller-owned trusted verifier registry. Unknown or
-failed verifier identities fail closed. The real semantic verifier registry is
-still a pre-transplant deliverable; tests use an explicitly test-only registry.
+failed verifier identities fail closed. The production-independent semantic
+registry lives in `src/upstream_story_lab/ledger_verifiers.py`; low-level trust
+plumbing tests may still inject explicitly synthetic verifiers, while the
+normative v1 fixture is admitted only through the code-owned registry.
 
 The complete accepted `story_ledger` is hashed with SHA-256 into
 `story_seal.story_sha256`. The whole seal receipt, including its one-time UTC
