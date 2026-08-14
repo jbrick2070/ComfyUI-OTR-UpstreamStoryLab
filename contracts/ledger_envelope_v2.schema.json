@@ -1,0 +1,5742 @@
+{
+  "$comment": "Generated from upstream_story_lab.ledger_contract.LedgerEnvelope; do not edit by hand.",
+  "$defs": {
+    "AcceptanceEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/PhaseAcceptance"
+        },
+        "event_type": {
+          "const": "acceptance",
+          "default": "acceptance",
+          "title": "Event Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "acceptance"
+      ],
+      "title": "AcceptanceEvent",
+      "type": "object"
+    },
+    "ArtifactReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "artifact_kind": {
+          "enum": [
+            "workspace_manifest",
+            "cast_route_manifest",
+            "line_audio",
+            "music_audio",
+            "cue_manifest",
+            "speech_timeline",
+            "enhanced_audio",
+            "master_audio",
+            "procgen_video",
+            "visual_plan",
+            "image",
+            "video_clip",
+            "clip_manifest",
+            "silent_video",
+            "scopes_video",
+            "post_blend_video",
+            "captions",
+            "captioned_video",
+            "credits_manifest",
+            "credits_video",
+            "publication_audio",
+            "publication_video",
+            "obs_scene_collection",
+            "audit_report"
+          ],
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "durability": {
+          "enum": [
+            "run_local",
+            "episode_local",
+            "published"
+          ],
+          "title": "Durability",
+          "type": "string"
+        },
+        "duration_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Ms"
+        },
+        "media_type": {
+          "title": "Media Type",
+          "type": "string"
+        },
+        "relative_path": {
+          "title": "Relative Path",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "storage_root_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Storage Root Id",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "artifact_kind",
+        "media_type",
+        "storage_root_id",
+        "relative_path",
+        "content_sha256",
+        "size_bytes",
+        "durability"
+      ],
+      "title": "ArtifactReceipt",
+      "type": "object"
+    },
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Acceptance Id",
+          "type": "string"
+        },
+        "accepted_attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Accepted Attempt Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "phase_id": {
+          "enum": [
+            "workspace_identity",
+            "cast_routing",
+            "voice_render",
+            "music_render",
+            "speech_timeline",
+            "audio_enhance",
+            "master_audio",
+            "procgen_video",
+            "visual_plan",
+            "image_render",
+            "video_render",
+            "silent_composite",
+            "scopes",
+            "post_blend",
+            "captions",
+            "credits",
+            "publication",
+            "audit"
+          ],
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase_id",
+        "acceptance_id",
+        "accepted_attempt_id",
+        "artifact_id",
+        "content_sha256"
+      ],
+      "title": "ArtifactRef",
+      "type": "object"
+    },
+    "AttemptEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt": {
+          "discriminator": {
+            "mapping": {
+              "audio_enhance": "#/$defs/AudioEnhanceAttempt",
+              "audit": "#/$defs/AuditAttempt",
+              "captions": "#/$defs/CaptionsAttempt",
+              "cast_routing": "#/$defs/CastRoutingAttempt",
+              "credits": "#/$defs/CreditsAttempt",
+              "image_render": "#/$defs/ImageRenderAttempt",
+              "master_audio": "#/$defs/MasterAudioAttempt",
+              "music_render": "#/$defs/MusicRenderAttempt",
+              "post_blend": "#/$defs/PostBlendAttempt",
+              "procgen_video": "#/$defs/ProcgenVideoAttempt",
+              "publication": "#/$defs/PublicationAttempt",
+              "scopes": "#/$defs/ScopesAttempt",
+              "silent_composite": "#/$defs/SilentCompositeAttempt",
+              "speech_timeline": "#/$defs/SpeechTimelineAttempt",
+              "video_render": "#/$defs/VideoRenderAttempt",
+              "visual_plan": "#/$defs/VisualPlanAttempt",
+              "voice_render": "#/$defs/VoiceRenderAttempt",
+              "workspace_identity": "#/$defs/WorkspaceIdentityAttempt"
+            },
+            "propertyName": "phase_id"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/WorkspaceIdentityAttempt"
+            },
+            {
+              "$ref": "#/$defs/CastRoutingAttempt"
+            },
+            {
+              "$ref": "#/$defs/VoiceRenderAttempt"
+            },
+            {
+              "$ref": "#/$defs/MusicRenderAttempt"
+            },
+            {
+              "$ref": "#/$defs/SpeechTimelineAttempt"
+            },
+            {
+              "$ref": "#/$defs/AudioEnhanceAttempt"
+            },
+            {
+              "$ref": "#/$defs/MasterAudioAttempt"
+            },
+            {
+              "$ref": "#/$defs/ProcgenVideoAttempt"
+            },
+            {
+              "$ref": "#/$defs/VisualPlanAttempt"
+            },
+            {
+              "$ref": "#/$defs/ImageRenderAttempt"
+            },
+            {
+              "$ref": "#/$defs/VideoRenderAttempt"
+            },
+            {
+              "$ref": "#/$defs/SilentCompositeAttempt"
+            },
+            {
+              "$ref": "#/$defs/ScopesAttempt"
+            },
+            {
+              "$ref": "#/$defs/PostBlendAttempt"
+            },
+            {
+              "$ref": "#/$defs/CaptionsAttempt"
+            },
+            {
+              "$ref": "#/$defs/CreditsAttempt"
+            },
+            {
+              "$ref": "#/$defs/PublicationAttempt"
+            },
+            {
+              "$ref": "#/$defs/AuditAttempt"
+            }
+          ],
+          "title": "Attempt"
+        },
+        "event_type": {
+          "const": "attempt",
+          "default": "attempt",
+          "title": "Event Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt"
+      ],
+      "title": "AttemptEvent",
+      "type": "object"
+    },
+    "AudioEnhanceAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "audio_enhance",
+          "default": "audio_enhance",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "audio_enhance",
+          "default": "audio_enhance",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_AudioEnhanceReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_AudioEnhanceReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "AudioEnhanceAttempt",
+      "type": "object"
+    },
+    "AudioEnhanceReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "channels": {
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "enhanced_audio_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Enhanced Audio Artifact Id",
+          "type": "string"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "audio_enhance",
+          "default": "audio_enhance",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "processor_chain": {
+          "items": {
+            "$ref": "#/$defs/ProcessorStep"
+          },
+          "minItems": 1,
+          "title": "Processor Chain",
+          "type": "array"
+        },
+        "sample_rate_hz": {
+          "exclusiveMinimum": 0,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "processor_chain",
+        "enhanced_audio_artifact_id",
+        "duration_ms",
+        "sample_rate_hz",
+        "channels"
+      ],
+      "title": "AudioEnhanceReceipt",
+      "type": "object"
+    },
+    "AuditAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "full_run_audit",
+          "default": "full_run_audit",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "audit",
+          "default": "audit",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_AuditReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_AuditReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "AuditAttempt",
+      "type": "object"
+    },
+    "AuditCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Check Id",
+          "type": "string"
+        },
+        "evidence_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Artifact Ids",
+          "type": "array"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "status",
+        "message"
+      ],
+      "title": "AuditCheck",
+      "type": "object"
+    },
+    "AuditReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/AuditCheck"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "audit",
+          "default": "audit",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "policy_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "pre_audit_production_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Pre Audit Production Sha256",
+          "type": "string"
+        },
+        "publication_acceptance_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Publication Acceptance Id",
+          "type": "string"
+        },
+        "report_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Report Artifact Id",
+          "type": "string"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        },
+        "verdict": {
+          "const": "pass",
+          "default": "pass",
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "policy_id",
+        "policy_version",
+        "story_sha256",
+        "pre_audit_production_sha256",
+        "publication_acceptance_id",
+        "checks",
+        "report_artifact_id"
+      ],
+      "title": "AuditReceipt",
+      "type": "object"
+    },
+    "Beat": {
+      "additionalProperties": false,
+      "properties": {
+        "act_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Act Id"
+        },
+        "beat_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Beat Id",
+          "type": "string"
+        },
+        "intent": {
+          "title": "Intent",
+          "type": "string"
+        },
+        "line_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Line Ids",
+          "type": "array"
+        },
+        "scene_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "shot_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Shot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "beat_id",
+        "scene_id",
+        "shot_id",
+        "intent",
+        "line_ids"
+      ],
+      "title": "Beat",
+      "type": "object"
+    },
+    "CaptionsAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "caption_burn",
+          "default": "caption_burn",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "captions",
+          "default": "captions",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_CaptionsReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_CaptionsReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "CaptionsAttempt",
+      "type": "object"
+    },
+    "CaptionsReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "captioned_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Captioned Video Artifact Id",
+          "type": "string"
+        },
+        "captions_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Captions Artifact Id",
+          "type": "string"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "input_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Input Video Artifact Id",
+          "type": "string"
+        },
+        "line_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "minItems": 1,
+          "title": "Line Refs",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "captions",
+          "default": "captions",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "policy_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "timeline_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Timeline Artifact Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "input_video_artifact_id",
+        "timeline_artifact_id",
+        "captions_artifact_id",
+        "captioned_video_artifact_id",
+        "policy_id",
+        "policy_version",
+        "line_refs"
+      ],
+      "title": "CaptionsReceipt",
+      "type": "object"
+    },
+    "CastMember": {
+      "additionalProperties": false,
+      "properties": {
+        "cast_role": {
+          "enum": [
+            "announcer",
+            "character"
+          ],
+          "title": "Cast Role",
+          "type": "string"
+        },
+        "char_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Char Id",
+          "type": "string"
+        },
+        "character_description": {
+          "default": "",
+          "title": "Character Description",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "char_id",
+        "name",
+        "cast_role"
+      ],
+      "title": "CastMember",
+      "type": "object"
+    },
+    "CastRoute": {
+      "additionalProperties": false,
+      "properties": {
+        "cast_ref": {
+          "$ref": "#/$defs/StoryRef"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "fallback_route_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback Route Id"
+        },
+        "presentation": {
+          "title": "Presentation",
+          "type": "string"
+        },
+        "preset_id": {
+          "title": "Preset Id",
+          "type": "string"
+        },
+        "provider_voice_id": {
+          "title": "Provider Voice Id",
+          "type": "string"
+        },
+        "route_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Route Id",
+          "type": "string"
+        },
+        "voice_ref_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Voice Ref Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cast_ref",
+        "engine_id",
+        "voice_ref_id",
+        "provider_voice_id",
+        "preset_id",
+        "presentation",
+        "route_id"
+      ],
+      "title": "CastRoute",
+      "type": "object"
+    },
+    "CastRoutingAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "cast_lock",
+          "default": "cast_lock",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "cast_routing",
+          "default": "cast_routing",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_CastRoutingReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_CastRoutingReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "CastRoutingAttempt",
+      "type": "object"
+    },
+    "CastRoutingReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "cast_routing",
+          "default": "cast_routing",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "policy_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "routes": {
+          "items": {
+            "$ref": "#/$defs/CastRoute"
+          },
+          "minItems": 1,
+          "title": "Routes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "policy_id",
+        "policy_version",
+        "routes"
+      ],
+      "title": "CastRoutingReceipt",
+      "type": "object"
+    },
+    "CreditsAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "credits_roll",
+          "default": "credits_roll",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "credits",
+          "default": "credits",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_CreditsReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_CreditsReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "CreditsAttempt",
+      "type": "object"
+    },
+    "CreditsReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "credited_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "minItems": 1,
+          "title": "Credited Refs",
+          "type": "array"
+        },
+        "credits_manifest_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Credits Manifest Artifact Id",
+          "type": "string"
+        },
+        "credits_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Credits Video Artifact Id",
+          "type": "string"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "input_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Input Video Artifact Id",
+          "type": "string"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "credits",
+          "default": "credits",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "policy_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "input_video_artifact_id",
+        "credits_manifest_artifact_id",
+        "credits_video_artifact_id",
+        "policy_id",
+        "policy_version",
+        "credited_refs"
+      ],
+      "title": "CreditsReceipt",
+      "type": "object"
+    },
+    "CueAudioItem": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "channels": {
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "cue_ref": {
+          "$ref": "#/$defs/StoryRef"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "exclusiveMinimum": 0,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cue_ref",
+        "artifact_id",
+        "engine_id",
+        "model_id",
+        "duration_ms",
+        "sample_rate_hz",
+        "channels"
+      ],
+      "title": "CueAudioItem",
+      "type": "object"
+    },
+    "DependencyRef": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Acceptance Id",
+          "type": "string"
+        },
+        "acceptance_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Acceptance Sha256",
+          "type": "string"
+        },
+        "accepted_attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Accepted Attempt Id",
+          "type": "string"
+        },
+        "phase_id": {
+          "enum": [
+            "workspace_identity",
+            "cast_routing",
+            "voice_render",
+            "music_render",
+            "speech_timeline",
+            "audio_enhance",
+            "master_audio",
+            "procgen_video",
+            "visual_plan",
+            "image_render",
+            "video_render",
+            "silent_composite",
+            "scopes",
+            "post_blend",
+            "captions",
+            "credits",
+            "publication",
+            "audit"
+          ],
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase_id",
+        "acceptance_id",
+        "accepted_attempt_id",
+        "acceptance_sha256"
+      ],
+      "title": "DependencyRef",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "source_packet",
+            "fact",
+            "line",
+            "music_cue"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ref_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Ref Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "ref_id"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FactSourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_locator": {
+          "title": "Evidence Locator",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Source Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "evidence_locator"
+      ],
+      "title": "FactSourceRef",
+      "type": "object"
+    },
+    "FailedResult": {
+      "additionalProperties": false,
+      "properties": {
+        "failure": {
+          "$ref": "#/$defs/FailureReceipt"
+        },
+        "status": {
+          "const": "failed",
+          "default": "failed",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failure"
+      ],
+      "title": "FailedResult",
+      "type": "object"
+    },
+    "FailureReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Code",
+          "type": "string"
+        },
+        "diagnostic_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Diagnostic Artifact Ids",
+          "type": "array"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "retriable": {
+          "title": "Retriable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "retriable"
+      ],
+      "title": "FailureReceipt",
+      "type": "object"
+    },
+    "ImageRenderAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "image_dispatcher",
+          "default": "image_dispatcher",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "image_render",
+          "default": "image_render",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_ImageRenderReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_ImageRenderReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "ImageRenderAttempt",
+      "type": "object"
+    },
+    "ImageRenderItem": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "prompt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Prompt Sha256",
+          "type": "string"
+        },
+        "provenance": {
+          "title": "Provenance",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "seed": {
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "minItems": 1,
+          "title": "Story Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "request_id",
+        "artifact_id",
+        "story_refs",
+        "engine_id",
+        "model_id",
+        "prompt_sha256",
+        "seed",
+        "provenance"
+      ],
+      "title": "ImageRenderItem",
+      "type": "object"
+    },
+    "ImageRenderReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "images": {
+          "items": {
+            "$ref": "#/$defs/ImageRenderItem"
+          },
+          "minItems": 1,
+          "title": "Images",
+          "type": "array"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "image_render",
+          "default": "image_render",
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "images"
+      ],
+      "title": "ImageRenderReceipt",
+      "type": "object"
+    },
+    "LineAudioItem": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "cache_hit": {
+          "title": "Cache Hit",
+          "type": "boolean"
+        },
+        "cache_key": {
+          "title": "Cache Key",
+          "type": "string"
+        },
+        "channels": {
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "line_ref": {
+          "$ref": "#/$defs/StoryRef"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "preset_id": {
+          "title": "Preset Id",
+          "type": "string"
+        },
+        "provider_id": {
+          "title": "Provider Id",
+          "type": "string"
+        },
+        "route_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Route Id",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "exclusiveMinimum": 0,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "voice_ref_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Voice Ref Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_ref",
+        "artifact_id",
+        "engine_id",
+        "model_id",
+        "voice_ref_id",
+        "preset_id",
+        "provider_id",
+        "route_id",
+        "cache_key",
+        "cache_hit",
+        "duration_ms",
+        "sample_rate_hz",
+        "channels"
+      ],
+      "title": "LineAudioItem",
+      "type": "object"
+    },
+    "MasterAudioAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "episode_assembler",
+          "default": "episode_assembler",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "master_audio",
+          "default": "master_audio",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_MasterAudioReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_MasterAudioReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "MasterAudioAttempt",
+      "type": "object"
+    },
+    "MasterAudioReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "channels": {
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "master_audio_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Master Audio Artifact Id",
+          "type": "string"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "master_audio",
+          "default": "master_audio",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "exclusiveMinimum": 0,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "timing": {
+          "items": {
+            "$ref": "#/$defs/MasterTimingItem"
+          },
+          "minItems": 1,
+          "title": "Timing",
+          "type": "array"
+        },
+        "total_duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Total Duration Ms",
+          "type": "integer"
+        },
+        "transitions": {
+          "items": {
+            "$ref": "#/$defs/TransitionReceipt"
+          },
+          "title": "Transitions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "master_audio_artifact_id",
+        "timing",
+        "total_duration_ms",
+        "sample_rate_hz",
+        "channels"
+      ],
+      "title": "MasterAudioReceipt",
+      "type": "object"
+    },
+    "MasterTimingItem": {
+      "additionalProperties": false,
+      "properties": {
+        "content_ref": {
+          "$ref": "#/$defs/StoryRef"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "start_ms": {
+          "minimum": 0,
+          "title": "Start Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "content_ref",
+        "start_ms",
+        "duration_ms"
+      ],
+      "title": "MasterTimingItem",
+      "type": "object"
+    },
+    "MinimumOutcomes": {
+      "additionalProperties": false,
+      "properties": {
+        "announcer_news_coda": {
+          "$ref": "#/$defs/OutcomeReceipt"
+        },
+        "announcer_open": {
+          "$ref": "#/$defs/OutcomeReceipt"
+        },
+        "ledger_integrity": {
+          "$ref": "#/$defs/OutcomeReceipt"
+        },
+        "music_bookends": {
+          "$ref": "#/$defs/OutcomeReceipt"
+        },
+        "news_capture": {
+          "$ref": "#/$defs/OutcomeReceipt"
+        }
+      },
+      "required": [
+        "ledger_integrity",
+        "news_capture",
+        "announcer_open",
+        "announcer_news_coda",
+        "music_bookends"
+      ],
+      "title": "MinimumOutcomes",
+      "type": "object"
+    },
+    "MusicCue": {
+      "additionalProperties": false,
+      "properties": {
+        "cue_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Cue Id",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "generation_prompt": {
+          "title": "Generation Prompt",
+          "type": "string"
+        },
+        "request_authority": {
+          "enum": [
+            "compiler_bookend",
+            "script"
+          ],
+          "title": "Request Authority",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cue_id",
+        "description",
+        "generation_prompt",
+        "request_authority"
+      ],
+      "title": "MusicCue",
+      "type": "object"
+    },
+    "MusicRenderAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "music_renderer",
+          "default": "music_renderer",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "music_render",
+          "default": "music_render",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_MusicRenderReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_MusicRenderReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "MusicRenderAttempt",
+      "type": "object"
+    },
+    "MusicRenderReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "cue_manifest_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Cue Manifest Artifact Id",
+          "type": "string"
+        },
+        "cues": {
+          "items": {
+            "$ref": "#/$defs/CueAudioItem"
+          },
+          "minItems": 1,
+          "title": "Cues",
+          "type": "array"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "music_render",
+          "default": "music_render",
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "cues",
+        "cue_manifest_artifact_id"
+      ],
+      "title": "MusicRenderReceipt",
+      "type": "object"
+    },
+    "OutcomeReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "status": {
+          "const": "pass",
+          "default": "pass",
+          "title": "Status",
+          "type": "string"
+        },
+        "validator_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Validator Id",
+          "type": "string"
+        },
+        "validator_version": {
+          "title": "Validator Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "validator_id",
+        "validator_version",
+        "evidence_refs"
+      ],
+      "title": "OutcomeReceipt",
+      "type": "object"
+    },
+    "PhaseAcceptance": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Acceptance Id",
+          "type": "string"
+        },
+        "accepted_at": {
+          "format": "date-time",
+          "title": "Accepted At",
+          "type": "string"
+        },
+        "accepted_attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Accepted Attempt Id",
+          "type": "string"
+        },
+        "accepted_attempt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Accepted Attempt Sha256",
+          "type": "string"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "owner": {
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "enum": [
+            "workspace_identity",
+            "cast_routing",
+            "voice_render",
+            "music_render",
+            "speech_timeline",
+            "audio_enhance",
+            "master_audio",
+            "procgen_video",
+            "visual_plan",
+            "image_render",
+            "video_render",
+            "silent_composite",
+            "scopes",
+            "post_blend",
+            "captions",
+            "credits",
+            "publication",
+            "audit"
+          ],
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        },
+        "supersedes_acceptance_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Acceptance Id"
+        },
+        "validator_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Validator Id",
+          "type": "string"
+        },
+        "validator_version": {
+          "title": "Validator Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "acceptance_id",
+        "phase_id",
+        "owner",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "accepted_attempt_id",
+        "accepted_attempt_sha256",
+        "validator_id",
+        "validator_version",
+        "accepted_at"
+      ],
+      "title": "PhaseAcceptance",
+      "type": "object"
+    },
+    "PostBlendAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "post_upscale_procgen_blend",
+          "default": "post_upscale_procgen_blend",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "post_blend",
+          "default": "post_blend",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_PostBlendReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_PostBlendReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "PostBlendAttempt",
+      "type": "object"
+    },
+    "PostBlendReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "base_artifact_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Artifact Id"
+        },
+        "final_silent_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Final Silent Video Artifact Id",
+          "type": "string"
+        },
+        "foreground_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Foreground Artifact Id",
+          "type": "string"
+        },
+        "height_px": {
+          "exclusiveMinimum": 0,
+          "title": "Height Px",
+          "type": "integer"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "post_blend",
+          "default": "post_blend",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "processor_chain": {
+          "items": {
+            "$ref": "#/$defs/ProcessorStep"
+          },
+          "minItems": 1,
+          "title": "Processor Chain",
+          "type": "array"
+        },
+        "scopes_artifact_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scopes Artifact Id"
+        },
+        "width_px": {
+          "exclusiveMinimum": 0,
+          "title": "Width Px",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "foreground_artifact_id",
+        "final_silent_video_artifact_id",
+        "processor_chain",
+        "width_px",
+        "height_px"
+      ],
+      "title": "PostBlendReceipt",
+      "type": "object"
+    },
+    "ProcessorStep": {
+      "additionalProperties": false,
+      "properties": {
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "processor_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Processor Id",
+          "type": "string"
+        },
+        "processor_version": {
+          "title": "Processor Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "processor_id",
+        "processor_version",
+        "config_sha256"
+      ],
+      "title": "ProcessorStep",
+      "type": "object"
+    },
+    "ProcgenVideoAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "signal_lost_video",
+          "default": "signal_lost_video",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "procgen_video",
+          "default": "procgen_video",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_ProcgenVideoReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_ProcgenVideoReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "ProcgenVideoAttempt",
+      "type": "object"
+    },
+    "ProcgenVideoReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "base_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Base Video Artifact Id",
+          "type": "string"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "fps": {
+          "$ref": "#/$defs/RationalFps"
+        },
+        "frame_count": {
+          "exclusiveMinimum": 0,
+          "title": "Frame Count",
+          "type": "integer"
+        },
+        "height_px": {
+          "exclusiveMinimum": 0,
+          "title": "Height Px",
+          "type": "integer"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "procgen_video",
+          "default": "procgen_video",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "width_px": {
+          "exclusiveMinimum": 0,
+          "title": "Width Px",
+          "type": "integer"
+        },
+        "workspace_rename_requested": {
+          "default": false,
+          "title": "Workspace Rename Requested",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "base_video_artifact_id",
+        "engine_id",
+        "width_px",
+        "height_px",
+        "fps",
+        "frame_count",
+        "duration_ms"
+      ],
+      "title": "ProcgenVideoReceipt",
+      "type": "object"
+    },
+    "ProducerIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "component_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Component Id",
+          "type": "string"
+        },
+        "component_version": {
+          "title": "Component Version",
+          "type": "string"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "source_revision": {
+          "title": "Source Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component_id",
+        "component_version",
+        "source_revision",
+        "config_sha256"
+      ],
+      "title": "ProducerIdentity",
+      "type": "object"
+    },
+    "ProductionState": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "journal": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "acceptance": "#/$defs/AcceptanceEvent",
+                "attempt": "#/$defs/AttemptEvent"
+              },
+              "propertyName": "event_type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AttemptEvent"
+              },
+              {
+                "$ref": "#/$defs/AcceptanceEvent"
+              }
+            ]
+          },
+          "title": "Journal",
+          "type": "array"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "run_plan": {
+          "items": {
+            "$ref": "#/$defs/RunPhase"
+          },
+          "maxItems": 18,
+          "minItems": 18,
+          "title": "Run Plan",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "otr.production_state.v2",
+          "default": "otr.production_state.v2",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "created_at",
+        "run_plan"
+      ],
+      "title": "ProductionState",
+      "type": "object"
+    },
+    "PublicationAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "master_audio_mux",
+          "default": "master_audio_mux",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "publication",
+          "default": "publication",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_PublicationReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_PublicationReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "PublicationAttempt",
+      "type": "object"
+    },
+    "PublicationDestination": {
+      "additionalProperties": false,
+      "properties": {
+        "destination_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Destination Id",
+          "type": "string"
+        },
+        "locator": {
+          "title": "Locator",
+          "type": "string"
+        },
+        "published_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Published Artifact Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "destination_id",
+        "locator",
+        "published_artifact_ids"
+      ],
+      "title": "PublicationDestination",
+      "type": "object"
+    },
+    "PublicationReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "destinations": {
+          "items": {
+            "$ref": "#/$defs/PublicationDestination"
+          },
+          "minItems": 1,
+          "title": "Destinations",
+          "type": "array"
+        },
+        "final_audio_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Final Audio Artifact Id",
+          "type": "string"
+        },
+        "final_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Final Video Artifact Id",
+          "type": "string"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "master_audio_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Master Audio Artifact Id",
+          "type": "string"
+        },
+        "obs_scene_collection_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Obs Scene Collection Artifact Id",
+          "type": "string"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "publication",
+          "default": "publication",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "terminal_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Terminal Video Artifact Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "master_audio_artifact_id",
+        "terminal_video_artifact_id",
+        "final_audio_artifact_id",
+        "final_video_artifact_id",
+        "obs_scene_collection_artifact_id",
+        "destinations"
+      ],
+      "title": "PublicationReceipt",
+      "type": "object"
+    },
+    "RationalFps": {
+      "additionalProperties": false,
+      "properties": {
+        "denominator": {
+          "exclusiveMinimum": 0,
+          "title": "Denominator",
+          "type": "integer"
+        },
+        "numerator": {
+          "exclusiveMinimum": 0,
+          "title": "Numerator",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator"
+      ],
+      "title": "RationalFps",
+      "type": "object"
+    },
+    "RunPhase": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "items": {
+            "enum": [
+              "workspace_identity",
+              "cast_routing",
+              "voice_render",
+              "music_render",
+              "speech_timeline",
+              "audio_enhance",
+              "master_audio",
+              "procgen_video",
+              "visual_plan",
+              "image_render",
+              "video_render",
+              "silent_composite",
+              "scopes",
+              "post_blend",
+              "captions",
+              "credits",
+              "publication",
+              "audit"
+            ],
+            "type": "string"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "disposition": {
+          "enum": [
+            "required",
+            "optional",
+            "omitted"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "omission_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Omission Reason"
+        },
+        "owner": {
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "enum": [
+            "workspace_identity",
+            "cast_routing",
+            "voice_render",
+            "music_render",
+            "speech_timeline",
+            "audio_enhance",
+            "master_audio",
+            "procgen_video",
+            "visual_plan",
+            "image_render",
+            "video_render",
+            "silent_composite",
+            "scopes",
+            "post_blend",
+            "captions",
+            "credits",
+            "publication",
+            "audit"
+          ],
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase_id",
+        "owner",
+        "disposition"
+      ],
+      "title": "RunPhase",
+      "type": "object"
+    },
+    "Scene": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "scene_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "setting": {
+          "title": "Setting",
+          "type": "string"
+        },
+        "shot_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Shot Ids",
+          "type": "array"
+        },
+        "time": {
+          "title": "Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scene_id",
+        "description",
+        "setting",
+        "time",
+        "shot_ids"
+      ],
+      "title": "Scene",
+      "type": "object"
+    },
+    "ScopesAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "scene_aware_scopes",
+          "default": "scene_aware_scopes",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "scopes",
+          "default": "scopes",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_ScopesReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_ScopesReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "ScopesAttempt",
+      "type": "object"
+    },
+    "ScopesReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "audio_artifact_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Artifact Id"
+        },
+        "clip_manifest_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Clip Manifest Artifact Id",
+          "type": "string"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "scopes",
+          "default": "scopes",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "processor": {
+          "$ref": "#/$defs/ProcessorStep"
+        },
+        "scopes_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Scopes Artifact Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "clip_manifest_artifact_id",
+        "scopes_artifact_id",
+        "processor"
+      ],
+      "title": "ScopesReceipt",
+      "type": "object"
+    },
+    "SequenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "ref_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Ref Id",
+          "type": "string"
+        },
+        "ref_kind": {
+          "enum": [
+            "line",
+            "music_cue"
+          ],
+          "title": "Ref Kind",
+          "type": "string"
+        },
+        "sequence_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Sequence Id",
+          "type": "string"
+        },
+        "sequence_role": {
+          "enum": [
+            "music_open",
+            "announcer_open",
+            "character_dialogue",
+            "music_inter",
+            "announcer_news_coda",
+            "music_close"
+          ],
+          "title": "Sequence Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sequence_id",
+        "sequence_role",
+        "ref_kind",
+        "ref_id"
+      ],
+      "title": "SequenceItem",
+      "type": "object"
+    },
+    "Shot": {
+      "additionalProperties": false,
+      "properties": {
+        "beat_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Beat Ids",
+          "type": "array"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "scene_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "shot_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Shot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "shot_id",
+        "scene_id",
+        "description",
+        "beat_ids"
+      ],
+      "title": "Shot",
+      "type": "object"
+    },
+    "SilentCompositeAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "silent_composite",
+          "default": "silent_composite",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "silent_composite",
+          "default": "silent_composite",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_SilentCompositeReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_SilentCompositeReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "SilentCompositeAttempt",
+      "type": "object"
+    },
+    "SilentCompositeReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "base_video_artifact_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Video Artifact Id"
+        },
+        "clip_manifest_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Clip Manifest Artifact Id",
+          "type": "string"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "fps": {
+          "$ref": "#/$defs/RationalFps"
+        },
+        "height_px": {
+          "exclusiveMinimum": 0,
+          "title": "Height Px",
+          "type": "integer"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "silent_composite",
+          "default": "silent_composite",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "silent_video_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Silent Video Artifact Id",
+          "type": "string"
+        },
+        "width_px": {
+          "exclusiveMinimum": 0,
+          "title": "Width Px",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "clip_manifest_artifact_id",
+        "silent_video_artifact_id",
+        "engine_id",
+        "width_px",
+        "height_px",
+        "fps",
+        "duration_ms"
+      ],
+      "title": "SilentCompositeReceipt",
+      "type": "object"
+    },
+    "SourceFact": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "fact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/FactSourceRef"
+          },
+          "minItems": 1,
+          "title": "Source Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "fact_id",
+        "claim",
+        "source_refs"
+      ],
+      "title": "SourceFact",
+      "type": "object"
+    },
+    "SourcePacket": {
+      "additionalProperties": false,
+      "properties": {
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/SourceFact"
+          },
+          "minItems": 1,
+          "title": "Facts",
+          "type": "array"
+        },
+        "packet_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Packet Id",
+          "type": "string"
+        },
+        "packet_sha256": {
+          "description": "SHA-256 of the captured upstream packet artifact before this accepted-story projection; verified by the news-capture validator",
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Packet Sha256",
+          "type": "string"
+        },
+        "source_bank_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Source Bank Id",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRecord"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "packet_id",
+        "source_bank_id",
+        "packet_sha256",
+        "sources",
+        "facts"
+      ],
+      "title": "SourcePacket",
+      "type": "object"
+    },
+    "SourceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "locator": {
+          "title": "Locator",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "title",
+        "locator",
+        "content_sha256"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    },
+    "SpeechTimelineAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "scene_sequencer",
+          "default": "scene_sequencer",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "speech_timeline",
+          "default": "speech_timeline",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_SpeechTimelineReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_SpeechTimelineReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "SpeechTimelineAttempt",
+      "type": "object"
+    },
+    "SpeechTimelineReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/TimelineItem"
+          },
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "speech_timeline",
+          "default": "speech_timeline",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "timeline_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Timeline Artifact Id",
+          "type": "string"
+        },
+        "total_duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Total Duration Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "items",
+        "timeline_artifact_id",
+        "total_duration_ms"
+      ],
+      "title": "SpeechTimelineReceipt",
+      "type": "object"
+    },
+    "SpokenLine": {
+      "additionalProperties": false,
+      "properties": {
+        "beat_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Beat Id",
+          "type": "string"
+        },
+        "char_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Char Id",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "line_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Line Id",
+          "type": "string"
+        },
+        "scene_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "shot_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Shot Id",
+          "type": "string"
+        },
+        "speaker": {
+          "title": "Speaker",
+          "type": "string"
+        },
+        "speaker_role": {
+          "enum": [
+            "announcer",
+            "character"
+          ],
+          "title": "Speaker Role",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "scene_id",
+        "shot_id",
+        "beat_id",
+        "char_id",
+        "speaker",
+        "speaker_role",
+        "text",
+        "fact_ids"
+      ],
+      "title": "SpokenLine",
+      "type": "object"
+    },
+    "StoryAct": {
+      "additionalProperties": false,
+      "properties": {
+        "act_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Act Id",
+          "type": "string"
+        },
+        "act_number": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Act Number",
+          "type": "integer"
+        },
+        "beat_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Beat Ids",
+          "type": "array"
+        },
+        "entry_state": {
+          "title": "Entry State",
+          "type": "string"
+        },
+        "exit_state": {
+          "title": "Exit State",
+          "type": "string"
+        },
+        "speaking_char_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Speaking Char Ids",
+          "type": "array"
+        },
+        "spine": {
+          "title": "Spine",
+          "type": "string"
+        }
+      },
+      "required": [
+        "act_id",
+        "act_number",
+        "spine",
+        "entry_state",
+        "exit_state",
+        "speaking_char_ids",
+        "beat_ids"
+      ],
+      "title": "StoryAct",
+      "type": "object"
+    },
+    "StoryArc": {
+      "additionalProperties": false,
+      "properties": {
+        "act_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Act Ids",
+          "type": "array"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "summary",
+        "act_ids"
+      ],
+      "title": "StoryArc",
+      "type": "object"
+    },
+    "StoryBody": {
+      "additionalProperties": false,
+      "properties": {
+        "acts": {
+          "items": {
+            "$ref": "#/$defs/StoryAct"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Acts",
+          "type": "array"
+        },
+        "beats": {
+          "items": {
+            "$ref": "#/$defs/Beat"
+          },
+          "minItems": 1,
+          "title": "Beats",
+          "type": "array"
+        },
+        "cast": {
+          "items": {
+            "$ref": "#/$defs/CastMember"
+          },
+          "minItems": 2,
+          "title": "Cast",
+          "type": "array"
+        },
+        "context": {
+          "$ref": "#/$defs/StoryContext"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/SpokenLine"
+          },
+          "minItems": 3,
+          "title": "Lines",
+          "type": "array"
+        },
+        "music_cues": {
+          "items": {
+            "$ref": "#/$defs/MusicCue"
+          },
+          "minItems": 2,
+          "title": "Music Cues",
+          "type": "array"
+        },
+        "scenes": {
+          "items": {
+            "$ref": "#/$defs/Scene"
+          },
+          "minItems": 1,
+          "title": "Scenes",
+          "type": "array"
+        },
+        "sequence": {
+          "items": {
+            "$ref": "#/$defs/SequenceItem"
+          },
+          "minItems": 5,
+          "title": "Sequence",
+          "type": "array"
+        },
+        "shots": {
+          "items": {
+            "$ref": "#/$defs/Shot"
+          },
+          "minItems": 1,
+          "title": "Shots",
+          "type": "array"
+        },
+        "source_packet": {
+          "$ref": "#/$defs/SourcePacket"
+        },
+        "story_arc": {
+          "$ref": "#/$defs/StoryArc"
+        }
+      },
+      "required": [
+        "context",
+        "source_packet",
+        "cast",
+        "story_arc",
+        "acts",
+        "scenes",
+        "shots",
+        "beats",
+        "lines",
+        "music_cues",
+        "sequence"
+      ],
+      "title": "StoryBody",
+      "type": "object"
+    },
+    "StoryContext": {
+      "additionalProperties": false,
+      "properties": {
+        "act_count": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Act Count",
+          "type": "integer"
+        },
+        "episode_title": {
+          "title": "Episode Title",
+          "type": "string"
+        },
+        "setting": {
+          "title": "Setting",
+          "type": "string"
+        },
+        "story_seed": {
+          "title": "Story Seed",
+          "type": "string"
+        }
+      },
+      "required": [
+        "episode_title",
+        "story_seed",
+        "setting",
+        "act_count"
+      ],
+      "title": "StoryContext",
+      "type": "object"
+    },
+    "StoryLedger": {
+      "additionalProperties": false,
+      "properties": {
+        "body": {
+          "$ref": "#/$defs/StoryBody"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "otr.story_ledger.v2",
+          "default": "otr.story_ledger.v2",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "validation": {
+          "$ref": "#/$defs/StoryValidation"
+        }
+      },
+      "required": [
+        "episode_id",
+        "body",
+        "validation"
+      ],
+      "title": "StoryLedger",
+      "type": "object"
+    },
+    "StoryRef": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "source_packet",
+            "source",
+            "fact",
+            "cast",
+            "act",
+            "scene",
+            "shot",
+            "beat",
+            "line",
+            "music_cue",
+            "sequence"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ref_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Ref Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "ref_id"
+      ],
+      "title": "StoryRef",
+      "type": "object"
+    },
+    "StorySeal": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "canonicalization": {
+          "const": "otr.canonical-json.v1",
+          "default": "otr.canonical-json.v1",
+          "title": "Canonicalization",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "otr.story_seal.v1",
+          "default": "otr.story_seal.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sealed_at": {
+          "format": "date-time",
+          "title": "Sealed At",
+          "type": "string"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "story_sha256",
+        "sealed_at"
+      ],
+      "title": "StorySeal",
+      "type": "object"
+    },
+    "StoryValidation": {
+      "additionalProperties": false,
+      "properties": {
+        "body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Body Sha256",
+          "type": "string"
+        },
+        "contract_id": {
+          "const": "otr.minimum_ship.v2",
+          "default": "otr.minimum_ship.v2",
+          "title": "Contract Id",
+          "type": "string"
+        },
+        "outcomes": {
+          "$ref": "#/$defs/MinimumOutcomes"
+        }
+      },
+      "required": [
+        "body_sha256",
+        "outcomes"
+      ],
+      "title": "StoryValidation",
+      "type": "object"
+    },
+    "SucceededResult_AudioEnhanceReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/AudioEnhanceReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[AudioEnhanceReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_AuditReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/AuditReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[AuditReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_CaptionsReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/CaptionsReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[CaptionsReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_CastRoutingReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/CastRoutingReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[CastRoutingReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_CreditsReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/CreditsReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[CreditsReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_ImageRenderReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/ImageRenderReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[ImageRenderReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_MasterAudioReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/MasterAudioReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[MasterAudioReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_MusicRenderReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/MusicRenderReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[MusicRenderReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_PostBlendReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/PostBlendReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[PostBlendReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_ProcgenVideoReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/ProcgenVideoReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[ProcgenVideoReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_PublicationReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/PublicationReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[PublicationReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_ScopesReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/ScopesReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[ScopesReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_SilentCompositeReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/SilentCompositeReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[SilentCompositeReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_SpeechTimelineReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/SpeechTimelineReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[SpeechTimelineReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_VideoRenderReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/VideoRenderReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[VideoRenderReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_VisualPlanReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/VisualPlanReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[VisualPlanReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_VoiceRenderReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/VoiceRenderReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[VoiceRenderReceipt]",
+      "type": "object"
+    },
+    "SucceededResult_WorkspaceIdentityReceipt_": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/WorkspaceIdentityReceipt"
+        },
+        "status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "SucceededResult[WorkspaceIdentityReceipt]",
+      "type": "object"
+    },
+    "TimelineItem": {
+      "additionalProperties": false,
+      "properties": {
+        "content_ref": {
+          "$ref": "#/$defs/StoryRef"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "input_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Input Artifact Id",
+          "type": "string"
+        },
+        "sequence_ref": {
+          "$ref": "#/$defs/StoryRef"
+        },
+        "start_ms": {
+          "minimum": 0,
+          "title": "Start Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sequence_ref",
+        "content_ref",
+        "input_artifact_id",
+        "start_ms",
+        "duration_ms"
+      ],
+      "title": "TimelineItem",
+      "type": "object"
+    },
+    "TransitionReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "at_ms": {
+          "minimum": 0,
+          "title": "At Ms",
+          "type": "integer"
+        },
+        "duration_ms": {
+          "minimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "fade_in",
+            "fade_out",
+            "crossfade",
+            "mix"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "transition_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Transition Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "transition_id",
+        "kind",
+        "at_ms",
+        "duration_ms"
+      ],
+      "title": "TransitionReceipt",
+      "type": "object"
+    },
+    "VideoClipItem": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "audio_motion_receipt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Motion Receipt"
+        },
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "engine_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Engine Id",
+          "type": "string"
+        },
+        "fps": {
+          "$ref": "#/$defs/RationalFps"
+        },
+        "frame_count": {
+          "exclusiveMinimum": 0,
+          "title": "Frame Count",
+          "type": "integer"
+        },
+        "init_image_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Init Image Artifact Ids",
+          "type": "array"
+        },
+        "request_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "route_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Route Id",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "minItems": 1,
+          "title": "Story Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "request_id",
+        "artifact_id",
+        "story_refs",
+        "engine_id",
+        "route_id",
+        "duration_ms",
+        "frame_count",
+        "fps"
+      ],
+      "title": "VideoClipItem",
+      "type": "object"
+    },
+    "VideoRenderAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "video_render_batch",
+          "default": "video_render_batch",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "video_render",
+          "default": "video_render",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_VideoRenderReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_VideoRenderReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "VideoRenderAttempt",
+      "type": "object"
+    },
+    "VideoRenderReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "clip_manifest_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Clip Manifest Artifact Id",
+          "type": "string"
+        },
+        "clips": {
+          "items": {
+            "$ref": "#/$defs/VideoClipItem"
+          },
+          "minItems": 1,
+          "title": "Clips",
+          "type": "array"
+        },
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "video_render",
+          "default": "video_render",
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "clips",
+        "clip_manifest_artifact_id"
+      ],
+      "title": "VideoRenderReceipt",
+      "type": "object"
+    },
+    "VisualPlanAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "shot_lock",
+          "default": "shot_lock",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "visual_plan",
+          "default": "visual_plan",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_VisualPlanReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_VisualPlanReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "VisualPlanAttempt",
+      "type": "object"
+    },
+    "VisualPlanReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "visual_plan",
+          "default": "visual_plan",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "plan_artifact_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Plan Artifact Id",
+          "type": "string"
+        },
+        "plan_revision": {
+          "minimum": 1,
+          "title": "Plan Revision",
+          "type": "integer"
+        },
+        "policy_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "requests": {
+          "items": {
+            "$ref": "#/$defs/VisualRequest"
+          },
+          "minItems": 1,
+          "title": "Requests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "policy_id",
+        "policy_version",
+        "plan_revision",
+        "plan_artifact_id",
+        "requests"
+      ],
+      "title": "VisualPlanReceipt",
+      "type": "object"
+    },
+    "VisualRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "beat_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "minItems": 1,
+          "title": "Beat Refs",
+          "type": "array"
+        },
+        "cast_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Cast Refs",
+          "type": "array"
+        },
+        "line_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Line Refs",
+          "type": "array"
+        },
+        "prompt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Prompt Sha256",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "route_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Route Id",
+          "type": "string"
+        },
+        "shot_ref": {
+          "$ref": "#/$defs/StoryRef"
+        }
+      },
+      "required": [
+        "request_id",
+        "shot_ref",
+        "beat_refs",
+        "prompt_sha256",
+        "route_id"
+      ],
+      "title": "VisualRequest",
+      "type": "object"
+    },
+    "VoiceRenderAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "voice_renderers",
+          "default": "voice_renderers",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "voice_render",
+          "default": "voice_render",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_VoiceRenderReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_VoiceRenderReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "VoiceRenderAttempt",
+      "type": "object"
+    },
+    "VoiceRenderReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/LineAudioItem"
+          },
+          "minItems": 1,
+          "title": "Lines",
+          "type": "array"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "voice_render",
+          "default": "voice_render",
+          "title": "Phase Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "lines"
+      ],
+      "title": "VoiceRenderReceipt",
+      "type": "object"
+    },
+    "WorkspaceIdentityAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "attempt_number": {
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyRef"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "input_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Input Artifacts",
+          "type": "array"
+        },
+        "owner": {
+          "const": "episode_workspace",
+          "default": "episode_workspace",
+          "title": "Owner",
+          "type": "string"
+        },
+        "phase_id": {
+          "const": "workspace_identity",
+          "default": "workspace_identity",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "produced_artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactReceipt"
+          },
+          "title": "Produced Artifacts",
+          "type": "array"
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerIdentity"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "failed": "#/$defs/FailedResult",
+              "succeeded": "#/$defs/SucceededResult_WorkspaceIdentityReceipt_"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SucceededResult_WorkspaceIdentityReceipt_"
+            },
+            {
+              "$ref": "#/$defs/FailedResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "story_refs": {
+          "items": {
+            "$ref": "#/$defs/StoryRef"
+          },
+          "title": "Story Refs",
+          "type": "array"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "attempt_number",
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "started_at",
+        "completed_at",
+        "producer",
+        "result"
+      ],
+      "title": "WorkspaceIdentityAttempt",
+      "type": "object"
+    },
+    "WorkspaceIdentityReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "input_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Artifact Ids",
+          "type": "array"
+        },
+        "operation": {
+          "enum": [
+            "initialize",
+            "rename",
+            "rebase"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "output_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Ids",
+          "type": "array"
+        },
+        "phase_id": {
+          "const": "workspace_identity",
+          "default": "workspace_identity",
+          "title": "Phase Id",
+          "type": "string"
+        },
+        "prior_workspace_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prior Workspace Id"
+        },
+        "rebased_artifact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rebased Artifact Ids",
+          "type": "array"
+        },
+        "relative_workspace_path": {
+          "title": "Relative Workspace Path",
+          "type": "string"
+        },
+        "requesting_phase": {
+          "anyOf": [
+            {
+              "enum": [
+                "workspace_identity",
+                "cast_routing",
+                "voice_render",
+                "music_render",
+                "speech_timeline",
+                "audio_enhance",
+                "master_audio",
+                "procgen_video",
+                "visual_plan",
+                "image_render",
+                "video_render",
+                "silent_composite",
+                "scopes",
+                "post_blend",
+                "captions",
+                "credits",
+                "publication",
+                "audit"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requesting Phase"
+        },
+        "storage_root_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Storage Root Id",
+          "type": "string"
+        },
+        "workspace_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Workspace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_artifact_ids",
+        "operation",
+        "workspace_id",
+        "storage_root_id",
+        "relative_workspace_path"
+      ],
+      "title": "WorkspaceIdentityReceipt",
+      "type": "object"
+    }
+  },
+  "$id": "urn:otr:schema:ledger-envelope:v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "final_seal": {
+      "default": null,
+      "title": "Final Seal",
+      "type": "null"
+    },
+    "production_state": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProductionState"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "otr.ledger_envelope.v2",
+      "default": "otr.ledger_envelope.v2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "story_ledger": {
+      "$ref": "#/$defs/StoryLedger"
+    },
+    "story_seal": {
+      "$ref": "#/$defs/StorySeal"
+    }
+  },
+  "required": [
+    "story_ledger",
+    "story_seal"
+  ],
+  "title": "LedgerEnvelope",
+  "type": "object"
+}

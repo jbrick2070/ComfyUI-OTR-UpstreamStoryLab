@@ -7,6 +7,9 @@ executable. `final_seal` remains null-only until terminal ordering lands.
 Machine authority:
 
 - `contracts/ledger_bible_v2.json`
+- `contracts/ledger_envelope_v2.schema.json`
+- `contracts/ledger_field_laws_v2.json`
+- `docs/LEDGER_FIELD_REFERENCE.md`
 - `src/upstream_story_lab/ledger_contract.py`
 - `contracts/ledger_consumer_matrix_l4.json` (current-production
   characterization, not the target schema)
@@ -398,6 +401,12 @@ references carry their kind.
 - Current consumer characterization:
   `contracts/ledger_consumer_matrix_l4.json`
 - Target machine contract: `contracts/ledger_bible_v2.json`
+- Generated Draft 2020-12 envelope schema:
+  `contracts/ledger_envelope_v2.schema.json`
+- Generated lifecycle/default/owner/failure catalog for all 1,313 expanded
+  field paths: `contracts/ledger_field_laws_v2.json`
+- Human field reference rendered from the same catalog:
+  `docs/LEDGER_FIELD_REFERENCE.md`
 - Strict models, graph validator, canonicalization and story guard:
   `src/upstream_story_lab/ledger_contract.py`
 - Five trusted semantic validators and immutable registry:

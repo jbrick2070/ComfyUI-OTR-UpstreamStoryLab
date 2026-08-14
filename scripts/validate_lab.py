@@ -21,6 +21,9 @@ from upstream_story_lab.compat import (  # noqa: E402
     extract_news_seed_keys,
     extract_visual_tails,
 )
+from upstream_story_lab.ledger_artifacts import (  # noqa: E402
+    render_contract_artifacts,
+)
 from upstream_story_lab.preview import (  # noqa: E402
     scan_story_leakage,
     scan_visual_leakage,
@@ -31,6 +34,13 @@ from upstream_story_lab.registry import Registry  # noqa: E402
 def main() -> int:
     registry = Registry(ROOT)
     mirror = ROOT / "production_mirror" / "nodes"
+
+    for relative_path, rendered in render_contract_artifacts().items():
+        target = ROOT / relative_path
+        assert target.is_file(), f"generated ledger artifact missing: {relative_path}"
+        assert target.read_bytes() == rendered.encode("utf-8"), (
+            f"generated ledger artifact stale: {relative_path}"
+        )
 
     assert tuple(extract_news_briefs_fields(mirror / "news_interpreter.py")) == NEWS_BRIEFS_FIELDS
     assert tuple(extract_news_seed_keys(mirror / "_otr_legacy_to_stage1_adapter.py")) == NEWS_SEED_KEYS
