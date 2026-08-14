@@ -115,20 +115,20 @@ def _contains_normalized_phrase(text: str, phrase: str) -> bool:
     return bool(needle) and f" {needle} " in f" {haystack} "
 
 
-def _combined_carriage(sources: Sequence[Any]):
-    """One carriage test over every supplied source body."""
+def _carriage_for(source: Any):
+    contains = getattr(source, "contains", None)
+    if not callable(contains):
+        raise LedgerContractError(
+            "each carried source must expose contains(text)"
+        )
+    return contains
 
-    if not sources:
-        return None
-    tests = []
-    for source in sources:
-        contains = getattr(source, "contains", None)
-        if not callable(contains):
-            raise LedgerContractError(
-                "each carried source must expose contains(text)"
-            )
-        tests.append(contains)
-    return lambda text: any(test(text) for test in tests)
+
+def _act_of_line(body: StoryBody) -> Mapping[str, str | None]:
+    """Map each line to the act that owns it, through its beat."""
+
+    act_by_beat = {row.beat_id: row.act_id for row in body.beats}
+    return {row.line_id: act_by_beat.get(row.beat_id) for row in body.lines}
 
 
 def _has_identity(outcome_name: str, receipt: OutcomeReceipt) -> bool:
@@ -147,7 +147,7 @@ def verify_ledger_integrity(
     body: StoryBody,
     receipt: OutcomeReceipt,
     *,
-    carried_sources: Sequence[Any] = (),
+    carried_sources: Mapping[str, Any] | Sequence[Any] = (),
     expected_version: str = LEDGER_INTEGRITY_VALIDATOR_VERSION,
 ) -> bool:
     """Re-run the v2 graph plus the spoken-only policy, without repair.
@@ -175,13 +175,37 @@ def verify_ledger_integrity(
         validated = StoryBody.model_validate(body.model_dump(mode="json"))
     except (LedgerContractError, ValidationError):
         return False
-    carried = _combined_carriage(carried_sources)
-    return (
-        canonical_bytes(validated) == canonical_bytes(body)
-        and spoken_text_is_clean(
-            validated.lines, validated.cast, carried_source=carried
-        )
-    )
+    if canonical_bytes(validated) != canonical_bytes(body):
+        return False
+    if not carried_sources:
+        return spoken_text_is_clean(validated.lines, validated.cast)
+
+    # An act may only be excused by the region it was given.  Checking the
+    # whole document here would let a line quote another act's text and pass a
+    # gate its own act job would have rejected, so the seal audits act by act
+    # with exactly the window that act authored against.
+    if isinstance(carried_sources, Mapping):
+        windows = {act_id: _carriage_for(src) for act_id, src in carried_sources.items()}
+    else:
+        # A flat sequence carries no act identity, so it can only be trusted
+        # when it describes a single whole-story source.
+        shared = [_carriage_for(source) for source in carried_sources]
+        windows = None
+
+    act_of_line = _act_of_line(validated)
+    by_act: dict[str | None, list] = {}
+    for row in validated.lines:
+        by_act.setdefault(act_of_line.get(row.line_id), []).append(row)
+
+    for act_id, rows in by_act.items():
+        if windows is None:
+            carried = (lambda text: any(test(text) for test in shared)) if shared else None
+        else:
+            window = windows.get(act_id) if act_id is not None else None
+            carried = window
+        if not spoken_text_is_clean(rows, validated.cast, carried_source=carried):
+            return False
+    return True
 
 
 def verify_news_capture(
@@ -328,7 +352,7 @@ def verify_music_bookends(
 def build_trusted_receipt_verifiers(
     *,
     packet_artifacts: Mapping[str, bytes],
-    carried_sources: Sequence[Any] = (),
+    carried_sources: Mapping[str, Any] | Sequence[Any] = (),
 ) -> Mapping[ReceiptVerifierKey, ReceiptVerifier]:
     """Return the immutable five-entry Story Ledger v2 trust registry.
 
@@ -366,7 +390,11 @@ def build_trusted_receipt_verifiers(
     # exists only when the caller supplied the source bodies it needs, so a v4
     # receipt can never be trusted by assertion alone.
     if carried_sources:
-        frozen_sources = tuple(carried_sources)
+        frozen_sources = (
+            dict(carried_sources)
+            if isinstance(carried_sources, Mapping)
+            else tuple(carried_sources)
+        )
         validator_id, _ = TRUSTED_VALIDATOR_IDENTITIES["ledger_integrity"]
         registry[
             (

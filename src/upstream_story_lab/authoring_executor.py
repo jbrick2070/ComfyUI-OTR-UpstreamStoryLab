@@ -1355,6 +1355,28 @@ class _StagedRun:
                 notes,
             )
 
+        # Cleanup may CREATE a music cue by converting a direction into one.
+        # It may not lose one it was given: an authored interstitial is
+        # already speakable-as-music and has nothing to repair.
+        def cues(rows) -> Counter:
+            return Counter(
+                (row.description, row.generation_prompt)
+                for row in rows
+                if isinstance(row, _AcceptedMusicRow)
+            )
+
+        lost = cues(before) - cues(after)
+        if lost:
+            self.act_rows[act_number] = before
+            return (
+                tuple(
+                    f"cleanup dropped the music cue {description!r}; a cue the "
+                    "draft already carried must survive unchanged"
+                    for description, _prompt in sorted(lost)
+                ),
+                notes,
+            )
+
         changed = sum(
             1
             for old, new in zip(before, after)
@@ -1815,8 +1837,16 @@ class _StagedRun:
             packet_artifacts={
                 self.packet_sha256: self.brief.source_packet_bytes
             },
+            # Keyed by act, so the seal excuses a line only with the region
+            # that act actually authored against - the same rule the act gate
+            # applied, rather than the whole document.
             carried_sources=(
-                () if self.source_document is None else (self.source_document,)
+                {}
+                if self.source_document is None
+                else {
+                    f"a{act_number:03d}": self._act_window(act_number)
+                    for act_number in range(1, self.brief.act_count + 1)
+                }
             ),
         )
         try:

@@ -779,6 +779,62 @@ def test_coda_reports_both_faults_on_the_same_attempt() -> None:
     assert any("Wildfires continue to spread" in reason for reason in reasons)
 
 
+def test_cleanup_cannot_drop_an_authored_music_cue() -> None:
+    """Cleanup may create a cue by conversion; it may not lose one it was given.
+
+    An authored interstitial is already speakable-as-music and has nothing to
+    repair, so losing it is content loss rather than cleanup.
+    """
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        payload["rows"] = [
+            row for row in payload["rows"] if row.get("role") != "music_inter"
+        ]
+        return payload
+
+    provider = TamperingProvider("act_02.cleanup", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "act_02.cleanup")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("dropped the music cue" in reason for reason in records[0].reasons)
+    assert [
+        cue.cue_id for cue in result.envelope.story_ledger.body.music_cues
+    ] == ["music_open", "music_inter_01", "music_close"]
+
+
+def test_seal_excuses_a_line_only_with_its_own_act_window() -> None:
+    """The seal must apply the rule the act gate applied.
+
+    Auditing against the whole document would let a line quote a region its
+    own act never saw and pass a check its act job would have rejected.
+    """
+
+    from upstream_story_lab.source_window import (
+        build_lab_source_document,
+        select_act_window,
+    )
+
+    scene = (
+        ROOT
+        / "fixtures"
+        / "source_banks"
+        / "shakespeare"
+        / "sources"
+        / "king_lear__act1_scene1.txt"
+    )
+    document = build_lab_source_document(
+        "lear", scene.read_text(encoding="utf-8")
+    )
+    first = select_act_window(document, act_number=1, act_count=3)
+    third = select_act_window(document, act_number=3, act_count=3)
+
+    # Text from the third act's region, which act one never received.
+    foreign = third.text[200:280]
+    assert document.contains(foreign), "the whole document does carry it"
+    assert not first.contains(foreign), "act one's own window does not"
+    assert first.end <= third.start, "the windows are disjoint"
+
+
 def test_committed_fixture_is_current_and_loadable() -> None:
     result = author_fixture(save_path=None)
     expected = canonical_bytes(result.envelope) + b"\n"

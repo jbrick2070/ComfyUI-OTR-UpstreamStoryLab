@@ -1,0 +1,31 @@
+STDOUT:
+VERDICT: build-ready as-is? yes-with-fixes. Several integration and validation defects allow regional source leakage during final admission, lose music cues in cleanup, and risk local model failures due to strict polymorphic JSON validation.
+
+MUST-FIX BEFORE BUILD:
+1. [Q1] Regional source leakage during final admission validation:
+   - Defect: During the dialogue and cleanup model jobs, carriage is validated against the act's specific window (`self._act_window(act_number)`) via `audit_spoken_text`. However, during final admission in `src/upstream_story_lab/authoring_executor.py` (L1814), the entire `self.source_document` is registered as the `carried_sources` in the trust verifiers registry. Consequently, `verify_ledger_integrity` in `src/upstream_story_lab/ledger_verifiers.py` (L178) checks the lines against the entire flat document body (`self._flat_body`). This allows a spoken line in one act to be excused from heuristics by matching source text from an entirely different act's region.
+   - Concrete Fix: Map the act-specific `LabSourceSpan` objects in the trusted verifier registry by act ID or act number, and update `verify_ledger_integrity` to enforce that exemptions are only valid if the matching text resides within that act's allocated source window.
+2. [Q2] Lost music cues in cleanup pass validation:
+   - Defect: In `src/upstream_story_lab/authoring_executor.py` (L1338), the `_accept_cleanup` function only compares character dialogue rows (`_AcceptedSpeechRow`) via the `owned()` helper. It completely ignores `_AcceptedMusicRow` ("music_inter") rows. A cleanup model can drop one or all music cues from the draft dialogue, and the validator will accept the output without raising a validation error.
+   - Concrete Fix: Update `_accept_cleanup` to extract and compare the sequence of music rows (their descriptions or count) in both `before` and `after`, raising a validation failure if any cues are dropped or added during the cleanup pass.
+3. [Q4] Polymorphic JSON schema validation failure on 7B models:
+   - Defect: The Pydantic model `_AcceptedMusicRow` in `src/upstream_story_lab/authoring_executor.py` (L442) inherits from `StrictExecutorModel`, which sets `extra="forbid"`. Local 7B models outputting polymorphic lists of rows often generate uniform dictionaries containing all possible keys (e.g. filling in `beat_id: null` or `char_id: ""` on `music_inter` rows). These extra fields trigger a Pydantic `ValidationError` and burn retries.
+   - Concrete Fix: Update `_accept_dialogue` (L1135) to proactively strip dialogue-specific keys (`beat_id`, `char_id`, `fact_ids`) from rows identified as `music_inter` before parsing them into `_AcceptedMusicRow`.
+
+SHOULD-FIX:
+1. [Q3] Prompt and code mismatch on dialogue rewording:
+   - Defect: System instructions (`CLEANUP_JOB_INSTRUCTIONS` in `src/upstream_story_lab/story_authoring.py`, L60) and story pack prompts (e.g., `science_news_default.json`, L22) state "never reword a line that is already spoken" and "never trim, tighten, condense, or summarize". However, the validation code in `_accept_cleanup` (L1358) only counts changed rows (`changed = ...`) for reporting in `notes`, and never rejects a cleanup payload for modifying already-spoken text.
+   - Concrete Fix: If rewording is strictly forbidden, update `_accept_cleanup` to reject the payload if `changed > 0` for any character dialogue rows whose text differs from the draft, or update the instructions to permit minor policy-compliant rewording.
+2. [Q3] Missing fact_id guidance in JSON prompts:
+   - Defect: In `fixtures/story_packs/public_domain/*.json` and `fixtures/story_packs/science_news/*.json`, the `job_prompts.announcer_news_coda` text instructs the model to turn back to the report and read the claim, but fails to tell the model to return the `fact_id` field in the JSON structure. Although the base instructions cover it, a local model may follow the bank directions exclusively and omit the key.
+   - Concrete Fix: Add an explicit sentence to `job_prompts.announcer_news_coda` across all story pack json files instructing the model to output the `fact_id` key matching the `closing_fact_id`.
+
+OPTIONAL / NICE-TO-HAVE:
+1. [Q1] Regex detection gaps for stage actions:
+   - Defect: The whitelist of physical action verbs in `src/upstream_story_lab/spoken_text_policy.py` (`_PHYSICAL_ACTION_VERBS`, L81) is narrow. Standalone stage actions like `"They weep."` or `"They run."` are not caught by `_is_whole_line_stage_action` because the verbs are not whitelisted and do not end in "ing", "ed", or "s". This allows them to bypass heuristics and get admitted into the ledger as spoken lines without needing any carriage exemption.
+
+CUT THESE:
+- None. (The focused QA scope has no obvious over-engineering).
+
+[ASSUMPTION]
+- It is assumed that the `StagedModelProvider` implementation does not strip markdown code fences (e.g., ````json ... ````) from the model's raw text before returning a dict. If it does not, any markdown wrapped JSON response from a local model will fail parsing entirely.
