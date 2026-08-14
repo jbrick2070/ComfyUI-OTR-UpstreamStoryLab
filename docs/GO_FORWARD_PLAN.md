@@ -76,13 +76,17 @@ act count, or spoken-only rule.
 
 ## Central compiler, creative banks
 
-All four runnable banks retain control over source selection, tone, factual
-material, and creative prompt content:
+All six runnable banks retain control over source selection, tone, factual
+material, and creative prompt content; `custom_source_bank` stays visible
+but not runnable until an operator supplies their own lane:
 
-- `custom_source_bank`
+- `scifi_news`
+- `scifi_news_pro`
 - `media_archive`
-- `public_domain_story`
-- `science_news`
+- `public_domain`
+- `shakespeare`
+- `original`
+- `custom_source_bank` (visible, not runnable)
 
 Every bank now declares the same central compiler and exact act schedule. No
 bank may bypass draft cleanup, cast sweep, semantic admission, or the story
@@ -139,6 +143,37 @@ Authorities:
 - `git diff --check`: passed.
 - No Bug Bible runner exists in this repository.
 
+## Source-bank roster receipt (2026-08-14)
+
+The roster now matches production. `science_news` was renamed to `scifi_news`
+and `public_domain_story` to `public_domain`; `scifi_news_pro`, `shakespeare`,
+and `original` were added.
+
+- `validate_lab.py`: 7 banks, 7 packs, 30 specs, 5 visual styles, 3
+  public-domain manifests, no mirror drift.
+- Full suite: 450 passed.
+- `smoke_nodes.py`: passed, asserting the full seven-id dropdown roster.
+- `verify_source_banks.py`: 65 public-domain sources, 14 curated scenes, 14
+  provenance digests verified, no word budgets.
+- `verify_tree.py`: 85 Python files, 75 JSON files, 0 errors.
+- Staged fixture and per-bank act proof `--check`: passed. Six sealed per-bank
+  act proofs, one per runnable lane plus `custom_source_bank`.
+
+Deliberately NOT renamed, and this is a decision rather than an oversight:
+
+- `fixtures/story_recovery/v1/` in full, plus `contracts/ledger_bible_v1.json`.
+  The Bible declares the legacy corpus non-migratable; a rename there is a
+  contract violation, not a cleanup.
+- `fixtures/story_recovery/science_news_good_20260716.json` and its challenger
+  `scifi_news_bad_20260813.json`. These are historical captures of what
+  production actually emitted in July, used as the ledger Bible's calibration
+  control. Renaming them would falsify the evidence.
+- `fixtures/story_recovery/v2/source_packets/science_news_folder_red_stamps_20260716.json`
+  and `fixtures/story_recovery/v2/normative_ledger_envelope.json`. The envelope
+  has no generator and binds that packet's digest, so the rename was made
+  additively: a `scifi_news` twin of the packet was added alongside it and only
+  the staged-authoring fixture was repointed and regenerated.
+
 Production OTR remains unchanged at `707b39e9` on `v2.0-alpha`, equal to its
 remote at the last read-only check. Its existing untracked operator files were
 not touched. The production mirror in this lab is historical characterization,
@@ -169,7 +204,7 @@ The provider-neutral executor and prompt layer now exist:
   fake model. `scripts/generate_staged_authoring_fixture.py --write/--check`
   produces the sealed proof fixture
   `fixtures/story_recovery/v2/staged_authoring_three_act.json`
-  (`science_news`, `act_count=3`, one script-requested interstitial, one
+  (`scifi_news`, `act_count=3`, one script-requested interstitial, one
   unused locked character swept).
 - Soft shaping is now declared per bank in `fixtures/banks.json` as
   `staged_authoring_guidance` (beats_per_act 5–7, exchanges_per_beat 2–4,
@@ -241,7 +276,7 @@ forbids arbitrary free-text prompting, so executing staged story-model jobs on
 the 4060 requires the operator to explicitly enroll a story-authoring plan (or
 approve an equivalent scoped route) first — do not improvise around the skill.
 Then implement one real `StagedModelProvider` for the chosen route, author one
-fresh `science_news` `act_count=3` story, and admit it through the same
+fresh `scifi_news` `act_count=3` story, and admit it through the same
 executor. The proof is the sealed ledger, not a word-count score. Never load
 the story LLM on the 5080.
 
@@ -270,7 +305,7 @@ resume only after the transplanted story path is green.
 fake-model proof already exist; do not rebuild them. With the operator, enroll
 an explicit 4060 story-authoring plan under the skill's rules (no improvised
 free-text route), implement one real `StagedModelProvider` for that route, and
-author one fresh `science_news` `act_count=3` story through
+author one fresh `scifi_news` `act_count=3` story through
 `author_story_ledger`, saving the sealed envelope. Do not add a word-count
 gate, load an LLM on the 5080, or transplant into production until that real
 story passes.”

@@ -79,9 +79,12 @@ and do not wire the bridge into `workflows/otr_scifi_16gb_full.json`.
 
 Planned source-bank dropdown labels:
 
-- `science_news`: "Sci-Fi Science News"
+- `scifi_news`: "Sci-Fi News - Proof-Pressure Radio"
+- `scifi_news_pro`: "Sci-Fi News Pro (LLM-first multipass)"
 - `media_archive`: "Media RSS / Archive"
 - `public_domain`: "Public Domain"
+- `shakespeare`: "Shakespeare / Folger"
+- `original`: "Original Radio Drama"
 - `custom_source_bank`: "+ Add Your Own"
 
 Suggested tooltip for `custom_source_bank`:

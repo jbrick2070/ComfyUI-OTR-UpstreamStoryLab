@@ -112,7 +112,7 @@ Minimum prompt profile:
 - Change ids and labels before changing prompt style.
 - Keep `source_bank`, `story_model`, and `visual_style` separate.
 - Do not rename production ledger fields.
-- Do not create hidden fallback to `science_news`.
+- Do not create hidden fallback to `scifi_news`.
 - Add one fixture source packet before adding live network fetching.
 - Add leakage tests before wiring to production.
 - Keep custom visual language in `visual_style`, not source-bank prompts.

@@ -103,13 +103,39 @@ def test_bank_proof_fixture_is_current(source_bank_id: str) -> None:
     assert target.read_bytes() == canonical_bytes(result.envelope) + b"\n"
 
 
+def carried_sources_for(source_bank_id: str) -> dict:
+    """An adaptation lane's proof needs the windows its acts authored against.
+
+    A version 4 ledger-integrity receipt fails closed without them, which is
+    the point: a receipt claiming a carriage exemption cannot be trusted by a
+    reader who was never given the source to check it against.
+    """
+
+    brief = bank_brief(source_bank_id)
+    document = getattr(brief, "source_document", None)
+    if document is None:
+        return {}
+    from upstream_story_lab.source_window import select_act_window
+
+    return {
+        f"a{act_number:03d}": select_act_window(
+            document,
+            act_number=act_number,
+            act_count=brief.act_count,
+            max_chars=brief.source_window_max_chars,
+        )
+        for act_number in range(1, brief.act_count + 1)
+    }
+
+
 @pytest.mark.parametrize("source_bank_id", ALL_BANK_IDS)
 def test_bank_proof_obeys_the_ledger_from_disk(source_bank_id: str) -> None:
     packet_bytes = bank_packet_path(source_bank_id).read_bytes()
     registry = build_trusted_receipt_verifiers(
         packet_artifacts={
             hashlib.sha256(packet_bytes).hexdigest(): packet_bytes
-        }
+        },
+        carried_sources=carried_sources_for(source_bank_id),
     )
     envelope = load_ledger_envelope(
         bank_fixture_path(source_bank_id), receipt_verifiers=registry

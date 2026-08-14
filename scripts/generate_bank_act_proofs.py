@@ -1,6 +1,6 @@
 """Write or verify one sealed act-based proof story per source bank.
 
-Each of the four banks authors one complete three-act story through the same
+Each bank on the roster authors one complete three-act story through the same
 staged executor, with the guidance its own `fixtures/banks.json` entry
 declares, and is admitted through the code-owned verifier registry.  This is
 the receipt that every bank now runs on simplified act logic rather than
@@ -11,6 +11,7 @@ original executor fixture owned by `generate_staged_authoring_fixture.py`.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,9 +34,16 @@ from upstream_story_lab.registry import Registry  # noqa: E402
 from upstream_story_lab.scripted_provider import (  # noqa: E402
     ScriptedStoryProvider,
 )
+from upstream_story_lab.source_window import (  # noqa: E402
+    build_lab_source_document,
+)
 
 PACKETS_DIR = ROOT / "fixtures" / "story_recovery" / "v2" / "source_packets"
 PROOFS_DIR = ROOT / "fixtures" / "story_recovery" / "v2" / "bank_act_proofs"
+#: Vendored Folger scene text + provenance sidecars, read by a proof that
+#: declares `source_scene` so the adaptation lane proves itself against real
+#: source prose rather than a synthetic stand-in.
+SHAKESPEARE_SOURCES = ROOT / "fixtures" / "source_banks" / "shakespeare" / "sources"
 PROOF_SEALED_AT = datetime(2026, 8, 14, 12, 0, 0, tzinfo=timezone.utc)
 
 BANK_PROOFS: dict[str, dict[str, str | tuple[tuple[str, str], ...]]] = {
@@ -80,6 +88,10 @@ BANK_PROOFS: dict[str, dict[str, str | tuple[tuple[str, str], ...]]] = {
             ("c02", "MACBETH"),
             ("c03", "BANQUO"),
         ),
+        # Grounded on the real vendored scene, so this proof exercises what no
+        # other lane does: act-proportional source windows, the fenced source
+        # block, and the v4 carriage verifier that admits an adaptation.
+        "source_scene": "macbeth__act1_scene3",
     },
     "original": {
         "episode_id": "bank_act_proof_original_20260814",
@@ -120,6 +132,18 @@ def build_bank_brief(source_bank_id: str) -> AuthoringBrief:
         )
         for char_id, name in spec["characters"]
     )
+    extra: dict[str, object] = {}
+    scene = spec.get("source_scene")
+    if scene:
+        text = (SHAKESPEARE_SOURCES / f"{scene}.txt").read_text(encoding="utf-8")
+        provenance = json.loads(
+            (SHAKESPEARE_SOURCES / f"{scene}.provenance.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        extra["source_document"] = build_lab_source_document(str(scene), text)
+        extra["source_speaker_labels"] = tuple(provenance.get("speakers", ()))
+
     return AuthoringBrief(
         episode_id=str(spec["episode_id"]),
         setting="Signal Lost studios",
@@ -128,6 +152,7 @@ def build_bank_brief(source_bank_id: str) -> AuthoringBrief:
         cast=tuple(cast),
         source_packet_bytes=(PACKETS_DIR / str(spec["packet_file"])).read_bytes(),
         guidance=bank.staged_authoring_guidance,
+        **extra,
     )
 
 

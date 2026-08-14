@@ -6,7 +6,7 @@ way.  Nothing about the ledger changes because the writer changed - that is
 the whole point of a provider-neutral executor.
 
     # start a local server first (LM Studio, llama.cpp, Ollama...), then:
-    python scripts/author_real_story.py --model <model-id> --bank science_news
+    python scripts/author_real_story.py --model <model-id> --bank scifi_news
 
 Read the result with:
 
@@ -43,7 +43,7 @@ OUT_DIR = ROOT / "output" / "real_stories"
 def _brief_for(bank: str, act_count: int):
     """Reuse the committed proof briefs so only the writer changes."""
 
-    if bank in {"science_news", "scifi_news"}:
+    if bank == "scifi_news":
         from generate_staged_authoring_fixture import build_fixture_brief
 
         brief = build_fixture_brief()
@@ -57,7 +57,7 @@ def _brief_for(bank: str, act_count: int):
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", required=True, help="model id on the server")
-    parser.add_argument("--bank", default="science_news")
+    parser.add_argument("--bank", default="scifi_news")
     parser.add_argument("--acts", type=int, default=3)
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     parser.add_argument("--temperature", type=float, default=0.8)
