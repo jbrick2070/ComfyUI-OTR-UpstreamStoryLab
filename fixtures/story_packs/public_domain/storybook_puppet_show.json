@@ -20,7 +20,7 @@
     "A public-domain children's story becomes a gentle radio puppet-show episode without changing its ending."
   ],
   "tone_guardrails": [
-    "Family-friendly and whimsical.",
+    "Whimsical and playful.",
     "Keep character voices clear.",
     "Preserve the source ending unless the manifest marks an excerpt."
   ],

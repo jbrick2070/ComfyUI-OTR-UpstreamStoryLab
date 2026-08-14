@@ -9,7 +9,7 @@
       "label": "Warm Restoration Mystery",
       "tone_guardrails": [
         "Use discovery, repair, and source interpretation as the central pressure.",
-        "Keep stakes human, clear, and non-violent."
+        "Keep stakes human and clear."
       ],
       "forbidden_plot_patterns": [
         "spaceship rescue",

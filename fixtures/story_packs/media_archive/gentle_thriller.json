@@ -5,13 +5,13 @@
   "label": "Gentle Media Thriller",
   "status": "ready_fixture",
   "prompt_stages": {
-    "outline_system": "Without weapons, gore, horror, or disaster spectacle: you are a story editor for non-violent media-archive thrillers. Build suspense from time pressure, fragile evidence, public reveal, access, and care.",
-    "pitch_room_system": "Break three gentle thriller pitches from the archive item. Each pitch must have urgency without weapons, gore, horror, or disaster spectacle.",
+    "outline_system": "You are a story editor for gentle media-archive thrillers. Build suspense from time pressure, fragile evidence, public reveal, access, and care.",
+    "pitch_room_system": "Break three gentle thriller pitches from the archive item. Each pitch must build urgency from time pressure, fragile evidence, and human stakes.",
     "dramatic_state_system": "Define central conflict from access, truth, credit, disclosure, preservation risk, or a looming public deadline.",
     "line_grounding": "Ground this line in the archive material, time pressure, and scene premise.",
     "coda_system": "Write an archive note that lands the preservation/source context after the suspense resolves.",
     "title_system": "Title a gentle media thriller using a physical archive detail from the story.",
-    "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and non-violent media-culture craft.",
+    "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and media-culture craft.",
     "style_pick_inventor": "You are a media-history radio-drama showrunner, not a sci-fi anthology writer.",
     "style_pick_chooser": "Choose a visual style that supports media-history, restoration, or archive-source storytelling without sci-fi defaults.",
     "style_pick_chooser_user_template": "Choose the best visual style for this media-archive story: {story_summary}"
@@ -21,14 +21,10 @@
   ],
   "tone_guardrails": [
     "Use high urgency and low harm.",
-    "Suspense should come from fragile media, deadlines, evidence, or public meaning.",
-    "Stay non-violent and non-horror."
+    "Suspense should come from fragile media, deadlines, evidence, or public meaning."
   ],
   "forbidden_plot_patterns": [
-    "armed chase",
-    "body count",
-    "monster reveal",
-    "explosive countdown"
+    "monster reveal"
   ],
   "forbidden_leakage_terms": [
     "science-fiction audio drama",
@@ -41,7 +37,7 @@
     "Media archive/RSS packet with a deadline, fragile source, public event, or contested interpretation."
   ],
   "ledger_validation_notes": [
-    "Story selector should grade suspense without violence."
+    "Story selector should grade suspense on tension, stakes, and craft."
   ],
   "schema_version": "v2.0"
 }

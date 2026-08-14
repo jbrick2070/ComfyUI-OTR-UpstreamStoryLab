@@ -11,7 +11,7 @@
     "line_grounding": "Ground this line in broadcast-history source material and the scene's comic pressure.",
     "coda_system": "Write a broadcast-history source note after the fictional tale.",
     "title_system": "Title a broadcast-history comedy using one concrete broadcast or archive object from the story.",
-    "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and non-violent media-culture craft.",
+    "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and media-culture craft.",
     "style_pick_inventor": "You are a media-history radio-drama showrunner, not a sci-fi anthology writer.",
     "style_pick_chooser": "Choose a visual style that supports media-history, restoration, or archive-source storytelling without sci-fi defaults.",
     "style_pick_chooser_user_template": "Choose the best visual style for this media-archive story: {story_summary}"

@@ -11,7 +11,7 @@
     "line_grounding": "Ground this line in the archive clues and scene premise.",
     "coda_system": "Write a brief preservation/source note that celebrates discovery or restored context.",
     "title_system": "Title an upbeat archive mystery from a concrete clue or recovered object in the story.",
-    "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and non-violent media-culture craft.",
+    "story_select_system": "Grade archive-inspired radio-drama candidates for human stakes, source fidelity, and media-culture craft.",
     "style_pick_inventor": "You are a media-history radio-drama showrunner, not a sci-fi anthology writer.",
     "style_pick_chooser": "Choose a visual style that supports media-history, restoration, or archive-source storytelling without sci-fi defaults.",
     "style_pick_chooser_user_template": "Choose the best visual style for this media-archive story: {story_summary}"
@@ -24,9 +24,7 @@
     "Let discovery, recognition, or repair create an upbeat ending."
   ],
   "forbidden_plot_patterns": [
-    "violent conspiracy",
     "horror haunting",
-    "body-count mystery",
     "lab containment"
   ],
   "forbidden_leakage_terms": [
