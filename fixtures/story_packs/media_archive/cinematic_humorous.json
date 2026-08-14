@@ -16,6 +16,16 @@
     "style_pick_chooser": "Choose a visual style that supports media-history, restoration, or archive-source storytelling without sci-fi defaults.",
     "style_pick_chooser_user_template": "Choose the best visual style for this media-archive story: {story_summary}"
   },
+  "job_prompts": {
+    "story_seed": "Write one story seed for a polished, cinematic media-culture comedy, as planning text and not dialogue. Build funny conflict from a production mishap, a restoration surprise, fandom, bureaucracy, or scholarly ego. Take the media object and its situation plainly from the source material and invent no source facts. Keep the trouble social, logistical, or interpretive. Title the episode from that object.",
+    "story_arc": "Plan one arc for this comedy, as planning text and not dialogue. Give each act its own premise and its own escalation of the same misunderstanding. Set each act in one place the listener can picture from sound alone. End on a turn that lets people keep their dignity.",
+    "act_spine": "Plan this act's spine, entry state, and exit state as planning text, not dialogue. Root the conflict in media culture, public meaning, reputation, access, or an interpretive disagreement. Say what people believe about the object when the act opens, and what they believe when it ends.",
+    "act_beats": "List this act's beats in order as planning text, not dialogue. Each beat raises the stakes of the social, logistical, or interpretive problem by one step. Set up a payoff before you land it, and keep the timing clean enough that a listener can follow it.",
+    "act_dialogue": "Write what these people say out loud in the middle of the comic situation. Ground every line in the media archive material and in this beat's intent. Give each character a want they will not drop and a way of talking that shows their standing in the room. Time the laugh through what people say.",
+    "act_cleanup": "When a row is already spoken words, leave it alone. Turn a direction into words that row's character says out loud, or into a music cue. Never trade a character's particular wording for something neutral. Keep the comic timing intact.",
+    "announcer_open": "Speak as the announcer opening a humorous media-history episode. Say the title, the setting, the scene time, and each character name exactly as given, letter for letter. Set the place and the object with polish and a straight face, so the comedy has something to lean on. Keep it spoken words only.",
+    "announcer_news_coda": "Speak the affectionate media-history source note that closes the episode. Turn from the fictional tale to the real object, collection, or media history in the source material, keeping the fondness the story earned. Then say the supplied closing fact claim word for word, exactly as given, and return the closing fact id with it."
+  },
   "examples": [
     "A restored station blooper reel becomes the center of a town's overly serious heritage gala."
   ],

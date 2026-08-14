@@ -16,6 +16,16 @@
     "style_pick_chooser": "Choose a visual style that supports media-history, restoration, or archive-source storytelling without sci-fi defaults.",
     "style_pick_chooser_user_template": "Choose the best visual style for this media-archive story: {story_summary}"
   },
+  "job_prompts": {
+    "story_seed": "Write one story seed for a warm archive-restoration adventure, as planning text and not dialogue. Build it from damaged media, missing context, preservation labor, provenance, and the human meaning of recovery. The source material is the source of truth: invent no source facts, and take the archive object, collection, or media-history hook plainly from it. Title the episode from that object.",
+    "story_arc": "Plan one arc for this restoration adventure, as planning text and not dialogue. Give each act its own premise, and let the archive object carry the through line from damage to recovery. Build the pressure from fragile media, missing context, deadlines, and institutional pressure. Resolve the story through a human choice about the archive object.",
+    "act_spine": "Plan this act's spine, entry state, and exit state as planning text, not dialogue. Root the conflict in the archive object, its provenance, who gets access, and why its recovery matters. Say what this act changes about the object's condition, its context, or the people who care for it.",
+    "act_beats": "List this act's beats in order as planning text, not dialogue. Each beat advances a clue, a restoration decision, a provenance question, an access problem, a public screening deadline, or a human memory around the archive object. Keep the pressure on fragile media and institutional stakes.",
+    "act_dialogue": "Write what these people say out loud as they work the archive object. Ground every line in the archive material and in this beat's intent. Let restorers, archivists, and the people who care about the recording talk like they know the machines, the labels, and the deadline. Never let a line invent a source fact the archive material does not give.",
+    "act_cleanup": "When a row is already spoken words, leave it alone. Turn a direction into words that row's character says out loud while working, or into a music cue. Keep the plain working vocabulary of tape, disc, reel, label, and catalog exactly as the draft has it. Keep the archive room audible.",
+    "announcer_open": "Speak as the announcer opening an archive-inspired radio drama. Say the title, the setting, the scene time, and each character name exactly as given, letter for letter. Set the archive object and the people in a warm working voice, the way a station host frames a recovery. Keep it spoken words only.",
+    "announcer_news_coda": "Speak the archive source note that closes the episode. Open with a bridge that names the object this episode was about, then turn from the fictional tale to its real preservation, provenance, or media history. Then say the supplied closing fact claim word for word, exactly as given, and return the closing fact id with it."
+  },
   "examples": [
     "A brittle transcription disc forces a small station archivist to choose between a public anniversary broadcast and patient restoration."
   ],

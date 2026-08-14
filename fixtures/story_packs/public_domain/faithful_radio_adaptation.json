@@ -16,6 +16,16 @@
     "style_pick_chooser": "Choose a visual style that supports the supplied public-domain source and does not replace the source with a new genre premise.",
     "style_pick_chooser_user_template": "Choose the best visual style for this public-domain adaptation: {story_summary}"
   },
+  "job_prompts": {
+    "story_seed": "You are putting a microphone on a story that already works. Name the source's own people and restate the question the source itself asks; do not invent a new premise. Choose one coherent cut of that source and say where it starts and where it ends. Title the episode from a concrete object, place, or phrase in the source. Planning text only, never dialogue.",
+    "story_arc": "The source's spine is the episode's spine. Give each act one premise drawn from the source's own turns, in the source's order, so the acts read as a beginning, a turn, and an end. Merge adjacent scenes around the decision point they share. Never invent a connective event the source does not contain. Planning text only, never dialogue.",
+    "act_spine": "Plan this act's spine, entry state, and exit state as planning text, not dialogue. Take the spine from the source's own turn for this stretch, and state what the source has changed by the end of the act. Let the characters want what the source gives them to want.",
+    "act_beats": "Each beat is one move the source itself makes, in the source's order. Where the source narrates, make the beat something a character in this act does. Do not add a beat to bridge a gap; where two source scenes sit side by side, merge them around the decision they share. Beat intents are planning text, not lines.",
+    "act_dialogue": "The quoted passage is the source this act adapts. Where it gives a character words, carry them: keep their diction, their rhythm, their argument. Use the part of the passage this beat covers, and carry it as written; do not paraphrase into a house style. Do not add subtext or indirection the source did not write. Carry whatever the source contains, including its violence, as the author staged it.",
+    "act_cleanup": "Leave a character's own words exactly as the source wrote them. Turn a stage direction into words that same character says out loud, or into a music cue. Change nothing else.",
+    "announcer_open": "Open the program like a studio announcer introducing an adaptation. Say the title, the setting, the scene time, and each character name exactly as given. Name the story's own people and its own situation; promise nothing the source does not deliver. Speak plainly, in the announcer's own voice. Spoken words only.",
+    "announcer_news_coda": "Speak a bridge that turns from the tale to the source it came from, then say the supplied closing claim word for word. Land your bridge on a concrete final image from the adapted source. Do not state a moral or a lesson. Never read a URL, a file name, or license text aloud."
+  },
   "examples": [
     "A chapter adaptation preserves its original protagonist, conflict, and ending while compressing narration into audio scenes."
   ],

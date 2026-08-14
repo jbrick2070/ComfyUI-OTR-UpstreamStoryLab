@@ -16,6 +16,16 @@
     "style_pick_chooser": "Choose a visual style that supports the supplied public-domain source and does not replace the source with a new genre premise.",
     "style_pick_chooser_user_template": "Choose the best visual style for this public-domain adaptation: {story_summary}"
   },
+  "job_prompts": {
+    "story_seed": "You are putting a microphone on a scene that already works. Name the play's own characters, their relationships, and the pressure the scene puts on them. Keep the scene's own devices: the letter, the prophecy, the disguise, the overheard line. Title the episode from a concrete detail in the scene. Planning text only, never dialogue.",
+    "story_arc": "Give each act one premise taken from the play's own scene turns, in the play's order. The last act lands the reversal the scene itself contains, not one you supply. Give the scene's essential speakers the work of these acts. Planning text only, never dialogue.",
+    "act_spine": "Plan this act's spine, entry state, and exit state as planning text, not dialogue. Take the conflict from the play's scene and from what each character wants in it. Say what the scene has changed by the act's end. Invent no turn the scene does not make.",
+    "act_beats": "Each beat is a move the scene itself makes, in order. Where the play gives only a stage direction, name what a listener should hear at that moment. Beat intents are planning text, not lines.",
+    "act_dialogue": "Where the play gives this character words, carry them: keep the diction, the rhythm, the argument. Never flatten verse into naturalism. These people answer each other directly and in public: let them finish the argument. When the scene has a character answer a question, let them answer it. Carry the scene's violence as the author staged it.",
+    "act_cleanup": "Leave a character's own words exactly as the play wrote them, verse and all. Turn a stage direction into words that same character says out loud, or into a music cue. Change nothing else.",
+    "announcer_open": "Open the program like a studio announcer introducing a drama. Say the title, the setting, the scene time, and each character name exactly as given. Give the listener the relationships they need to follow the scene, and nothing more. Spoken words only.",
+    "announcer_news_coda": "Speak a bridge that turns from the drama to the source it came from, then say the supplied closing claim word for word. Do not name the play or its author in your bridge. Land the bridge on a concrete final image from the adapted scene. Do not state a moral. Never read a URL aloud."
+  },
   "examples": [
     "A public-domain play scene becomes radio drama by making stage action audible through dialogue and sound."
   ],

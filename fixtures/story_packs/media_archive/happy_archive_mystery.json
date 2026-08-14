@@ -16,6 +16,16 @@
     "style_pick_chooser": "Choose a visual style that supports media-history, restoration, or archive-source storytelling without sci-fi defaults.",
     "style_pick_chooser_user_template": "Choose the best visual style for this media-archive story: {story_summary}"
   },
+  "job_prompts": {
+    "story_seed": "Write one story seed for an upbeat archive mystery, as planning text and not dialogue. Make the mystery a puzzle of memory, provenance, labeling, credit, or rediscovery. Take the clue and the missing context plainly from the source material and invent no source facts. Give somebody a warm human reason to need the answer. Title the episode from the clue at its center.",
+    "story_arc": "Plan one arc for this archive mystery, as planning text and not dialogue. Give each act its own premise and its own piece of the missing context. Let curiosity and affection drive the search. End with the discovery, recognition, or repair that restores what was lost.",
+    "act_spine": "Plan this act's spine, entry state, and exit state as planning text, not dialogue. Root the act in a question the incomplete archive context raises and in an upbeat human need. Say what the people know when the act opens and what they know when it ends.",
+    "act_beats": "List this act's beats in order as planning text, not dialogue. Each beat turns up a clue, a label, a credit, a rediscovered voice, or somebody's memory of the object. Let a wrong guess be corrected. Keep the puzzle solvable from what the archive material already gives.",
+    "act_dialogue": "Write what these people say out loud as they work the puzzle. Ground every line in the archive clues and in this beat's intent. Let people think out loud, guess, and correct each other. Keep the pleasure of the search in the words themselves.",
+    "act_cleanup": "When a row is already spoken words, leave it alone. Turn a direction into words that row's character says out loud as they work, or into a music cue. Keep the exact names, labels, and catalog numbers the draft uses, because the puzzle depends on them. Keep the good humor.",
+    "announcer_open": "Speak as the announcer opening an upbeat archive mystery. Say the title, the setting, the scene time, and each character name exactly as given, letter for letter. Name the object with the pleasure of someone about to share a good find. Promise a question, not a threat. Keep it spoken words only.",
+    "announcer_news_coda": "Speak the preservation note that closes the episode. Celebrate the discovery or the restored context, then turn to the real archive, collection, or media-history detail from the source material. Then say the supplied closing fact claim word for word, exactly as given, and return the closing fact id with it."
+  },
   "examples": [
     "A misfiled reel reveals the forgotten voice behind a beloved station jingle."
   ],
