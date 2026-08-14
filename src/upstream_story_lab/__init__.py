@@ -91,6 +91,19 @@ from .ledger_io import (
     load_ledger_envelope,
     save_ledger_envelope,
 )
+from .authoring_executor import (
+    AttemptRecord,
+    AuthoringBrief,
+    AuthoringExecutionError,
+    ModelJobRequest,
+    StagedAuthoringGuidance,
+    StagedAuthoringResult,
+    StagedModelProvider,
+    assign_story_facts,
+    author_story_ledger,
+    render_job_prompt,
+)
+from .scripted_provider import ScriptedStoryProvider
 from .story_authoring import (
     DIALOGUE_JOB_INSTRUCTIONS,
     AuthoringAttempt,
@@ -106,7 +119,18 @@ from .story_authoring import (
 )
 
 __all__ = [
+    "AttemptRecord",
+    "AuthoringBrief",
+    "AuthoringExecutionError",
     "BridgeArtifact",
+    "ModelJobRequest",
+    "ScriptedStoryProvider",
+    "StagedAuthoringGuidance",
+    "StagedAuthoringResult",
+    "StagedModelProvider",
+    "assign_story_facts",
+    "author_story_ledger",
+    "render_job_prompt",
     "CENTRAL_STORY_COMPILER_ID",
     "CAPTURED_SOURCE_PACKET_SCHEMA_VERSION",
     "CapturedSourcePacketArtifact",

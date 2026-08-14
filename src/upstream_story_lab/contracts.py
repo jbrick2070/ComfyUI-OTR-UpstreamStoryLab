@@ -14,6 +14,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from .authoring_executor import StagedAuthoringGuidance
 from .story_authoring import AuthoringSchedule
 
 SCHEMA_VERSION = "v2.0"
@@ -178,6 +179,12 @@ class SourceBankSpec(BaseModel):
     default_visual_style: str
     default_story_pipeline: str = "legacy_many_pass"
     defaults: BankDefaults = Field(default_factory=BankDefaults)
+    #: Soft staged-authoring shaping (beats/exchanges per act). Guidance
+    #: only - the ledger has no count-based acceptance law and this field
+    #: must never become one.
+    staged_authoring_guidance: StagedAuthoringGuidance = Field(
+        default_factory=StagedAuthoringGuidance
+    )
     #: Seams every pack of this bank MUST supply (no invented default prose).
     required_seams: list[str] = Field(default_factory=list)
     runnable: bool = True

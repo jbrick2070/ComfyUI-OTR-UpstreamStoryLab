@@ -21,6 +21,13 @@
         "title_form_label": "sci-fi radio drama",
         "coda_mode": "real_news_report"
       },
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
+      },
       "required_seams": [
         "outline_system",
         "pitch_room_system",
@@ -51,6 +58,13 @@
         "close_brief_label": "archive source note",
         "title_form_label": "archive-inspired radio drama",
         "coda_mode": "archive_source_note"
+      },
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
       },
       "required_seams": [
         "outline_system",
@@ -86,6 +100,13 @@
         "title_form_label": "public-domain radio adaptation",
         "coda_mode": "source_attribution"
       },
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
+      },
       "required_seams": [
         "outline_system",
         "pitch_room_system",
@@ -111,6 +132,13 @@
       "default_visual_style": "sci_fi_radio",
       "default_story_pipeline": "simple_4_prompt_experimental",
       "defaults": {},
+      "staged_authoring_guidance": {
+        "authority": "guidance",
+        "beats_per_act_low": 5,
+        "beats_per_act_high": 7,
+        "exchanges_per_beat_low": 2,
+        "exchanges_per_beat_high": 4
+      },
       "required_seams": [],
       "runnable": false,
       "guide_ref": "Create and validate a custom schema, source packet, and story pack first. Guide: CUSTOM_SOURCE_BANK_GUIDE.md"
