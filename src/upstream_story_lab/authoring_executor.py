@@ -165,6 +165,10 @@ class AuthoringBrief(StrictExecutorModel):
     source_window_max_chars: int | None = Field(
         default=MAX_BLOCK_CHARS, strict=True
     )
+    #: This bank's own direction per job, from the resolved pack's
+    #: ``job_prompts``.  Creative voice belongs to the bank; the shared
+    #: instructions above it stay identical for every bank.
+    bank_job_prompts: dict[str, str] = Field(default_factory=dict)
     guidance: StagedAuthoringGuidance = Field(
         default_factory=StagedAuthoringGuidance
     )
@@ -502,8 +506,14 @@ def render_job_prompt(
     attempt_number: int,
     context: Mapping[str, Any],
     feedback: tuple[str, ...] = (),
+    bank_direction: str = "",
 ) -> str:
-    """Render one deterministic provider-neutral prompt for a model job."""
+    """Render one deterministic provider-neutral prompt for a model job.
+
+    The same shape every time, so a small model sees familiar sections: what
+    the job is, the shared rules, this bank's own direction, the context, and
+    the exact output shape.
+    """
 
     parts: list[str] = [
         "STORY LAB STAGED AUTHORING JOB",
@@ -517,6 +527,8 @@ def render_job_prompt(
         f"{index}. {instruction}"
         for index, instruction in enumerate(job.instructions, start=1)
     )
+    if bank_direction.strip():
+        parts.extend(["", "BANK DIRECTION:", bank_direction.strip()])
     parts.extend(
         [
             "",
@@ -728,6 +740,7 @@ class _StagedRun:
                     attempt_number=attempt_number,
                     context=context,
                     feedback=feedback,
+                    bank_direction=self.brief.bank_job_prompts.get(job.kind, ""),
                 ),
                 decode_guard=DecodeGuard(
                     max_new_tokens=_DECODE_TOKEN_BUDGETS[job.kind]

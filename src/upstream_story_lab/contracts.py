@@ -45,6 +45,21 @@ TEMPLATE_SEAMS = (
     "pass_4_technical_ledger_audit",
 )
 
+#: The prompt-bearing jobs the staged executor actually runs, in order.  A
+#: pack's bank direction is keyed by these, so its creative voice reaches the
+#: exact model call it was written for.  Compiler and admission jobs
+#: (cast_sweep, music_bookends, final_admission) take no prompt.
+AUTHORING_JOB_SEAMS = (
+    "story_seed",
+    "story_arc",
+    "act_spine",
+    "act_beats",
+    "act_dialogue",
+    "act_cleanup",
+    "announcer_open",
+    "announcer_news_coda",
+)
+
 #: Label variables usable in ANY seam template (substituted from the resolved
 #: profile). Kibitz r2 (Codex, confirmed): some production templates carry
 #: RUNTIME variables filled at the call site - those are declared per seam
@@ -225,6 +240,10 @@ class StoryPack(BaseModel):
         "ready_fixture"
     )
     prompt_stages: dict[str, str] = Field(default_factory=dict)
+    #: Bank direction per authoring job, keyed by the job names the executor
+    #: actually runs.  This is what reaches a model; `prompt_stages` holds the
+    #: retired many-pass seams and is kept only until every pack has migrated.
+    job_prompts: dict[str, str] = Field(default_factory=dict)
     #: Label overrides (single-level over bank defaults; empty = inherit).
     labels: BankDefaults = Field(default_factory=BankDefaults)
     coda_mode: str = ""
@@ -244,6 +263,21 @@ class StoryPack(BaseModel):
             raise ValueError(
                 f"pack {self.story_model_id!r} has unknown prompt_stages keys: "
                 f"{unknown}; allowed: {sorted(TEMPLATE_SEAMS)}"
+            )
+        unknown_jobs = sorted(set(self.job_prompts) - set(AUTHORING_JOB_SEAMS))
+        if unknown_jobs:
+            raise ValueError(
+                f"pack {self.story_model_id!r} has job_prompts for jobs the "
+                f"executor does not run: {unknown_jobs}; allowed: "
+                f"{sorted(AUTHORING_JOB_SEAMS)}"
+            )
+        blank_jobs = sorted(
+            job for job, text in self.job_prompts.items() if not text.strip()
+        )
+        if blank_jobs:
+            raise ValueError(
+                f"pack {self.story_model_id!r} has blank job_prompts: "
+                f"{blank_jobs}; omit a job rather than declaring it empty"
             )
         if self.coda_mode and self.coda_mode not in CODA_MODES:
             raise ValueError(
