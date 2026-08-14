@@ -107,6 +107,19 @@ from .authoring_executor import (
     render_job_prompt,
 )
 from .scripted_provider import ScriptedStoryProvider
+from .source_window import (
+    LAB_NORMALIZATION_VERSION,
+    MIN_WINDOW_CHARS,
+    LabSourceDocument,
+    LabSourceError,
+    LabSourceSpan,
+    build_act_windows,
+    build_lab_source_document,
+    canonical_body_sha256,
+    normalize_lab_source_body,
+    render_source_block,
+    select_act_window,
+)
 from .story_authoring import (
     DIALOGUE_JOB_INSTRUCTIONS,
     AuthoringAttempt,
@@ -127,6 +140,17 @@ __all__ = [
     "AuthoringExecutionError",
     "BridgeArtifact",
     "DecodeGuard",
+    "LAB_NORMALIZATION_VERSION",
+    "LabSourceDocument",
+    "LabSourceError",
+    "LabSourceSpan",
+    "MIN_WINDOW_CHARS",
+    "build_act_windows",
+    "build_lab_source_document",
+    "canonical_body_sha256",
+    "normalize_lab_source_body",
+    "render_source_block",
+    "select_act_window",
     "ModelJobRequest",
     "ScriptedStoryProvider",
     "StagedAuthoringGuidance",
