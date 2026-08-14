@@ -1,7 +1,7 @@
 {
   "schema_version": "otr.story_ledger_mutation_corpus.v1",
   "base_fixture": "normative_ledger_envelope.json",
-  "base_file_sha256": "e0dfbd3d91cb5fd60327200a34a6da484b5361ab3a6305c6911816d3b472afe4",
+  "base_file_sha256": "afc723d8a854450a7b848f1132a350dbb947aac97eae988e14a053341c40fa82",
   "scope": "current executable story-plane boundary only",
   "excluded": [
     "production receipt schemas",
@@ -91,6 +91,23 @@
       "challenger_finding_codes": [
         "P5_SPEAKER_AUTHORITY_MISSING",
         "CROSS_SPEAKER_TEXT"
+      ]
+    },
+    {
+      "case_id": "speech.character_text_is_spoken_only",
+      "invariant_code": "STORY_SPOKEN_TEXT_ONLY",
+      "description": "A character row cannot smuggle narrated action and quoted novel dialogue into the spoken surface.",
+      "expected_gate": "trusted_admit",
+      "expected_message_regex": "ledger_integrity.*failed trusted",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/lines/1/text",
+          "value": "Oya turns to Ed. 'The smoke is already here.' Her voice trembles."
+        }
+      ],
+      "challenger_finding_codes": [
+        "SPOKEN_NARRATION_OR_STAGE_BUSINESS"
       ]
     },
     {

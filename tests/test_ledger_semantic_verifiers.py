@@ -19,11 +19,15 @@ from upstream_story_lab import (
     StoryBody,
     StoryLedger,
     TRUSTED_VALIDATOR_IDENTITIES,
-    TRUSTED_VALIDATOR_VERSION,
     build_story_seal,
     build_trusted_receipt_verifiers,
     canonical_sha256,
     verify_story_envelope,
+)
+from upstream_story_lab.ledger_verifiers import TRUSTED_VALIDATOR_VERSIONS
+from upstream_story_lab.spoken_text_policy import (
+    SPOKEN_TEXT_POLICY_ID,
+    audit_spoken_text,
 )
 
 
@@ -98,7 +102,7 @@ def test_machine_bible_locks_validator_identities_and_policies() -> None:
     assert contract["captured_packet_schema"] == (
         CAPTURED_SOURCE_PACKET_SCHEMA_VERSION
     )
-    assert contract["validator_version"] == TRUSTED_VALIDATOR_VERSION
+    assert contract["validator_versions"] == dict(TRUSTED_VALIDATOR_VERSIONS)
     assert contract["identities"] == {
         outcome: validator_id
         for outcome, (validator_id, _version) in (
@@ -106,6 +110,7 @@ def test_machine_bible_locks_validator_identities_and_policies() -> None:
         )
     }
     assert set(contract["policies"]) == set(TRUSTED_VALIDATOR_IDENTITIES)
+    assert contract["spoken_text_policy"]["policy_id"] == SPOKEN_TEXT_POLICY_ID
     assert contract["network_or_llm_calls"] == "forbidden"
 
 
@@ -286,6 +291,68 @@ def test_challenger_remains_rejection_calibration_not_a_v1_candidate() -> None:
     } <= findings
     with pytest.raises(ValidationError):
         StoryBody.model_validate(challenger["artifacts"]["p5"]["compiled"])
+
+
+def test_challenger_proves_both_independent_story_failures() -> None:
+    challenger = _json(CHALLENGER)
+    compiled = challenger["artifacts"]["p5"]["compiled"]
+    cast = challenger["authorities"]["cast_plan"]["cast"]
+    expected = challenger["expected"]
+    findings = audit_spoken_text(compiled["lines"], cast)
+
+    assert {
+        "ANNOUNCER_OPEN_MISSING",
+        "ANNOUNCER_CODA_MISSING",
+        "FACTUAL_CODA_MISSING",
+    } <= set(expected["finding_codes"])
+    assert compiled["lines"][0]["speaker_role"] == "character"
+    assert compiled["lines"][-1]["speaker_role"] == "character"
+
+    found_line_ids = {finding.line_id for finding in findings}
+    assert set(expected["narration_or_stage_line_ids"]) <= found_line_ids
+    assert set(expected["cross_speaker_line_ids"]) == {
+        finding.line_id
+        for finding in findings
+        if finding.code == "cross_speaker_attribution"
+    }
+    assert found_line_ids == {
+        "l001",
+        "l002",
+        "l004",
+        "l005",
+        "l006",
+        "l007",
+        "l008",
+        "l009",
+        "l010",
+        "l011",
+    }
+
+
+def test_integrity_v2_rejects_novel_prose_after_all_hashes_are_rebound() -> None:
+    story = _rebound_story(
+        lambda raw: raw["body"]["lines"][1].__setitem__(
+            "text",
+            "Oya turns to Ed. 'The smoke is already here.' Her voice trembles.",
+        )
+    )
+    envelope = _normative_envelope()
+
+    with pytest.raises(
+        LedgerContractError,
+        match="ledger_integrity.*failed trusted",
+    ):
+        build_story_seal(
+            story,
+            sealed_at=envelope.story_seal.sealed_at,
+            receipt_verifiers=_registry(envelope),
+        )
+
+
+def test_normative_story_is_clean_spoken_text() -> None:
+    body = _normative_envelope().story_ledger.body
+
+    assert audit_spoken_text(body.lines, body.cast) == ()
 
 
 def test_packet_registry_snapshots_mutable_bytes() -> None:

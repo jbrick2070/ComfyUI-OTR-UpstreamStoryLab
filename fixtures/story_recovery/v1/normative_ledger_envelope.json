@@ -284,7 +284,7 @@
         "ledger_integrity": {
           "status": "pass",
           "validator_id": "otr.story_validator.ledger_integrity",
-          "validator_version": "1",
+          "validator_version": "2",
           "evidence_refs": []
         },
         "news_capture": {
@@ -354,7 +354,7 @@
     "schema_version": "otr.story_seal.v1",
     "algorithm": "sha256",
     "canonicalization": "otr.canonical-json.v1",
-    "story_sha256": "7d443e7bcae3691d562f389bb94fc0c36cb02855d0f549c0e8aefbd402ead89e",
+    "story_sha256": "23abfa2f43ff69f5ed546bb492cb499849c1308383abc0618439cec924d57bca",
     "sealed_at": "2026-08-13T22:00:00Z"
   },
   "production_state": null,

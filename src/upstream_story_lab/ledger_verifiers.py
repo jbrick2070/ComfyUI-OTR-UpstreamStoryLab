@@ -6,7 +6,7 @@ module owns the additional deterministic outcome checks required before those
 receipts are trusted.  No verifier calls an LLM, performs network I/O, or
 silently repairs its input.
 
-The v1 prose policy is deliberately conservative: semantic claims pass only
+The prose policy is deliberately conservative: semantic claims pass only
 when their normalized literal evidence is present.  The announcer opening must
 name the setting, scene time, every story character, and the episode premise.
 The news coda must literally contain at least one complete fact claim that it
@@ -37,24 +37,46 @@ from .ledger_contract import (
     StrictModel,
     canonical_bytes,
 )
+from .spoken_text_policy import SPOKEN_TEXT_POLICY_ID, spoken_text_is_clean
 
 
 CAPTURED_SOURCE_PACKET_SCHEMA_VERSION = "otr.captured_source_packet.v1"
 TRUSTED_VALIDATOR_VERSION = "1"
+LEDGER_INTEGRITY_VALIDATOR_VERSION = "2"
 
 TRUSTED_VALIDATOR_IDENTITIES: Final[Mapping[str, tuple[str, str]]] = (
     MappingProxyType(
         {
-            outcome: (f"otr.story_validator.{outcome}", TRUSTED_VALIDATOR_VERSION)
-            for outcome in (
-                "ledger_integrity",
-                "news_capture",
-                "announcer_open",
-                "announcer_news_coda",
-                "music_bookends",
-            )
+            "ledger_integrity": (
+                "otr.story_validator.ledger_integrity",
+                LEDGER_INTEGRITY_VALIDATOR_VERSION,
+            ),
+            "news_capture": (
+                "otr.story_validator.news_capture",
+                TRUSTED_VALIDATOR_VERSION,
+            ),
+            "announcer_open": (
+                "otr.story_validator.announcer_open",
+                TRUSTED_VALIDATOR_VERSION,
+            ),
+            "announcer_news_coda": (
+                "otr.story_validator.announcer_news_coda",
+                TRUSTED_VALIDATOR_VERSION,
+            ),
+            "music_bookends": (
+                "otr.story_validator.music_bookends",
+                TRUSTED_VALIDATOR_VERSION,
+            ),
         }
     )
+)
+TRUSTED_VALIDATOR_VERSIONS: Final[Mapping[str, str]] = MappingProxyType(
+    {
+        outcome: version
+        for outcome, (_validator_id, version) in (
+            TRUSTED_VALIDATOR_IDENTITIES.items()
+        )
+    }
 )
 
 
@@ -104,7 +126,7 @@ def verify_ledger_integrity(
     body: StoryBody,
     receipt: OutcomeReceipt,
 ) -> bool:
-    """Re-run the complete strict graph/program model without repair."""
+    """Re-run the graph plus the v1 spoken-only policy without repair."""
 
     if not _has_identity("ledger_integrity", receipt):
         return False
@@ -112,7 +134,10 @@ def verify_ledger_integrity(
         validated = StoryBody.model_validate(body.model_dump(mode="json"))
     except (LedgerContractError, ValidationError):
         return False
-    return canonical_bytes(validated) == canonical_bytes(body)
+    return (
+        canonical_bytes(validated) == canonical_bytes(body)
+        and spoken_text_is_clean(validated.lines, validated.cast)
+    )
 
 
 def verify_news_capture(
@@ -300,8 +325,11 @@ def build_trusted_receipt_verifiers(
 __all__ = [
     "CAPTURED_SOURCE_PACKET_SCHEMA_VERSION",
     "CapturedSourcePacketArtifact",
+    "LEDGER_INTEGRITY_VALIDATOR_VERSION",
+    "SPOKEN_TEXT_POLICY_ID",
     "TRUSTED_VALIDATOR_IDENTITIES",
     "TRUSTED_VALIDATOR_VERSION",
+    "TRUSTED_VALIDATOR_VERSIONS",
     "build_trusted_receipt_verifiers",
     "verify_announcer_news_coda",
     "verify_announcer_open",

@@ -180,7 +180,7 @@ def test_corpus_has_exactly_one_rejected_case_per_machine_invariant() -> None:
     actual = [case["invariant_code"] for case in corpus["cases"]]
     case_ids = [case["case_id"] for case in corpus["cases"]]
 
-    assert len(expected) == 17
+    assert len(expected) == 18
     assert len(actual) == len(set(actual))
     assert set(actual) == set(expected)
     assert len(case_ids) == len(set(case_ids))

@@ -95,7 +95,13 @@
   },
   "trusted_semantic_validators": {
     "ownership": "code_owned_immutable_registry_with_caller_injected_packet_bytes",
-    "validator_version": "1",
+    "validator_versions": {
+      "ledger_integrity": "2",
+      "news_capture": "1",
+      "announcer_open": "1",
+      "announcer_news_coda": "1",
+      "music_bookends": "1"
+    },
     "identities": {
       "ledger_integrity": "otr.story_validator.ledger_integrity",
       "news_capture": "otr.story_validator.news_capture",
@@ -104,11 +110,17 @@
       "music_bookends": "otr.story_validator.music_bookends"
     },
     "policies": {
-      "ledger_integrity": "fresh strict StoryBody validation with identical canonical bytes",
+      "ledger_integrity": "fresh strict StoryBody validation with identical canonical bytes plus otr.spoken-text-only.v1",
       "news_capture": "exact external captured-packet raw-byte SHA-256 plus strict full projection equality and receipt-named packet/facts",
       "announcer_open": "first spoken announcer line contains normalized literal premise, setting, scene time, and every character name",
       "announcer_news_coda": "last spoken announcer line contains the normalized complete claim of at least one receipt-named fact cited by that line",
       "music_bookends": "receipt names the exact compiler-owned cues at sequence index zero and the terminal index"
+    },
+    "spoken_text_policy": {
+      "policy_id": "otr.spoken-text-only.v1",
+      "scope": "every speech row rejects production cues and delimited stage directions; character rows additionally reject quoted novel dialogue, third-person stage business, and cross-speaker attribution",
+      "calibration": "the clean normative v1 fixture passes and the exact 2026-08-13 Light of Possibility challenger fails",
+      "repair": "forbidden during trusted admission; reject and return to the writer"
     },
     "captured_packet_schema": "otr.captured_source_packet.v1",
     "prose_policy_change": "new validator_version_required",
@@ -172,6 +184,10 @@
     {
       "code": "STORY_SPEAKER_AUTHORITY",
       "rule": "Every spoken line carries speaker, speaker_role, and char_id matching the immutable cast row."
+    },
+    {
+      "code": "STORY_SPOKEN_TEXT_ONLY",
+      "rule": "Every speech row contains only words intended for its assigned voice; production cues, stage directions, quoted novel prose, third-person stage business, and cross-speaker attribution fail trusted ledger-integrity admission."
     },
     {
       "code": "STORY_FACTS_DURABLE",

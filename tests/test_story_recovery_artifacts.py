@@ -212,6 +212,17 @@ def test_challenger_preserves_exact_spoken_ownership_failures() -> None:
     assert lines["l011"]["char_id"] == "c03"
     assert lines["l011"]["text"].startswith("Ada leaves the room")
     assert all("speaker" not in line for line in lines.values())
+    assert case["expected"]["narration_or_stage_line_ids"] == [
+        "l001",
+        "l002",
+        "l004",
+        "l005",
+        "l007",
+        "l008",
+        "l009",
+        "l010",
+        "l011",
+    ]
     assert case["expected"]["cross_speaker_line_ids"] == ["l005", "l006", "l011"]
 
 

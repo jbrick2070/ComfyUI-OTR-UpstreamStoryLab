@@ -97,6 +97,14 @@ There are no action rows, stage-direction rows, narrator-prose rows, or
 delivery-note rows. Visual intent and dramatic intent may live in typed graph
 metadata; they are never passed to a speech consumer as dialogue.
 
+That shape rule is not enough by itself: the August 13 challenger put novel
+prose such as `Ada turns to Leo` inside a nominal character line. Trusted
+ledger-integrity admission therefore runs `otr.spoken-text-only.v1`. It rejects
+production cues and delimited directions in every speech row, plus quoted novel
+dialogue, third-person stage business, and cross-speaker attribution in a
+character row. It never rewrites prose during admission; the draft returns to
+the writer.
+
 ## Routing role and sequence role are different
 
 `speaker_role` chooses a voice route:
@@ -157,8 +165,9 @@ music receipt names the exact opening and closing cues. `ledger_integrity` may
 use the bound body hash alone. All five are bound to the same `body_sha256`. A
 receipt cannot survive a changed line, fact, speaker, cue, or order.
 
-The trusted v1 registry is code-owned and contains exactly five identities at
-validator version `1`: `otr.story_validator.ledger_integrity`,
+The trusted v1 registry is code-owned and contains exactly five identities.
+`otr.story_validator.ledger_integrity` is validator version `2`, which adds the
+versioned spoken-only policy; the other four remain validator version `1`:
 `otr.story_validator.news_capture`, `otr.story_validator.announcer_open`,
 `otr.story_validator.announcer_news_coda`, and
 `otr.story_validator.music_bookends`. The prose policy is deliberately
@@ -167,7 +176,9 @@ the opening must literally contain the premise, setting, opening-scene time,
 and every character name. The coda must literally contain the complete claim
 of at least one receipt-named fact cited by that line. A fuzzy or
 model-assisted policy requires a new validator version; it is never a silent
-implementation change.
+implementation change. Opening admission and spoken-only admission are
+independent: a clean dialogue body cannot compensate for a missing introduction,
+and a correct announcer opening cannot compensate for narrated character rows.
 
 The news validator is constructed with caller-supplied captured-packet bytes
 keyed by their declared SHA-256. It hashes the exact raw bytes, parses the
