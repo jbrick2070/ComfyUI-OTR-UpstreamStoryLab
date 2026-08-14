@@ -434,6 +434,13 @@ references carry their kind.
   `src/upstream_story_lab/ledger_verifiers.py`
 - Centralized act scheduler, draft filter, and cast sweep:
   `src/upstream_story_lab/story_authoring.py`
+- Provider-neutral staged authoring executor and prompt layer:
+  `src/upstream_story_lab/authoring_executor.py`
+- Deterministic scripted provider (fake model for tests/fixtures only):
+  `src/upstream_story_lab/scripted_provider.py`
+- Staged-executor proof fixture (three acts, sealed and reloadable):
+  `fixtures/story_recovery/v2/staged_authoring_three_act.json` via
+  `scripts/generate_staged_authoring_fixture.py`
 - Strict production adapter and atomic save/load guard:
   `src/upstream_story_lab/ledger_io.py`
 - Complete normative envelope and external captured packet:

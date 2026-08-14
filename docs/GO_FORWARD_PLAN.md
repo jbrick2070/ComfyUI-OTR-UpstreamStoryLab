@@ -1,7 +1,9 @@
 # GO FORWARD PLAN — OTR Act-Based Story Lab
 
-Updated: 2026-08-14. This is the current handoff. The Story Lab ledger is
-enshrined and pushed; production OTR has not been changed.
+Updated: 2026-08-14 (second pass). This is the current handoff. The Story Lab
+ledger is enshrined, and the provider-neutral staged authoring executor now
+exists and is proven with a deterministic fake model. Production OTR has not
+been changed.
 
 ## Outcome now locked
 
@@ -126,8 +128,8 @@ Authorities:
   - `b01ef65` — generated v2 schema and field laws;
   - `74c2c1b` — terminal seal plus strict adapter/save/load proof;
   - `1832981` — enshrined human/machine constitution.
-- Full suite: 312 passed.
-- Generated artifact `--check`: passed.
+- Full suite: 330 passed (312 enshrinement + 18 staged-executor).
+- Generated artifact `--check`: passed; staged fixture `--check`: passed.
 - `validate_lab.py`: 4 banks, 12 packs, 55 specs, 5 visual styles, 3
   public-domain manifests, no mirror drift.
 - `smoke_nodes.py`: passed.
@@ -140,32 +142,50 @@ remote at the last read-only check. Its existing untracked operator files were
 not touched. The production mirror in this lab is historical characterization,
 not authority for the current production head.
 
-## What is next — prove one fresh story in the Lab
+## Staged authoring executor — built and proven with a fake model
 
-Do not jump directly into another production render. The next implementation
-slice is a provider-neutral staged authoring executor and prompt layer over the
-already locked schedule:
+The provider-neutral executor and prompt layer now exist:
 
-1. Compile one bank packet into a source-grounded story-seed job.
-2. Ask for one coherent arc containing exactly the operator-selected acts.
-3. For each act in order, run separate spine, beat-plan, and dialogue jobs.
-4. Give every dialogue job the locked cast, source facts, full arc, current act
-   spine/states, prior exit state, and exact beat IDs/intents.
-5. Repeat in every dialogue prompt: output only words spoken aloud by the
-   assigned character; no stage directions, action, narration, delivery notes,
-   or another speaker’s words.
-6. Sanitize the draft. Drop safe standalone cues; retry only the owning act for
-   ambiguous embedded prose or missing dialogue.
-7. Sweep unused characters, then write the announcer opening from the final
-   title/setting/scene/time/cast and the coda from captured source facts.
-8. Add compiler music bookends, admit all five outcomes, seal, save, reload,
-   and compare exact story bytes.
+- `src/upstream_story_lab/authoring_executor.py` walks the locked
+  `3 * act_count + 7` schedule, assembles per-job context (locked cast, source
+  facts, full arc, act spine/states, prior exit state, exact beat IDs and
+  intents), renders deterministic prompts, and repeats the spoken-only law in
+  every dialogue job.
+- Draft acceptance runs the enshrined sanitizer and the spoken-text policy per
+  act; safe standalone cues are dropped with a journal note, and every other
+  defect retries only its owning job with explicit feedback. Exhausted retries
+  fail loud. A retry never creates an act.
+- Because the graph law demands every captured fact be cited by a spoken line,
+  `assign_story_facts` deterministically gives the closing fact to the coda and
+  cycles the rest across acts, so a missing citation always has exactly one
+  retryable dialogue job.
+- The compiler owns the cast sweep, announcer-opening literal-mention check,
+  coda claim-verbatim check, music bookends, and final compilation into a v2
+  envelope admitted through the code-owned verifier registry, sealed, saved,
+  reloaded, and byte-compared.
+- `src/upstream_story_lab/scripted_provider.py` is the injected deterministic
+  fake model. `scripts/generate_staged_authoring_fixture.py --write/--check`
+  produces the sealed proof fixture
+  `fixtures/story_recovery/v2/staged_authoring_three_act.json`
+  (`science_news`, `act_count=3`, one script-requested interstitial, one
+  unused locked character swept).
+- Soft shaping is now declared per bank in `fixtures/banks.json` as
+  `staged_authoring_guidance` (beats_per_act 5–7, exchanges_per_beat 2–4,
+  `authority: "guidance"`). It steers prompts only; there is still no
+  count-based acceptance law and this field must never become one.
 
-Start with an injected deterministic fake model so scheduling, retry ownership,
-context assembly, and ledger compilation are testable without a GPU. Then run
-one real Lab story through a deliberately chosen local or cloud route. The
-proof is a newly authored v2 ledger that passes admission and visibly contains
-only music, announcer, and character dialogue—not a word-count score.
+## What is next — one real story on the RTX 4060
+
+The repo-local 4060 safety instructions are restored verbatim at
+`.claude/skills/rtx-4060-lab/` (from `vram-recipe-lab`). Note the scope gap
+before running: that skill currently enrolls only three fixed video plans and
+forbids arbitrary free-text prompting, so executing staged story-model jobs on
+the 4060 requires the operator to explicitly enroll a story-authoring plan (or
+approve an equivalent scoped route) first — do not improvise around the skill.
+Then implement one real `StagedModelProvider` for the chosen route, author one
+fresh `science_news` `act_count=3` story, and admit it through the same
+executor. The proof is the sealed ledger, not a word-count score. Never load
+the story LLM on the 5080.
 
 ## Production transplant after that proof
 
@@ -186,12 +206,13 @@ resume only after the transplanted story path is green.
 
 ## Next-window kickoff
 
-“Read this file plus `docs/LEDGER_BIBLE.md`. Confirm Story Lab `main` equals
-`origin/main` and leave production OTR untouched. Implement only the
-provider-neutral staged authoring executor/prompt layer over
-`story_authoring.py`, with deterministic fake-model tests. The executor must
-honor hard `act_count=1..5`, keep retries on the owning job, continually demand
-actual dialogue, sanitize before admission, sweep unused cast, and compile the
-exact music→announcer→dialogue→announcer→music sequence. Generate one complete
-new v2 ledger fixture and run the full Story Lab gates. Do not add a word-count
-gate, run a GPU render, or transplant into production in that first slice.”
+“Read this file plus `docs/LEDGER_BIBLE.md` and
+`.claude/skills/rtx-4060-lab/SKILL.md`. Confirm Story Lab `main` equals
+`origin/main` and leave production OTR untouched. The staged executor and its
+fake-model proof already exist; do not rebuild them. With the operator, enroll
+an explicit 4060 story-authoring plan under the skill's rules (no improvised
+free-text route), implement one real `StagedModelProvider` for that route, and
+author one fresh `science_news` `act_count=3` story through
+`author_story_ledger`, saving the sealed envelope. Do not add a word-count
+gate, load an LLM on the 5080, or transplant into production until that real
+story passes.”
