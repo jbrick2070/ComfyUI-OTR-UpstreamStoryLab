@@ -441,7 +441,7 @@ class LedgerWritingSpec(BaseModel):
     story_model_id: str
     story_pipeline_id: str = "legacy_many_pass"
     visual_style_id: str = "sci_fi_radio"
-    act_count: int = Field(strict=True, ge=1, le=5)
+    act_count: int = Field(strict=True, ge=1, le=8)
     authoring_compiler_id: Literal[CENTRAL_STORY_COMPILER_ID] = (
         CENTRAL_STORY_COMPILER_ID
     )

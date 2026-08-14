@@ -17,10 +17,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+from collections import Counter
 from collections.abc import Mapping
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Literal, Protocol
+from typing import Annotated, Any, Literal, Protocol
 
 from pydantic import (
     BaseModel,
@@ -131,7 +133,7 @@ class AuthoringBrief(StrictExecutorModel):
     episode_id: str = Field(pattern=ID_PATTERN)
     setting: NonBlankText
     scene_time: NonBlankText
-    act_count: int = Field(strict=True, ge=1, le=5)
+    act_count: int = Field(strict=True, ge=1, le=8)
     cast: tuple[CastMember, ...] = Field(min_length=2)
     source_packet_bytes: bytes
     guidance: StagedAuthoringGuidance = Field(
@@ -157,18 +159,43 @@ class AuthoringBrief(StrictExecutorModel):
         return self
 
 
+class DecodeGuard(StrictExecutorModel):
+    """Provider-facing anti-runaway decode hints for one job.
+
+    Runaway guards, not content targets: a generous per-job output budget and
+    a gentle repetition penalty (production doctrine: 1.03 gentle, clamp at
+    1.2, 1.0 disables) so a looping decoder cannot burn the context.
+    """
+
+    max_new_tokens: int = Field(strict=True, ge=1)
+    recommended_repetition_penalty: float = 1.03
+    repetition_penalty_ceiling: float = 1.2
+
+
+_DECODE_TOKEN_BUDGETS: dict[str, int] = {
+    "story_seed": 400,
+    "story_arc": 900,
+    "act_spine": 600,
+    "act_beats": 800,
+    "act_dialogue": 2400,
+    "announcer_open": 500,
+    "announcer_news_coda": 500,
+}
+
+
 class ModelJobRequest(StrictExecutorModel):
     """One provider call: a schedule attempt plus its complete context."""
 
     attempt_id: str = Field(min_length=1)
     job_id: str = Field(min_length=1)
     kind: JobKind
-    act_number: int | None = Field(default=None, strict=True, ge=1, le=5)
+    act_number: int | None = Field(default=None, strict=True, ge=1, le=8)
     attempt_number: int = Field(strict=True, ge=1)
     instructions: tuple[str, ...]
     context: dict[str, Any]
     feedback: tuple[str, ...] = ()
     prompt: str = Field(min_length=1)
+    decode_guard: DecodeGuard
 
 
 class StagedModelProvider(Protocol):
@@ -199,37 +226,90 @@ class StagedAuthoringResult(StrictExecutorModel):
     roundtrip_verified: bool = False
 
 
+# Every payload surface carries a generous-but-finite cap: a runaway guard,
+# not a content target, so a looping decoder cannot blow out the context.
 class SeedPayload(StrictExecutorModel):
-    episode_title: NonBlankText
-    story_seed: NonBlankText
+    episode_title: NonBlankText = Field(max_length=200)
+    story_seed: NonBlankText = Field(max_length=2000)
 
 
 class ArcPayload(StrictExecutorModel):
-    summary: NonBlankText
-    act_premises: tuple[NonBlankText, ...] = Field(min_length=1, max_length=5)
+    summary: NonBlankText = Field(max_length=2000)
+    act_premises: tuple[
+        Annotated[NonBlankText, Field(max_length=600)], ...
+    ] = Field(min_length=1, max_length=8)
 
 
 class ActSpinePayload(StrictExecutorModel):
-    spine: NonBlankText
-    entry_state: NonBlankText
-    exit_state: NonBlankText
+    spine: NonBlankText = Field(max_length=1500)
+    entry_state: NonBlankText = Field(max_length=1500)
+    exit_state: NonBlankText = Field(max_length=1500)
 
 
 class ActBeatsPayload(StrictExecutorModel):
-    beat_intents: tuple[NonBlankText, ...] = Field(min_length=1)
+    beat_intents: tuple[
+        Annotated[NonBlankText, Field(max_length=500)], ...
+    ] = Field(min_length=1, max_length=24)
 
 
 class ActDialoguePayload(StrictExecutorModel):
-    rows: tuple[dict[str, Any], ...] = Field(min_length=1)
+    rows: tuple[dict[str, Any], ...] = Field(min_length=1, max_length=240)
 
 
 class AnnouncerOpenPayload(StrictExecutorModel):
-    text: NonBlankText
+    text: NonBlankText = Field(max_length=2500)
 
 
 class AnnouncerCodaPayload(StrictExecutorModel):
-    text: NonBlankText
+    text: NonBlankText = Field(max_length=2500)
     fact_id: str = Field(pattern=ID_PATTERN)
+
+
+_SPEECH_TEXT_RUNAWAY_CAP = 1200
+_MUSIC_TEXT_RUNAWAY_CAP = 500
+_RUNAWAY_REPEAT_FLOOR = 4
+_RUNAWAY_REPEAT_BUDGET = 24
+_RUNAWAY_MAX_WINDOW = 10
+_REPEATED_ROW_LIMIT = 3
+_RUNAWAY_WORD_RE = re.compile(r"[^\W_]+", re.UNICODE)
+
+
+def find_decode_runaway(text: str) -> str | None:
+    """Deterministic decode-liveness check for one accepted text surface.
+
+    Catches the documented glitch where a decoder loops one phrase until it
+    blows out the context.  The consecutive-repeat threshold scales with
+    window size - short windows need many repeats - so legitimate dramatic
+    rhetoric (a word said five times) passes while a true runaway cannot.
+    """
+
+    words = [word.casefold() for word in _RUNAWAY_WORD_RE.findall(text)]
+    for size in range(1, _RUNAWAY_MAX_WINDOW + 1):
+        required = max(
+            _RUNAWAY_REPEAT_FLOOR, -(-_RUNAWAY_REPEAT_BUDGET // size)
+        )
+        for start in range(0, len(words) - size + 1):
+            window = words[start : start + size]
+            repeats = 1
+            position = start + size
+            while words[position : position + size] == window:
+                repeats += 1
+                position += size
+            if repeats >= required:
+                return (
+                    f"decode runaway: {' '.join(window)!r} repeats "
+                    f"{repeats} times consecutively"
+                )
+    return None
+
+
+def _decode_runaway_reasons(surfaces: Mapping[str, str]) -> list[str]:
+    reasons: list[str] = []
+    for label, text in surfaces.items():
+        finding = find_decode_runaway(text)
+        if finding is not None:
+            reasons.append(f"{label}: {finding}")
+    return reasons
 
 
 class _AcceptedSpeechRow(StrictExecutorModel):
@@ -506,6 +586,9 @@ class _StagedRun:
                     context=context,
                     feedback=feedback,
                 ),
+                decode_guard=DecodeGuard(
+                    max_new_tokens=_DECODE_TOKEN_BUDGETS[job.kind]
+                ),
             )
             payload = self.provider.run_job(request)
             if not isinstance(payload, Mapping):
@@ -666,9 +749,18 @@ class _StagedRun:
         self, job: AuthoringJob, payload: dict[str, Any]
     ) -> tuple[tuple[str, ...], tuple[str, ...]]:
         try:
-            self.seed = SeedPayload.model_validate(payload)
+            seed = SeedPayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
+        reasons = _decode_runaway_reasons(
+            {
+                "episode_title": seed.episode_title,
+                "story_seed": seed.story_seed,
+            }
+        )
+        if reasons:
+            return tuple(reasons), ()
+        self.seed = seed
         return (), ()
 
     def _accept_arc(
@@ -685,6 +777,17 @@ class _StagedRun:
                     f"premises, got {len(arc.act_premises)}"
                 ),
             ), ()
+        reasons = _decode_runaway_reasons(
+            {
+                "summary": arc.summary,
+                **{
+                    f"act_premises[{index}]": premise
+                    for index, premise in enumerate(arc.act_premises)
+                },
+            }
+        )
+        if reasons:
+            return tuple(reasons), ()
         self.arc = arc
         return (), ()
 
@@ -693,11 +796,19 @@ class _StagedRun:
     ) -> tuple[tuple[str, ...], tuple[str, ...]]:
         assert job.act_number is not None
         try:
-            self.spines[job.act_number] = ActSpinePayload.model_validate(
-                payload
-            )
+            spine = ActSpinePayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
+        reasons = _decode_runaway_reasons(
+            {
+                "spine": spine.spine,
+                "entry_state": spine.entry_state,
+                "exit_state": spine.exit_state,
+            }
+        )
+        if reasons:
+            return tuple(reasons), ()
+        self.spines[job.act_number] = spine
         return (), ()
 
     def _accept_beats(
@@ -709,6 +820,14 @@ class _StagedRun:
             beats = ActBeatsPayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
+        runaway = _decode_runaway_reasons(
+            {
+                f"beat_intents[{index}]": intent
+                for index, intent in enumerate(beats.beat_intents)
+            }
+        )
+        if runaway:
+            return tuple(runaway), ()
         # b001 is the compiler-owned announcer opening beat; act beats are
         # globally numbered in program order after it.
         offset = 2 + sum(
@@ -770,6 +889,15 @@ class _StagedRun:
                         "generation_prompt"
                     )
                     continue
+                if (
+                    len(description) > _MUSIC_TEXT_RUNAWAY_CAP
+                    or len(generation_prompt) > _MUSIC_TEXT_RUNAWAY_CAP
+                ):
+                    reasons.append(
+                        f"row {index}: music_inter text exceeds the "
+                        f"{_MUSIC_TEXT_RUNAWAY_CAP}-char runaway guard"
+                    )
+                    continue
                 typed.append(
                     _AcceptedMusicRow(
                         description=description,
@@ -809,6 +937,16 @@ class _StagedRun:
             if not isinstance(text, str) or not text.strip():
                 reasons.append(f"row {index}: text must be non-blank speech")
                 continue
+            if len(text) > _SPEECH_TEXT_RUNAWAY_CAP:
+                reasons.append(
+                    f"row {index}: speech text exceeds the "
+                    f"{_SPEECH_TEXT_RUNAWAY_CAP}-char runaway guard"
+                )
+                continue
+            runaway = find_decode_runaway(text)
+            if runaway is not None:
+                reasons.append(f"row {index}: {runaway}")
+                continue
             if not isinstance(raw_fact_ids, (list, tuple)) or any(
                 not isinstance(fact_id, str) for fact_id in raw_fact_ids
             ):
@@ -844,6 +982,15 @@ class _StagedRun:
         speech_rows = [
             row for row in typed if isinstance(row, _AcceptedSpeechRow)
         ]
+        repeated_rows = Counter(
+            " ".join(row.text.split()).casefold() for row in speech_rows
+        )
+        worst_repeat = max(repeated_rows.values(), default=0)
+        if worst_repeat >= _REPEATED_ROW_LIMIT:
+            reasons.append(
+                "decode liveness: the same dialogue line appears "
+                f"{worst_repeat} times across rows"
+            )
         covered_beats = {row.beat_id for row in speech_rows}
         for beat_id in act_beat_ids:
             if beat_id not in covered_beats:
@@ -924,6 +1071,9 @@ class _StagedRun:
                 f"{sequence_role}: {issue.reason}"
                 for issue in sanitized.rewrite_rows
             )
+        runaway = find_decode_runaway(text)
+        if runaway is not None:
+            return (f"{sequence_role}: {runaway}",)
         announcer = self._announcer()
         findings = audit_spoken_text(
             [
@@ -1396,6 +1546,7 @@ __all__ = [
     "AttemptRecord",
     "AuthoringBrief",
     "AuthoringExecutionError",
+    "DecodeGuard",
     "ModelJobRequest",
     "StagedAuthoringGuidance",
     "StagedAuthoringResult",
@@ -1403,5 +1554,6 @@ __all__ = [
     "ULTRASHORT_GUIDANCE",
     "assign_story_facts",
     "author_story_ledger",
+    "find_decode_runaway",
     "render_job_prompt",
 ]

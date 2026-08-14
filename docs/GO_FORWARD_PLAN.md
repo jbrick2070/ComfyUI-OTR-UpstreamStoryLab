@@ -41,7 +41,7 @@ introduce the scene and final speaking characters. The pinned challenger is:
 
 ## One hard length knob
 
-The only visible story-length control is strict integer `act_count=1..5`.
+The only visible story-length control is strict integer `act_count=1..8`.
 There is no `auto`, global target-word variable, word-count admission gate, or
 hardware-derived act count. Words and rendered minutes are observations.
 
@@ -61,8 +61,8 @@ source packet
 ```
 
 The stable schedule is `3 * act_count + 7` jobs. The base model schedule is
-`3 * act_count + 4` calls before retries: 7 calls for one act through 19 calls
-for five acts. A retry is another attempt on the same job and never creates an
+`3 * act_count + 4` calls before retries: 7 calls for one act through 28 calls
+for eight acts. A retry is another attempt on the same job and never creates an
 extra act.
 
 Beat count, exchange count, and approximate duration may be soft per-bank or
@@ -128,8 +128,10 @@ Authorities:
   - `b01ef65` — generated v2 schema and field laws;
   - `74c2c1b` — terminal seal plus strict adapter/save/load proof;
   - `1832981` — enshrined human/machine constitution.
-- Full suite: 330 passed (312 enshrinement + 18 staged-executor).
-- Generated artifact `--check`: passed; staged fixture `--check`: passed.
+- Full suite: 358 passed (enshrinement + staged executor + per-bank act
+  proofs + runaway guards + 1..8 ceiling migration).
+- Generated artifact `--check`: passed; staged fixture and per-bank act proof
+  `--check`: passed.
 - `validate_lab.py`: 4 banks, 12 packs, 55 specs, 5 visual styles, 3
   public-domain manifests, no mirror drift.
 - `smoke_nodes.py`: passed.
@@ -173,6 +175,21 @@ The provider-neutral executor and prompt layer now exist:
   `staged_authoring_guidance` (beats_per_act 5–7, exchanges_per_beat 2–4,
   `authority: "guidance"`). It steers prompts only; there is still no
   count-based acceptance law and this field must never become one.
+  `ULTRASHORT_GUIDANCE` (2 beats/act, 2 exchanges/beat) exists for rapid-fire
+  testing.
+- The documented anti-runaway doctrine is baked in (operator directive
+  2026-08-14, mirroring production's "cap is a runaway guard, not a content
+  target" rules): every model payload surface has a generous finite cap;
+  every model request carries a `DecodeGuard` (per-job `max_new_tokens`
+  budget, repetition penalty 1.03 recommended, 1.2 ceiling); and two
+  deterministic decode-liveness signals reject a looping decoder —
+  `find_decode_runaway` (consecutive phrase repetition, threshold scaled so
+  dramatic rhetoric passes) and a repeated-identical-line check across a
+  dialogue payload. All of it retries only the owning job and none of it is
+  a word-count gate.
+- The act ceiling is now `act_count=1..8` (operator decision 2026-08-14,
+  pre-transplant contract widening while v2 has no external consumer): 8
+  acts schedule 31 jobs / 28 base model calls.
 
 ## What is next — one real story on the RTX 4060
 
@@ -193,7 +210,7 @@ Once the fresh Lab story passes, inspect the latest production OTR head and
 transplant one proven boundary at a time:
 
 1. exact v2 envelope loader and Story Lab→production adapter;
-2. visible `act_count` 1–5 wiring and centralized staged authoring path;
+2. visible `act_count` 1–8 wiring and centralized staged authoring path;
 3. removal or isolation of legacy word-count/tier/auto authority on that path;
 4. spoken-only cleaner, cast sweep, announcer introduction/coda, and music
    topology;

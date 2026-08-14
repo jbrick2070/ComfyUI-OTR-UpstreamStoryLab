@@ -291,7 +291,7 @@ def test_machine_readable_contract_locks_only_the_operator_requirements() -> Non
         "current_l4_cleanup_locked_is_not_enforcement": True,
     }
     authoring = contract["act_authoring"]
-    assert (authoring["minimum"], authoring["maximum"]) == (1, 5)
+    assert (authoring["minimum"], authoring["maximum"]) == (1, 8)
     assert authoring["type"] == "strict_integer"
     assert authoring["per_act_path"] == ["spine", "beats", "dialogue"]
     assert authoring["stable_job_count"] == "3 * act_count + 7"

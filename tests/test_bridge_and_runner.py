@@ -62,7 +62,7 @@ def test_bridge_refuses_empty_seed(registry) -> None:
         build_bridge_artifact(stripped)
 
 
-@pytest.mark.parametrize("act_count", range(1, 6))
+@pytest.mark.parametrize("act_count", range(1, 9))
 def test_every_bank_routes_through_one_exact_act_scheduler(
     registry,
     act_count: int,
@@ -89,7 +89,7 @@ def test_every_bank_routes_through_one_exact_act_scheduler(
         ) == act_count
 
 
-@pytest.mark.parametrize("act_count", [0, 6, "3", 3.0, True])
+@pytest.mark.parametrize("act_count", [0, 9, "3", 3.0, True])
 def test_bridge_rejects_invalid_act_count_before_compilation(
     registry,
     act_count,

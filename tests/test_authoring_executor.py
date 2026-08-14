@@ -26,6 +26,7 @@ from upstream_story_lab.authoring_executor import (  # noqa: E402
     StagedAuthoringResult,
     assign_story_facts,
     author_story_ledger,
+    find_decode_runaway,
 )
 from upstream_story_lab.ledger_contract import canonical_bytes  # noqa: E402
 from upstream_story_lab.ledger_io import load_ledger_envelope  # noqa: E402
@@ -214,7 +215,7 @@ def test_runs_are_deterministic() -> None:
 
 @pytest.mark.parametrize(
     ("act_count", "expected_jobs"),
-    [(1, 10), (5, 22)],
+    [(1, 10), (5, 22), (8, 31)],
 )
 def test_act_count_bounds_seal(act_count: int, expected_jobs: int) -> None:
     result = run_lab(act_count=act_count)
@@ -369,6 +370,88 @@ def test_exhausted_retries_fail_loud() -> None:
     with pytest.raises(AuthoringExecutionError) as excinfo:
         run_lab(provider, max_attempts=2)
     assert "act_01.dialogue" in str(excinfo.value)
+
+
+def test_find_decode_runaway_spares_rhetoric_and_catches_loops() -> None:
+    # Dramatic repetition passes: five repeats of one word is rhetoric.
+    assert find_decode_runaway("Never, never, never, never, never.") is None
+    assert (
+        find_decode_runaway(
+            "I checked the figures twice tonight, and the answer refuses "
+            "to change."
+        )
+        is None
+    )
+    # A looping decoder repeating one phrase is caught.
+    assert find_decode_runaway("the smoke will fall " * 8) is not None
+    assert find_decode_runaway("no " * 30) is not None
+
+
+def test_dialogue_decode_runaway_retries_owning_act() -> None:
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        rows = [dict(row) for row in payload["rows"]]
+        rows[0]["text"] = "the smoke will fall " * 8
+        payload["rows"] = rows
+        return payload
+
+    provider = TamperingProvider("act_01.dialogue", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "act_01.dialogue")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("decode runaway" in reason for reason in records[0].reasons)
+
+
+def test_repeated_dialogue_line_retries_owning_act() -> None:
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        rows = [dict(row) for row in payload["rows"]]
+        for row in rows:
+            if row.get("role") == "character_dialogue":
+                row["text"] = "The same words again, exactly as before."
+        payload["rows"] = rows
+        return payload
+
+    provider = TamperingProvider("act_02.dialogue", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "act_02.dialogue")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("decode liveness" in reason for reason in records[0].reasons)
+
+
+def test_payload_caps_reject_runaway_length() -> None:
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        payload["story_seed"] = "smoke and signal " * 400
+        return payload
+
+    provider = TamperingProvider("story_seed", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "story_seed")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("2000" in reason for reason in records[0].reasons)
+
+
+def test_every_model_request_carries_a_decode_guard() -> None:
+    class Recording(ScriptedStoryProvider):
+        def __init__(self) -> None:
+            self.requests: list[ModelJobRequest] = []
+
+        def run_job(self, request: ModelJobRequest) -> dict[str, Any]:
+            self.requests.append(request)
+            return super().run_job(request)
+
+    provider = Recording()
+    run_lab(provider)
+    assert provider.requests
+    for request in provider.requests:
+        guard = request.decode_guard
+        assert guard.max_new_tokens >= 1
+        assert guard.recommended_repetition_penalty == 1.03
+        assert guard.repetition_penalty_ceiling == 1.2
+    dialogue_guards = {
+        request.decode_guard.max_new_tokens
+        for request in provider.requests
+        if request.kind == "act_dialogue"
+    }
+    assert dialogue_guards == {2400}
 
 
 def test_committed_fixture_is_current_and_loadable() -> None:

@@ -196,7 +196,7 @@ class OTR_StoryPackPreview:
         return {
             "required": {
                 "source_bank_id": (_bank_choices(), {"default": "media_archive"}),
-                "act_count": ("INT", {"default": 3, "min": 1, "max": 5, "step": 1}),
+                "act_count": ("INT", {"default": 3, "min": 1, "max": 8, "step": 1}),
                 "story_model_id": (_model_choices(), {"default": "auto"}),
                 "story_pipeline_id": (_pipeline_choices(), {"default": "auto"}),
                 "visual_style_id": (_style_choices(), {"default": "auto"}),
@@ -256,7 +256,7 @@ class OTR_BridgeArtifactEmit:
         return {
             "required": {
                 "source_bank_id": (_bank_choices(), {"default": "media_archive"}),
-                "act_count": ("INT", {"default": 3, "min": 1, "max": 5, "step": 1}),
+                "act_count": ("INT", {"default": 3, "min": 1, "max": 8, "step": 1}),
                 "story_model_id": (_model_choices(), {"default": "auto"}),
                 "story_pipeline_id": (_pipeline_choices(), {"default": "auto"}),
                 "visual_style_id": (_style_choices(), {"default": "auto"}),

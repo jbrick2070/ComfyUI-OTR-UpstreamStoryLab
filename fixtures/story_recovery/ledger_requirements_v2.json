@@ -106,7 +106,7 @@
     "field": "act_count",
     "type": "strict_integer",
     "minimum": 1,
-    "maximum": 5,
+    "maximum": 8,
     "resolution_authority": "operator_input",
     "generation_method": "central_compiler_story_seed_then_arc_then_exact_act_paths",
     "per_act_path": [

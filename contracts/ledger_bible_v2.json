@@ -89,7 +89,7 @@
   "act_authoring": {
     "visible_length_control": "act_count",
     "minimum": 1,
-    "maximum": 5,
+    "maximum": 8,
     "integer_only": true,
     "resolution_authority": "operator_input_never_word_count_or_hardware",
     "central_compiler": "all source banks retain bank-specific creative prompts but pass through one story-ledger compiler and trusted admission gate",
@@ -97,7 +97,7 @@
     "act_fanout_law": "act_count creates exactly that many ordered act paths; retries append attempts to the same job and never create acts",
     "stable_job_count": "3 * act_count + 7",
     "base_model_job_count": "3 * act_count + 4",
-    "range_receipt": "act_count 1..5 yields 10..22 total jobs and 7..19 base model jobs before retries",
+    "range_receipt": "act_count 1..8 yields 10..31 total jobs and 7..28 base model jobs before retries",
     "planning_only_fields": [
       "story_seed",
       "story_arc.summary",
@@ -225,7 +225,7 @@
     },
     {
       "code": "STORY_ACT_TOPOLOGY_EXACT",
-      "rule": "act_count is a strict integer from 1 through 5; the ordered story arc and act table match it exactly, every act owns an ordered spine/beat projection, and each act beat contains final character dialogue."
+      "rule": "act_count is a strict integer from 1 through 8; the ordered story arc and act table match it exactly, every act owns an ordered spine/beat projection, and each act beat contains final character dialogue."
     },
     {
       "code": "STORY_CAST_SWEEP_EXACT",

@@ -77,7 +77,7 @@ change the story digest.
 `story_ledger.body` owns:
 
 - context: episode title, story seed, setting, and strict integer `act_count`
-  from 1 through 5;
+  from 1 through 8;
 - source packet: bank ID, captured-packet artifact digest, sources, facts, and
   evidence locators; the trusted news-capture validator verifies that external
   packet digest because it is not a recursive hash of the embedded projection;
@@ -139,14 +139,14 @@ bank packet
 ```
 
 `act_count=X` is a scheduler input, not a request hidden in prose. It creates
-exactly X ordered act paths, where X is a strict integer from 1 through 5.
+exactly X ordered act paths, where X is a strict integer from 1 through 8.
 Each path has separate spine, beat-plan, and actual-dialogue jobs. A retry is
 another attempt on the same job; it never creates another act. Open, coda,
 music, cast sweep, and admission are outside the act loop.
 
 The stable schedule contains `3 * act_count + 7` jobs. Of those,
-`3 * act_count + 4` are base model jobs: 7 model jobs for one act through 19
-for five acts, before retries. This is a compute/cost receipt, not a story
+`3 * act_count + 4` are base model jobs: 7 model jobs for one act through 28
+for eight acts, before retries. This is a compute/cost receipt, not a story
 length guarantee.
 
 Every dialogue job repeats the same output law: fill the exact beat IDs with
@@ -381,7 +381,7 @@ The Bible does not accept or reject a story based on:
 The visible length input is exactly one strict integer:
 
 ```text
-act_count = 1..5
+act_count = 1..8
 ```
 
 It determines how many act paths the centralized compiler schedules. It does

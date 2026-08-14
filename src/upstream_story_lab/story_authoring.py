@@ -83,7 +83,7 @@ class AuthoringJob(StrictAuthoringModel):
     job_id: str = Field(min_length=1)
     kind: JobKind
     executor: JobExecutor
-    act_number: int | None = Field(default=None, strict=True, ge=1, le=5)
+    act_number: int | None = Field(default=None, strict=True, ge=1, le=8)
     depends_on: tuple[str, ...] = ()
     instructions: tuple[str, ...] = ()
 
@@ -243,7 +243,7 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
 
 
 class AuthoringSchedule(StrictAuthoringModel):
-    act_count: int = Field(strict=True, ge=1, le=5)
+    act_count: int = Field(strict=True, ge=1, le=8)
     jobs: tuple[AuthoringJob, ...]
 
     @model_validator(mode="after")
@@ -271,8 +271,8 @@ def build_authoring_schedule(act_count: int) -> AuthoringSchedule:
 
     if type(act_count) is not int:
         raise StoryAuthoringError("act_count must be a strict integer")
-    if not 1 <= act_count <= 5:
-        raise StoryAuthoringError("act_count must be between 1 and 5")
+    if not 1 <= act_count <= 8:
+        raise StoryAuthoringError("act_count must be between 1 and 8")
     return AuthoringSchedule(
         act_count=act_count,
         jobs=_authoring_jobs(act_count),
@@ -283,7 +283,7 @@ class AuthoringAttempt(StrictAuthoringModel):
     attempt_id: str = Field(min_length=1)
     job_id: str = Field(min_length=1)
     kind: JobKind
-    act_number: int | None = Field(default=None, strict=True, ge=1, le=5)
+    act_number: int | None = Field(default=None, strict=True, ge=1, le=8)
     attempt_number: int = Field(strict=True, ge=1)
     depends_on: tuple[str, ...] = ()
 

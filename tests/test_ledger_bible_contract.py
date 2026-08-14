@@ -436,8 +436,8 @@ def test_canonical_story_bytes_are_stable_and_float_free() -> None:
         canonical_bytes({"not_story_state": 1.25})
 
 
-@pytest.mark.parametrize("act_count", range(1, 6))
-def test_act_count_one_through_five_builds_exact_locked_act_topology(
+@pytest.mark.parametrize("act_count", range(1, 9))
+def test_act_count_one_through_eight_builds_exact_locked_act_topology(
     act_count: int,
 ) -> None:
     body = StoryBody.model_validate(_valid_body_for_act_count(act_count))
@@ -451,7 +451,7 @@ def test_act_count_one_through_five_builds_exact_locked_act_topology(
     assert all(act.beat_ids and act.speaking_char_ids for act in body.acts)
 
 
-@pytest.mark.parametrize("act_count", [0, 6, "3"])
+@pytest.mark.parametrize("act_count", [0, 9, "3"])
 def test_act_count_rejects_out_of_range_or_non_integer_input(act_count) -> None:
     body = _valid_body_dict()
     body["context"]["act_count"] = act_count
@@ -853,7 +853,7 @@ def test_machine_bible_matches_executable_contract() -> None:
     assert bible["versions"]["final_seal"] == FINAL_SEAL_SCHEMA_VERSION
     assert bible["routing_enums"]["story_ref_kind"] == list(STORY_REF_KINDS)
     assert bible["act_authoring"]["visible_length_control"] == "act_count"
-    assert (bible["act_authoring"]["minimum"], bible["act_authoring"]["maximum"]) == (1, 5)
+    assert (bible["act_authoring"]["minimum"], bible["act_authoring"]["maximum"]) == (1, 8)
     assert bible["act_authoring"]["word_count"] == (
         "not_a_control_or_acceptance_rule"
     )

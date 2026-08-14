@@ -17,7 +17,7 @@ from upstream_story_lab.story_authoring import (
     sweep_cast_after_dialogue,
 )
 
-@pytest.mark.parametrize("act_count", range(1, 6))
+@pytest.mark.parametrize("act_count", range(1, 9))
 def test_schedule_has_exact_stable_jobs_and_dependencies(act_count: int) -> None:
     schedule = build_authoring_schedule(act_count)
     expected_ids = ["story_seed", "story_arc"]
@@ -79,7 +79,7 @@ def test_schedule_has_exact_stable_jobs_and_dependencies(act_count: int) -> None
         assert all(positions[dependency] < positions[job.job_id] for dependency in job.depends_on)
 
 
-@pytest.mark.parametrize("value", [0, 6, -1, True, False, 3.0, "3", None])
+@pytest.mark.parametrize("value", [0, 9, -1, True, False, 3.0, "3", None])
 def test_act_count_is_a_strict_integer_between_one_and_five(value) -> None:
     with pytest.raises(StoryAuthoringError):
         build_authoring_schedule(value)

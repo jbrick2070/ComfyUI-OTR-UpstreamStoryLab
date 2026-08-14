@@ -4181,7 +4181,7 @@
           "type": "string"
         },
         "act_number": {
-          "maximum": 5,
+          "maximum": 8,
           "minimum": 1,
           "title": "Act Number",
           "type": "integer"
@@ -4234,7 +4234,7 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 5,
+          "maxItems": 8,
           "minItems": 1,
           "title": "Act Ids",
           "type": "array"
@@ -4258,7 +4258,7 @@
           "items": {
             "$ref": "#/$defs/StoryAct"
           },
-          "maxItems": 5,
+          "maxItems": 8,
           "minItems": 1,
           "title": "Acts",
           "type": "array"
@@ -4349,7 +4349,7 @@
       "additionalProperties": false,
       "properties": {
         "act_count": {
-          "maximum": 5,
+          "maximum": 8,
           "minimum": 1,
           "title": "Act Count",
           "type": "integer"

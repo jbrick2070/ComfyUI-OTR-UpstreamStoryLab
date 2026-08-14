@@ -127,12 +127,12 @@ class CastMember(StrictModel):
 
 class StoryArc(StrictModel):
     summary: NonBlankText
-    act_ids: list[str] = Field(min_length=1, max_length=5)
+    act_ids: list[str] = Field(min_length=1, max_length=8)
 
 
 class StoryAct(StrictModel):
     act_id: str = Field(pattern=ID_PATTERN)
-    act_number: int = Field(ge=1, le=5, strict=True)
+    act_number: int = Field(ge=1, le=8, strict=True)
     spine: NonBlankText
     entry_state: NonBlankText
     exit_state: NonBlankText
@@ -194,7 +194,7 @@ class StoryContext(StrictModel):
     episode_title: NonBlankText
     story_seed: NonBlankText
     setting: NonBlankText
-    act_count: int = Field(ge=1, le=5, strict=True)
+    act_count: int = Field(ge=1, le=8, strict=True)
 
 
 class StoryBody(StrictModel):
@@ -202,7 +202,7 @@ class StoryBody(StrictModel):
     source_packet: SourcePacket
     cast: list[CastMember] = Field(min_length=2)
     story_arc: StoryArc
-    acts: list[StoryAct] = Field(min_length=1, max_length=5)
+    acts: list[StoryAct] = Field(min_length=1, max_length=8)
     scenes: list[Scene] = Field(min_length=1)
     shots: list[Shot] = Field(min_length=1)
     beats: list[Beat] = Field(min_length=1)
