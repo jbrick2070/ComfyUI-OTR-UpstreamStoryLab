@@ -131,6 +131,17 @@ class LabSourceSpan:
     def text(self) -> str:
         return self._document.canonical_body[self._start : self._end]
 
+    def contains(self, phrase: str) -> bool:
+        """True when *this window* literally carries the phrase.
+
+        Deliberately narrower than the whole document: an act must adapt the
+        region it was given, so carriage is proven against that region.
+        """
+
+        if not phrase.strip():
+            return False
+        return _flatten(normalize_lab_source_body(phrase)) in _flatten(self.text)
+
     def receipt(self) -> dict[str, object]:
         """Body-free evidence: where this window is, not what it says."""
 

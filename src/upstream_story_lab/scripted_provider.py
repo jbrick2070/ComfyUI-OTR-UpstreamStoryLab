@@ -60,6 +60,7 @@ class ScriptedStoryProvider:
             "act_spine": self._act_spine,
             "act_beats": self._act_beats,
             "act_dialogue": self._act_dialogue,
+            "act_cleanup": self._act_cleanup,
             "announcer_open": self._announcer_open,
             "announcer_news_coda": self._announcer_news_coda,
         }
@@ -164,6 +165,34 @@ class ScriptedStoryProvider:
                     }
                 )
         return {"rows": rows}
+
+    def _act_cleanup(self, context: dict[str, Any]) -> dict[str, Any]:
+        """Return the draft unchanged: scripted rows are already speakable.
+
+        A real cleanup model rewrites unspeakable rows here.  The scripted
+        provider writes clean dialogue to begin with, so the honest scripted
+        answer is a pass-through, which also proves the pass never mangles an
+        already-valid act.
+        """
+
+        return {
+            "rows": [
+                {
+                    "role": "character_dialogue",
+                    "beat_id": row["beat_id"],
+                    "char_id": row["char_id"],
+                    "text": row["text"],
+                    "fact_ids": list(row.get("fact_ids", ())),
+                }
+                if "beat_id" in row
+                else {
+                    "role": "music_inter",
+                    "description": row["description"],
+                    "generation_prompt": row["generation_prompt"],
+                }
+                for row in context["draft_rows"]
+            ]
+        }
 
     def _announcer_open(self, context: dict[str, Any]) -> dict[str, Any]:
         names = [

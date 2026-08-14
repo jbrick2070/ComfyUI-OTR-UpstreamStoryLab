@@ -19,9 +19,9 @@ from __future__ import annotations
 import hashlib
 import re
 import unicodedata
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from types import MappingProxyType
-from typing import Final, Literal
+from typing import Any, Final, Literal
 
 from pydantic import Field, ValidationError
 
@@ -43,6 +43,10 @@ from .spoken_text_policy import SPOKEN_TEXT_POLICY_ID, spoken_text_is_clean
 CAPTURED_SOURCE_PACKET_SCHEMA_VERSION = "otr.captured_source_packet.v1"
 TRUSTED_VALIDATOR_VERSION = "1"
 LEDGER_INTEGRITY_VALIDATOR_VERSION = "3"
+#: Adaptation form of ledger integrity: same graph, spoken-text policy v2.
+#: A separate version because the Bible forbids changing what a receipt means
+#: without saying so - a v3 receipt keeps full v1 strictness forever.
+LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION = "4"
 ANNOUNCER_OPEN_VALIDATOR_VERSION = "2"
 
 TRUSTED_VALIDATOR_IDENTITIES: Final[Mapping[str, tuple[str, str]]] = (
@@ -111,6 +115,22 @@ def _contains_normalized_phrase(text: str, phrase: str) -> bool:
     return bool(needle) and f" {needle} " in f" {haystack} "
 
 
+def _combined_carriage(sources: Sequence[Any]):
+    """One carriage test over every supplied source body."""
+
+    if not sources:
+        return None
+    tests = []
+    for source in sources:
+        contains = getattr(source, "contains", None)
+        if not callable(contains):
+            raise LedgerContractError(
+                "each carried source must expose contains(text)"
+            )
+        tests.append(contains)
+    return lambda text: any(test(text) for test in tests)
+
+
 def _has_identity(outcome_name: str, receipt: OutcomeReceipt) -> bool:
     validator_id, validator_version = TRUSTED_VALIDATOR_IDENTITIES[outcome_name]
     return (
@@ -126,18 +146,41 @@ def _evidence(receipt: OutcomeReceipt) -> set[tuple[str, str]]:
 def verify_ledger_integrity(
     body: StoryBody,
     receipt: OutcomeReceipt,
+    *,
+    carried_sources: Sequence[Any] = (),
+    expected_version: str = LEDGER_INTEGRITY_VALIDATOR_VERSION,
 ) -> bool:
-    """Re-run the v2 graph plus the v1 spoken-only policy without repair."""
+    """Re-run the v2 graph plus the spoken-only policy, without repair.
 
-    if not _has_identity("ledger_integrity", receipt):
+    Version ``3`` runs ``otr.spoken-text-only.v1``.  Version ``4`` is the
+    adaptation form: same graph, plus ``otr.spoken-text-only.v2``, which
+    exempts the heuristic findings for a line whose words are literally
+    carried from one of ``carried_sources``.  A v4 receipt is only trustworthy
+    when the caller supplied those sources, so it fails closed without them.
+    """
+
+    validator_id, _default_version = TRUSTED_VALIDATOR_IDENTITIES[
+        "ledger_integrity"
+    ]
+    if (
+        receipt.validator_id != validator_id
+        or receipt.validator_version != expected_version
+    ):
+        return False
+    if expected_version == LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION and (
+        not carried_sources
+    ):
         return False
     try:
         validated = StoryBody.model_validate(body.model_dump(mode="json"))
     except (LedgerContractError, ValidationError):
         return False
+    carried = _combined_carriage(carried_sources)
     return (
         canonical_bytes(validated) == canonical_bytes(body)
-        and spoken_text_is_clean(validated.lines, validated.cast)
+        and spoken_text_is_clean(
+            validated.lines, validated.cast, carried_source=carried
+        )
     )
 
 
@@ -285,6 +328,7 @@ def verify_music_bookends(
 def build_trusted_receipt_verifiers(
     *,
     packet_artifacts: Mapping[str, bytes],
+    carried_sources: Sequence[Any] = (),
 ) -> Mapping[ReceiptVerifierKey, ReceiptVerifier]:
     """Return the immutable five-entry Story Ledger v2 trust registry.
 
@@ -317,12 +361,32 @@ def build_trusted_receipt_verifiers(
         (outcome, *TRUSTED_VALIDATOR_IDENTITIES[outcome]): verifier
         for outcome, verifier in by_outcome.items()
     }
+
+    # Adaptation lanes additionally register ledger integrity version 4.  It
+    # exists only when the caller supplied the source bodies it needs, so a v4
+    # receipt can never be trusted by assertion alone.
+    if carried_sources:
+        frozen_sources = tuple(carried_sources)
+        validator_id, _ = TRUSTED_VALIDATOR_IDENTITIES["ledger_integrity"]
+        registry[
+            (
+                "ledger_integrity",
+                validator_id,
+                LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION,
+            )
+        ] = lambda body, receipt: verify_ledger_integrity(
+            body,
+            receipt,
+            carried_sources=frozen_sources,
+            expected_version=LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION,
+        )
     return MappingProxyType(registry)
 
 
 __all__ = [
     "CAPTURED_SOURCE_PACKET_SCHEMA_VERSION",
     "CapturedSourcePacketArtifact",
+    "LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION",
     "LEDGER_INTEGRITY_VALIDATOR_VERSION",
     "SPOKEN_TEXT_POLICY_ID",
     "TRUSTED_VALIDATOR_IDENTITIES",

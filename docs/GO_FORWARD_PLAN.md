@@ -52,7 +52,7 @@ one large prompt:
 source packet
   -> story seed
   -> one X-act arc
-  -> for each ordered act: spine -> beats -> dialogue
+  -> for each ordered act: spine -> beats -> dialogue -> cleanup
   -> cast sweep
   -> announcer opening
   -> factual announcer coda
@@ -60,8 +60,8 @@ source packet
   -> trusted admission and story seal
 ```
 
-The stable schedule is `3 * act_count + 7` jobs. The base model schedule is
-`3 * act_count + 4` calls before retries: 7 calls for one act through 28 calls
+The stable schedule is `4 * act_count + 7` jobs. The base model schedule is
+`4 * act_count + 4` calls before retries: 8 calls for one act through 36 calls
 for eight acts. A retry is another attempt on the same job and never creates an
 extra act.
 
@@ -149,7 +149,7 @@ not authority for the current production head.
 The provider-neutral executor and prompt layer now exist:
 
 - `src/upstream_story_lab/authoring_executor.py` walks the locked
-  `3 * act_count + 7` schedule, assembles per-job context (locked cast, source
+  `4 * act_count + 7` schedule, assembles per-job context (locked cast, source
   facts, full arc, act spine/states, prior exit state, exact beat IDs and
   intents), renders deterministic prompts, and repeats the spoken-only law in
   every dialogue job.

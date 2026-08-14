@@ -27,6 +27,7 @@ def test_schedule_has_exact_stable_jobs_and_dependencies(act_count: int) -> None
                 f"act_{act_number:02d}.spine",
                 f"act_{act_number:02d}.beats",
                 f"act_{act_number:02d}.dialogue",
+                f"act_{act_number:02d}.cleanup",
             ]
         )
     expected_ids.extend(
@@ -41,9 +42,9 @@ def test_schedule_has_exact_stable_jobs_and_dependencies(act_count: int) -> None
 
     assert schedule.act_count == act_count
     assert [job.job_id for job in schedule.jobs] == expected_ids
-    assert len(schedule.jobs) == 3 * act_count + 7
+    assert len(schedule.jobs) == 4 * act_count + 7
     assert len([job for job in schedule.jobs if job.executor == "model"]) == (
-        3 * act_count + 4
+        4 * act_count + 4
     )
     assert schedule.jobs[0].depends_on == ()
     assert schedule.jobs[1].depends_on == ("story_seed",)
@@ -56,7 +57,7 @@ def test_schedule_has_exact_stable_jobs_and_dependencies(act_count: int) -> None
         expected_spine_dependencies = ["story_arc"]
         if act_number > 1:
             expected_spine_dependencies.append(
-                f"act_{act_number - 1:02d}.dialogue"
+                f"act_{act_number - 1:02d}.cleanup"
             )
         assert spine.depends_on == tuple(expected_spine_dependencies)
         assert beats.depends_on == (spine.job_id,)
@@ -65,7 +66,7 @@ def test_schedule_has_exact_stable_jobs_and_dependencies(act_count: int) -> None
         assert dialogue.act_number == act_number
 
     dialogue_ids = tuple(
-        f"act_{act_number:02d}.dialogue"
+        f"act_{act_number:02d}.cleanup"
         for act_number in range(1, act_count + 1)
     )
     assert by_id["cast_sweep"].depends_on == dialogue_ids
@@ -122,7 +123,7 @@ def test_retries_are_attempts_on_the_same_job_not_new_acts() -> None:
     assert retry.kind == first.kind == "act_dialogue"
     assert retry.act_number == first.act_number == 2
     assert retry.depends_on == first.depends_on == dialogue_job.depends_on
-    assert len(schedule.jobs) == 16
+    assert len(schedule.jobs) == 19
     assert len([job for job in schedule.jobs if job.kind == "act_spine"]) == 3
 
     for invalid in (0, -1, True, 1.5, "2"):

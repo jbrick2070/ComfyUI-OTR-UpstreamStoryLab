@@ -22,6 +22,7 @@ JobKind = Literal[
     "act_spine",
     "act_beats",
     "act_dialogue",
+    "act_cleanup",
     "cast_sweep",
     "announcer_open",
     "announcer_news_coda",
@@ -36,6 +37,19 @@ DIALOGUE_JOB_INSTRUCTIONS = (
     "Do not write stage directions, action, narration, delivery notes, or another speaker's words.",
 )
 
+#: The ledger may hold only dialogue and music.  Rather than let code rewrite
+#: an author's prose, every act gets a model pass whose whole job is to turn a
+#: draft into speakable rows: convert a stage direction into spoken
+#: implication, radio business, or a music cue, drop what cannot become
+#: either, and strip a speaker label that was copied into a line.
+CLEANUP_JOB_INSTRUCTIONS = (
+    "Return rows containing only words spoken aloud, plus music cues.",
+    "Convert any stage direction, action, or narration into spoken implication, concrete radio business, or a music cue; drop it if it can become neither.",
+    "Strip any speaker label, speech prefix, or delivery note that was copied into a line, keeping the spoken words.",
+    "Preserve each row's assigned beat, speaker, and fact references; never invent a new beat, speaker, or fact.",
+    "Change wording only where a row is not speakable as written.",
+)
+
 _MODEL_JOB_KINDS = frozenset(
     {
         "story_seed",
@@ -43,15 +57,19 @@ _MODEL_JOB_KINDS = frozenset(
         "act_spine",
         "act_beats",
         "act_dialogue",
+        "act_cleanup",
         "announcer_open",
         "announcer_news_coda",
     }
 )
-_ACT_JOB_KINDS = frozenset({"act_spine", "act_beats", "act_dialogue"})
+_ACT_JOB_KINDS = frozenset(
+    {"act_spine", "act_beats", "act_dialogue", "act_cleanup"}
+)
 _ACT_STAGE_BY_KIND = {
     "act_spine": "spine",
     "act_beats": "beats",
     "act_dialogue": "dialogue",
+    "act_cleanup": "cleanup",
 }
 
 
@@ -118,6 +136,12 @@ class AuthoringJob(StrictAuthoringModel):
             raise StoryAuthoringError(
                 "every act dialogue job must repeat the spoken-only contract"
             )
+        if self.kind == "act_cleanup" and (
+            self.instructions != CLEANUP_JOB_INSTRUCTIONS
+        ):
+            raise StoryAuthoringError(
+                "every act cleanup job must repeat the cleanup contract"
+            )
         return self
 
 
@@ -148,9 +172,10 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
         spine_id = _act_job_id(act_number, "spine")
         beats_id = _act_job_id(act_number, "beats")
         dialogue_id = _act_job_id(act_number, "dialogue")
+        cleanup_id = _act_job_id(act_number, "cleanup")
         spine_dependencies = ["story_arc"]
         if act_number > 1:
-            spine_dependencies.append(_act_job_id(act_number - 1, "dialogue"))
+            spine_dependencies.append(_act_job_id(act_number - 1, "cleanup"))
         jobs.extend(
             [
                 AuthoringJob(
@@ -181,9 +206,17 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                     depends_on=(beats_id,),
                     instructions=DIALOGUE_JOB_INSTRUCTIONS,
                 ),
+                AuthoringJob(
+                    job_id=cleanup_id,
+                    kind="act_cleanup",
+                    executor="model",
+                    act_number=act_number,
+                    depends_on=(dialogue_id,),
+                    instructions=CLEANUP_JOB_INSTRUCTIONS,
+                ),
             ]
         )
-        dialogue_job_ids.append(dialogue_id)
+        dialogue_job_ids.append(cleanup_id)
 
     shared_announcer_dependencies = (
         "story_seed",
@@ -604,6 +637,7 @@ def sweep_cast_after_dialogue(
 
 
 __all__ = [
+    "CLEANUP_JOB_INSTRUCTIONS",
     "DIALOGUE_JOB_INSTRUCTIONS",
     "AuthoringAttempt",
     "AuthoringJob",

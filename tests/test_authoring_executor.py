@@ -110,7 +110,11 @@ def test_schedule_walk_matches_canonical_schedule() -> None:
     model_records = [
         record for record in result.journal if record.executor == "model"
     ]
-    assert len(model_records) == 3 * 3 + 4
+    assert len(model_records) == 4 * 3 + 4
+    # Every act gets its own model cleanup pass; code never edits prose.
+    assert [
+        record.job_id for record in result.journal if record.kind == "act_cleanup"
+    ] == ["act_01.cleanup", "act_02.cleanup", "act_03.cleanup"]
 
 
 def test_three_act_story_topology() -> None:
@@ -215,7 +219,7 @@ def test_runs_are_deterministic() -> None:
 
 @pytest.mark.parametrize(
     ("act_count", "expected_jobs"),
-    [(1, 10), (5, 22), (8, 31)],
+    [(1, 11), (5, 27), (8, 39)],
 )
 def test_act_count_bounds_seal(act_count: int, expected_jobs: int) -> None:
     result = run_lab(act_count=act_count)

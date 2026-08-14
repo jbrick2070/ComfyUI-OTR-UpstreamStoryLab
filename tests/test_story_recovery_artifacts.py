@@ -293,9 +293,14 @@ def test_machine_readable_contract_locks_only_the_operator_requirements() -> Non
     authoring = contract["act_authoring"]
     assert (authoring["minimum"], authoring["maximum"]) == (1, 8)
     assert authoring["type"] == "strict_integer"
-    assert authoring["per_act_path"] == ["spine", "beats", "dialogue"]
-    assert authoring["stable_job_count"] == "3 * act_count + 7"
-    assert authoring["base_model_job_count"] == "3 * act_count + 4"
+    assert authoring["per_act_path"] == [
+        "spine",
+        "beats",
+        "dialogue",
+        "cleanup",
+    ]
+    assert authoring["stable_job_count"] == "4 * act_count + 7"
+    assert authoring["base_model_job_count"] == "4 * act_count + 4"
     assert authoring["words_are_telemetry_only"] is True
     assert authoring["hardware_changes_ledger_shape"] is False
     assert "beats_per_act" in contract["explicitly_experimental"]

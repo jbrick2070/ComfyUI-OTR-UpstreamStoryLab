@@ -105,12 +105,37 @@ delivery-note rows. Story seed, arc summary, act spines/states, scene/shot
 descriptions, and beat intent are planning metadata; they never pass to a
 speech consumer as dialogue.
 
-The centralized pre-seal compiler serves every source bank. It may drop
-standalone forbidden draft rows and remove characters that own no accepted
-dialogue. It never invents filler dialogue to justify a cast row. If narration
-or stage business is embedded ambiguously inside a proposed speech row, the
-compiler returns that act to its dialogue job. Trusted admission never mutates
-the proposed `StoryBody`.
+## Before the seal a draft is writable; after the seal nothing is
+
+This is the line the whole constitution turns on, so it is stated plainly.
+
+**Before the story seal**, nothing is sacred. A draft may be rewritten as many
+times as it takes to make the ledger work: rows may be reworded, converted,
+merged, dropped, or regenerated. That is the entire purpose of the authoring
+schedule. Draft prose has no protection because it is not yet a story.
+
+**After the story seal**, nothing may be rewritten. The accepted `StoryBody`,
+its digest, and its five receipts are immutable. Later media truth is appended
+to `production_state`; it never edits the story. Changing accepted story
+content is a new sealed story and a new `episode_id`.
+
+The rewriting is done by **model passes, not by code**. Code decides *whether*
+a draft is admissible and says why; it never silently rewrites an author's
+prose into something acceptable. Every act therefore has an explicit
+`act_cleanup` model pass whose only job is to make its draft speakable:
+convert a stage direction into spoken implication, concrete radio business, or
+a music cue; drop what can become neither; strip a speaker label or delivery
+note that was copied into a line; and leave everything already speakable
+alone. A detector that fires is an instruction to that pass, not a licence for
+the compiler to edit prose itself.
+
+The compiler's own pre-seal powers stay deliberately narrow and mechanical: it
+may drop a standalone forbidden draft row and remove a character that owns no
+accepted dialogue. It never invents filler dialogue to justify a cast row, and
+it never rewrites words. If narration or stage business is embedded ambiguously
+inside a proposed speech row, that act returns to its cleanup and dialogue
+jobs. Trusted admission never mutates the proposed `StoryBody`: by the time
+admission runs, rewriting is over.
 
 That shape rule is not enough by itself: the August 13 challenger put novel
 prose such as `Ada turns to Leo` inside a nominal character line. Trusted
@@ -130,7 +155,7 @@ content. They all feed one compiler and one admission boundary:
 bank packet
   -> story seed
   -> X-act story arc
-  -> for each act: spine -> beats -> dialogue
+  -> for each act: spine -> beats -> dialogue -> cleanup
   -> cast sweep
   -> announcer opening
   -> announcer factual coda
@@ -140,12 +165,12 @@ bank packet
 
 `act_count=X` is a scheduler input, not a request hidden in prose. It creates
 exactly X ordered act paths, where X is a strict integer from 1 through 8.
-Each path has separate spine, beat-plan, and actual-dialogue jobs. A retry is
+Each path has separate spine, beat-plan, actual-dialogue, and cleanup jobs. A retry is
 another attempt on the same job; it never creates another act. Open, coda,
 music, cast sweep, and admission are outside the act loop.
 
-The stable schedule contains `3 * act_count + 7` jobs. Of those,
-`3 * act_count + 4` are base model jobs: 7 model jobs for one act through 28
+The stable schedule contains `4 * act_count + 7` jobs. Of those,
+`4 * act_count + 4` are base model jobs: 8 model jobs for one act through 36
 for eight acts, before retries. This is a compute/cost receipt, not a story
 length guarantee.
 

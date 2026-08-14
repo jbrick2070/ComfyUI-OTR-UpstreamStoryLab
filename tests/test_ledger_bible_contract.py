@@ -858,10 +858,10 @@ def test_machine_bible_matches_executable_contract() -> None:
         "not_a_control_or_acceptance_rule"
     )
     assert bible["act_authoring"]["stable_job_count"] == (
-        "3 * act_count + 7"
+        "4 * act_count + 7"
     )
     assert bible["act_authoring"]["base_model_job_count"] == (
-        "3 * act_count + 4"
+        "4 * act_count + 4"
     )
     assert bible["routing_enums"]["speaker_role"] == [
         "announcer",

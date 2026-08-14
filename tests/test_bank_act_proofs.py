@@ -181,4 +181,5 @@ def test_ultrashort_guidance_authors_smallest_complete_drama() -> None:
     assert len(body.acts[0].beat_ids) == 2
     # open + (2 beats x 2 exchanges) + coda
     assert len(body.lines) == 6
-    assert len(result.journal) == 10
+    # 4 * 1 + 7: the single act still gets its own cleanup pass.
+    assert len(result.journal) == 11

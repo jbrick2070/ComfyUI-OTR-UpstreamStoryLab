@@ -62,10 +62,16 @@ from .ledger_contract import (
 from .ledger_io import load_ledger_envelope, save_ledger_envelope
 from .ledger_verifiers import (
     CapturedSourcePacketArtifact,
+    LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION,
     TRUSTED_VALIDATOR_IDENTITIES,
     _contains_normalized_phrase,
     _normalized_words,
     build_trusted_receipt_verifiers,
+)
+from .source_window import (
+    LabSourceDocument,
+    render_source_block,
+    select_act_window,
 )
 from .spoken_text_policy import (
     # The blind-cast guard below must ask the detector itself which names it
@@ -144,6 +150,15 @@ class AuthoringBrief(StrictExecutorModel):
     act_count: int = Field(strict=True, ge=1, le=8)
     cast: tuple[CastMember, ...] = Field(min_length=2)
     source_packet_bytes: bytes
+    #: Adaptation lanes only.  When present, each act grounds on its own
+    #: frozen window of this body, and literally carried words are exempt from
+    #: the heuristic spoken-text findings.  Absent on original-drama lanes,
+    #: which keep full v1 strictness.
+    source_document: Any | None = None
+    #: Speech prefixes printed by the source (Folger provenance records them).
+    #: Handed to the cleanup pass as context so a model can strip a leaked
+    #: label; never used as a Python rejection rule.
+    source_speaker_labels: tuple[str, ...] = ()
     guidance: StagedAuthoringGuidance = Field(
         default_factory=StagedAuthoringGuidance
     )
@@ -223,6 +238,13 @@ class AuthoringBrief(StrictExecutorModel):
                     f"{label} has no pronounceable word the announcer opening "
                     "could name"
                 )
+
+        if self.source_document is not None and not isinstance(
+            self.source_document, LabSourceDocument
+        ):
+            raise AuthoringExecutionError(
+                "source_document must be a LabSourceDocument"
+            )
         return self
 
 
@@ -245,6 +267,7 @@ _DECODE_TOKEN_BUDGETS: dict[str, int] = {
     "act_spine": 600,
     "act_beats": 800,
     "act_dialogue": 2400,
+    "act_cleanup": 2400,
     "announcer_open": 500,
     "announcer_news_coda": 500,
 }
@@ -438,6 +461,15 @@ _OUTPUT_CONTRACTS: dict[str, str] = {
         '"description": "...", "generation_prompt": "..."}. Rows must follow '
         "beat order. text carries only words spoken aloud by that character."
     ),
+    "act_cleanup": (
+        'Return one JSON object: {"rows": [...]} in the same shape as the '
+        "dialogue job. Return every row of the draft, in order, with anything "
+        "unspeakable made speakable: a stage direction becomes spoken "
+        "implication, radio business, or a music_inter row; a copied speaker "
+        "label or delivery note is stripped, keeping the words; anything that "
+        "can become neither is dropped. Keep each row's beat_id, char_id and "
+        "fact_ids. Leave speakable rows exactly as they are."
+    ),
     "announcer_open": (
         'Return one JSON object: {"text": "..."} containing only the '
         "announcer's spoken opening words."
@@ -518,6 +550,36 @@ def assign_story_facts(
     )
 
 
+def _out_of_order(what: str) -> AuthoringExecutionError:
+    return AuthoringExecutionError(
+        f"schedule ran out of order: {what} is not accepted yet"
+    )
+
+
+def _require_seed(seed: "SeedPayload | None") -> "SeedPayload":
+    if seed is None:
+        raise _out_of_order("the story seed")
+    return seed
+
+
+def _require_arc(arc: "ArcPayload | None") -> "ArcPayload":
+    if arc is None:
+        raise _out_of_order("the story arc")
+    return arc
+
+
+def _require_act_number(act_number: int | None) -> int:
+    if act_number is None:
+        raise AuthoringExecutionError("an act job must carry an act_number")
+    return act_number
+
+
+def _require_text(value: str | None, what: str) -> str:
+    if value is None:
+        raise _out_of_order(what)
+    return value
+
+
 def _validation_reasons(exc: ValidationError) -> tuple[str, ...]:
     return tuple(
         f"{'.'.join(str(part) for part in error['loc']) or 'payload'}: "
@@ -572,6 +634,7 @@ class _StagedRun:
             if row.cast_role == "character"
         }
 
+        self.source_document = brief.source_document
         self.seed: SeedPayload | None = None
         self.arc: ArcPayload | None = None
         self.spines: dict[int, ActSpinePayload] = {}
@@ -681,6 +744,17 @@ class _StagedRun:
 
     # ---- per-job context -------------------------------------------------
 
+    def _act_window(self, act_number: int):
+        """Return act ``act_number``'s frozen source window, if adapting."""
+
+        if self.source_document is None:
+            return None
+        return select_act_window(
+            self.source_document,
+            act_number=act_number,
+            act_count=self.brief.act_count,
+        )
+
     def _common_context(self) -> dict[str, Any]:
         return {
             "episode_id": self.brief.episode_id,
@@ -708,7 +782,7 @@ class _StagedRun:
         }
 
     def _arc_context(self) -> dict[str, Any]:
-        assert self.seed is not None and self.arc is not None
+        seed, arc = _require_seed(self.seed), _require_arc(self.arc)
         return {
             "episode_title": self.seed.episode_title,
             "story_seed": self.seed.story_seed,
@@ -720,7 +794,7 @@ class _StagedRun:
         context = self._common_context()
         if job.kind == "story_seed":
             return context
-        assert self.seed is not None
+        seed = _require_seed(self.seed)
         if job.kind == "story_arc":
             context["accepted_story_seed"] = {
                 "episode_title": self.seed.episode_title,
@@ -728,9 +802,14 @@ class _StagedRun:
             }
             return context
 
-        if job.kind in {"act_spine", "act_beats", "act_dialogue"}:
+        if job.kind in {
+            "act_spine",
+            "act_beats",
+            "act_dialogue",
+            "act_cleanup",
+        }:
             act_number = job.act_number
-            assert act_number is not None
+            act_number = _require_act_number(act_number)
             context["story_arc"] = self._arc_context()
             context["act_number"] = act_number
             if act_number > 1:
@@ -758,9 +837,28 @@ class _StagedRun:
                 {"beat_id": beat_id, "intent": intent}
                 for beat_id, intent in self.act_beats[act_number]
             ]
+            window = self._act_window(act_number)
+            if window is not None:
+                # An adaptation's arc should be the source's arc, so act i of
+                # n grounds on region i of n.  The block is quoted data, and
+                # its receipt is offsets and a digest, never prose.
+                context["source_block"] = render_source_block(window)
+                context["source_grounding"] = window.receipt()
             context["assigned_fact_ids"] = list(
                 self.assigned_facts[act_number]
             )
+            if job.kind == "act_cleanup":
+                context["draft_rows"] = [
+                    row.model_dump() for row in self.act_rows.get(act_number, ())
+                ]
+                context["ledger_law"] = (
+                    "The sealed ledger may contain only announcer speech, "
+                    "character dialogue, and music cues."
+                )
+                if self.brief.source_speaker_labels:
+                    context["source_speaker_labels"] = list(
+                        self.brief.source_speaker_labels
+                    )
             context["guidance"] = {
                 "authority": self.brief.guidance.authority,
                 "exchanges_per_beat": [
@@ -807,6 +905,7 @@ class _StagedRun:
             "act_spine": self._accept_spine,
             "act_beats": self._accept_beats,
             "act_dialogue": self._accept_dialogue,
+            "act_cleanup": self._accept_cleanup,
             "announcer_open": self._accept_open,
             "announcer_news_coda": self._accept_coda,
         }
@@ -861,7 +960,7 @@ class _StagedRun:
     def _accept_spine(
         self, job: AuthoringJob, payload: dict[str, Any]
     ) -> tuple[tuple[str, ...], tuple[str, ...]]:
-        assert job.act_number is not None
+        act_number = _require_act_number(job.act_number)
         try:
             spine = ActSpinePayload.model_validate(payload)
         except ValidationError as exc:
@@ -882,7 +981,7 @@ class _StagedRun:
         self, job: AuthoringJob, payload: dict[str, Any]
     ) -> tuple[tuple[str, ...], tuple[str, ...]]:
         act_number = job.act_number
-        assert act_number is not None
+        act_number = _require_act_number(act_number)
         try:
             beats = ActBeatsPayload.model_validate(payload)
         except ValidationError as exc:
@@ -911,13 +1010,16 @@ class _StagedRun:
         self, job: AuthoringJob, payload: dict[str, Any]
     ) -> tuple[tuple[str, ...], tuple[str, ...]]:
         act_number = job.act_number
-        assert act_number is not None
+        act_number = _require_act_number(act_number)
         try:
             dialogue = ActDialoguePayload.model_validate(payload)
         except ValidationError as exc:
             return _validation_reasons(exc), ()
 
-        sanitized = sanitize_draft_sequence(dialogue.rows)
+        carried = self._act_window(act_number)
+        sanitized = sanitize_draft_sequence(
+            dialogue.rows, carried_source=carried
+        )
         notes = tuple(
             f"dropped draft row {issue.row_index} "
             f"({issue.role or 'unknown'}): {issue.reason}"
@@ -1105,7 +1207,9 @@ class _StagedRun:
             if isinstance(row, _AcceptedSpeechRow)
         ]
         findings = audit_spoken_text(
-            audit_lines, [row.model_dump() for row in self.brief.cast]
+            audit_lines,
+            [row.model_dump() for row in self.brief.cast],
+            carried_source=carried,
         )
         if findings:
             return (
@@ -1117,6 +1221,33 @@ class _StagedRun:
             )
         self.act_rows[act_number] = typed
         return (), notes
+
+    def _accept_cleanup(
+        self, job: AuthoringJob, payload: dict[str, Any]
+    ) -> tuple[tuple[str, ...], tuple[str, ...]]:
+        """Admit the model's cleaned rows for this act.
+
+        The cleanup pass is where a draft is made speakable.  Code judges the
+        result and says why it failed; it never edits the prose itself, so a
+        rejected cleanup returns to this same model job with the reasons.
+        """
+
+        act_number = _require_act_number(job.act_number)
+        before = self.act_rows.get(act_number, ())
+        reasons, notes = self._accept_dialogue(job, payload)
+        if reasons:
+            return reasons, notes
+        after = self.act_rows.get(act_number, ())
+        changed = sum(
+            1
+            for old, new in zip(before, after)
+            if getattr(old, "text", None) != getattr(new, "text", None)
+        ) + abs(len(after) - len(before))
+        return (), notes + (
+            f"cleanup pass changed {changed} row(s)"
+            if changed
+            else "cleanup pass found nothing to change",
+        )
 
     def _announcer(self) -> CastMember:
         return next(
@@ -1162,7 +1293,7 @@ class _StagedRun:
     def _accept_open(
         self, job: AuthoringJob, payload: dict[str, Any]
     ) -> tuple[tuple[str, ...], tuple[str, ...]]:
-        assert self.seed is not None
+        seed = _require_seed(self.seed)
         try:
             open_payload = AnnouncerOpenPayload.model_validate(payload)
         except ValidationError as exc:
@@ -1285,8 +1416,9 @@ class _StagedRun:
     # ---- final compilation and admission ---------------------------------
 
     def _compile_story_ledger(self) -> StoryLedger:
-        assert self.seed is not None and self.arc is not None
-        assert self.open_text is not None and self.coda_text is not None
+        seed, arc = _require_seed(self.seed), _require_arc(self.arc)
+        open_text = _require_text(self.open_text, "announcer opening")
+        coda_text = _require_text(self.coda_text, "announcer news coda")
         act_count = self.brief.act_count
         act_ids = {
             act_number: f"a{act_number:03d}"
@@ -1507,6 +1639,13 @@ class _StagedRun:
             validator_id, validator_version = TRUSTED_VALIDATOR_IDENTITIES[
                 outcome
             ]
+            if outcome == "ledger_integrity" and self.source_document is not None:
+                # Adaptation lanes declare the version whose meaning includes
+                # the source-carried exemption, rather than quietly widening
+                # what a version 3 receipt claims.
+                validator_version = (
+                    LEDGER_INTEGRITY_ADAPTATION_VALIDATOR_VERSION
+                )
             return OutcomeReceipt(
                 validator_id=validator_id,
                 validator_version=validator_version,
@@ -1556,7 +1695,10 @@ class _StagedRun:
         registry = build_trusted_receipt_verifiers(
             packet_artifacts={
                 self.packet_sha256: self.brief.source_packet_bytes
-            }
+            },
+            carried_sources=(
+                () if self.source_document is None else (self.source_document,)
+            ),
         )
         try:
             story_ledger = self._compile_story_ledger()

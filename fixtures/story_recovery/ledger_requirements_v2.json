@@ -112,7 +112,8 @@
     "per_act_path": [
       "spine",
       "beats",
-      "dialogue"
+      "dialogue",
+      "cleanup"
     ],
     "outside_act_loop": [
       "cast_sweep",
@@ -122,8 +123,8 @@
       "ledger_admission"
     ],
     "retry_law": "attempts_belong_to_existing_job_never_change_act_count",
-    "stable_job_count": "3 * act_count + 7",
-    "base_model_job_count": "3 * act_count + 4",
+    "stable_job_count": "4 * act_count + 7",
+    "base_model_job_count": "4 * act_count + 4",
     "words_are_telemetry_only": true,
     "duration_is_downstream_observation_only": true,
     "hardware_changes_ledger_shape": false,
