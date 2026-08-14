@@ -895,6 +895,15 @@ class _StagedRun:
                 context["prior_act_exit_state"] = self.spines[
                     act_number - 1
                 ].exit_state
+            # Every act job sees this act's own region, including the two that
+            # plan it.  An adaptation's arc should be the source's arc, so an
+            # act whose spine and beats were invented without the author in
+            # view is not adapting anything - it is writing a new story and
+            # then asking the dialogue job to quote into it.
+            window = self._act_window(act_number)
+            if window is not None:
+                context["source_block"] = render_source_block(window)
+                context["source_grounding"] = window.receipt()
             if job.kind == "act_spine":
                 return context
             spine = self.spines[act_number]
@@ -916,13 +925,6 @@ class _StagedRun:
                 {"beat_id": beat_id, "intent": intent}
                 for beat_id, intent in self.act_beats[act_number]
             ]
-            window = self._act_window(act_number)
-            if window is not None:
-                # An adaptation's arc should be the source's arc, so act i of
-                # n grounds on region i of n.  The block is quoted data, and
-                # its receipt is offsets and a digest, never prose.
-                context["source_block"] = render_source_block(window)
-                context["source_grounding"] = window.receipt()
             context["assigned_fact_ids"] = list(
                 self.assigned_facts[act_number]
             )
