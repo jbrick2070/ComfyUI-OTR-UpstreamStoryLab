@@ -13,6 +13,7 @@ from pydantic import ValidationError
 from upstream_story_lab.ledger_contract import (
     CANONICALIZATION_ID,
     ENVELOPE_SCHEMA_VERSION,
+    FINAL_SEAL_SCHEMA_VERSION,
     LedgerContractError,
     LedgerEnvelope,
     MINIMUM_CONTRACT_ID,
@@ -24,6 +25,11 @@ from upstream_story_lab.ledger_contract import (
     canonical_bytes,
     canonical_sha256,
     verify_story_envelope,
+)
+from upstream_story_lab.ledger_io import (
+    LEDGER_JSON_FORMAT_ID,
+    STORY_TO_PRODUCTION_ADAPTER_ID,
+    STORY_TO_PRODUCTION_ADAPTER_VERSION,
 )
 from upstream_story_lab.production_contract import (
     PRODUCTION_STATE_SCHEMA_VERSION,
@@ -844,6 +850,7 @@ def test_machine_bible_matches_executable_contract() -> None:
     assert bible["versions"]["production_state"] == (
         PRODUCTION_STATE_SCHEMA_VERSION
     )
+    assert bible["versions"]["final_seal"] == FINAL_SEAL_SCHEMA_VERSION
     assert bible["routing_enums"]["story_ref_kind"] == list(STORY_REF_KINDS)
     assert bible["act_authoring"]["visible_length_control"] == "act_count"
     assert (bible["act_authoring"]["minimum"], bible["act_authoring"]["maximum"]) == (1, 5)
@@ -885,6 +892,17 @@ def test_machine_bible_matches_executable_contract() -> None:
     assert "typed append-only production_state" in bible["boundary"][
         "current_executable_scope"
     ]
+    assert "typed terminal final_seal" in bible["boundary"][
+        "current_executable_scope"
+    ]
+    assert bible["status"] == (
+        "enshrined_story_lab_constitution_not_yet_transplanted"
+    )
+    persistence = bible["adapter_and_persistence"]
+    assert persistence["adapter_id"] == STORY_TO_PRODUCTION_ADAPTER_ID
+    assert persistence["adapter_version"] == STORY_TO_PRODUCTION_ADAPTER_VERSION
+    assert persistence["json_format"] == LEDGER_JSON_FORMAT_ID
+    assert persistence["legacy_or_l4_migration"] == "forbidden"
     phases = bible["production_phase_registry"]
     phase_ids = [row["phase_id"] for row in phases]
     assert len(phase_ids) == len(set(phase_ids))
@@ -992,7 +1010,7 @@ def test_requirements_file_uses_two_seals_not_monolithic_freeze() -> None:
     )
     assert freeze["final_seal_after"] == "publication_and_audit"
     assert freeze["current_executable_non_null_production_or_final_plane"] == (
-        "typed_production_state_allowed_final_seal_rejected"
+        "typed_production_state_and_typed_final_seal_allowed"
     )
     assert freeze["current_l4_cleanup_locked_is_not_enforcement"] is True
 

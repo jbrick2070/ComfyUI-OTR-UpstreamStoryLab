@@ -283,7 +283,7 @@ def test_machine_readable_contract_locks_only_the_operator_requirements() -> Non
         "story_ledger_post_acceptance_mutation": "forbidden",
         "production_state_post_acceptance_mutation": "phase_owned_append_only",
         "current_executable_non_null_production_or_final_plane": (
-            "typed_production_state_allowed_final_seal_rejected"
+            "typed_production_state_and_typed_final_seal_allowed"
         ),
         "final_seal_after": "publication_and_audit",
         "post_final_seal_mutation": "forbidden",

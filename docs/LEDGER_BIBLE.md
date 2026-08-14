@@ -1,8 +1,8 @@
 # OTR Ledger Bible v2
 
-Status: candidate Story Lab constitution; not yet transplanted into production
-OTR. The story plane, story seal, and typed append-only production journal are
-executable. `final_seal` remains null-only until terminal ordering lands.
+Status: enshrined Story Lab constitution; not yet transplanted into production
+OTR. The story plane, story seal, typed append-only production journal,
+terminal final seal, and strict atomic persistence path are executable.
 
 Machine authority:
 
@@ -36,11 +36,10 @@ otr.ledger_envelope.v2
 ```
 
 The Story Lab returns this one file with `production_state=null` and
-`final_seal=null`. The current executable class can later attach and append the
-strict typed production journal without changing one byte of the story plane.
-The Story Lab→OTR adapter and save guards are not implemented yet. The final
-seal remains non-executable; after it lands, no ordinary mutation will be
-legal.
+`final_seal=null`. The explicit `otr.story-lab.production-adapter` v1 can later
+attach and append the strict typed production journal without changing the
+canonical story, body, or StorySeal bytes. After the terminal final seal is
+minted, no ordinary story or production mutation is legal.
 
 This distinction matters because “the story is accepted” and “the episode has
 finished rendering” occur at different times. Pretending the entire file is
@@ -342,11 +341,31 @@ The final seal occurs only after:
 - final audio/video/OBS artifacts exist and have byte identities;
 - terminal audit is recorded.
 
-It binds the story digest, production-state digest, episode/run identities, and
-seal time. Afterward both planes are immutable. A later rerender is a new
-`run_id`; a later story edit is a new story edition. Operational annotations
-after the final seal are sidecar records referencing its digest, not edits to
-the sealed ledger.
+It binds the story digest, complete production-state digest, episode/run
+identities, UTC seal time, and a non-recursive digest of the complete terminal
+envelope. Its own `final_payload_sha256` field is the only field omitted from
+that digest preimage. The active publication must precede a successful audit;
+the audit binds the exact pre-audit production prefix and its acceptance is the
+last journal event. Afterward both planes are immutable. A later rerender is a
+new `run_id`; a later story edit is a new story edition. Operational
+annotations after the final seal are sidecar records referencing its digest,
+not edits to the sealed ledger.
+
+## Adapter and durable JSON
+
+The Story Lab includes one explicit adapter and one strict persistence path.
+They accept only the exact current v2 envelope; v1 evidence and current-l4
+objects are never repaired or promoted. Before production initialization, the
+adapter freshly verifies all five story receipts. It then proves that canonical
+`story_ledger` bytes, canonical `StoryBody` bytes, every StorySeal field, and
+`story_sha256` remain exact.
+
+Save and load use deterministic canonical UTF-8 JSON with an LF final newline
+and no BOM. Duplicate keys, malformed UTF-8, CR line endings, unknown schemas,
+non-finite numbers, stale story or production digests, and invalid final seals
+fail closed. Save validates and roundtrips before touching the destination,
+writes and verifies a same-directory temporary file, and only then atomically
+replaces the target. A failed save preserves the prior target bytes.
 
 ## What is deliberately not a story acceptance rule
 
@@ -384,8 +403,10 @@ Production OTR schema `l4-2026-08-07` is not this contract:
 
 There is no automatic `l4 -> v2` migration. Existing ledgers remain historical
 evidence unless a named migration can account for every missing semantic field.
-New Story Lab output will need an explicit production adapter that preserves
-the story bytes/digest and writes all media truth into `production_state`.
+The proven Story Lab adapter preserves the story bytes/digest and writes all
+later media truth into `production_state`. Production OTR does not call it yet;
+that wiring remains the next explicit transplant rather than a silent l4
+migration.
 
 The July `science_news` control is intentionally historical evidence rather
 than a normative v2 object. For example, its cast row identifies ANNOUNCER as
@@ -403,7 +424,7 @@ references carry their kind.
 - Target machine contract: `contracts/ledger_bible_v2.json`
 - Generated Draft 2020-12 envelope schema:
   `contracts/ledger_envelope_v2.schema.json`
-- Generated lifecycle/default/owner/failure catalog for all 1,313 expanded
+- Generated lifecycle/default/owner/failure catalog for all 1,322 expanded
   field paths: `contracts/ledger_field_laws_v2.json`
 - Human field reference rendered from the same catalog:
   `docs/LEDGER_FIELD_REFERENCE.md`
@@ -413,6 +434,8 @@ references carry their kind.
   `src/upstream_story_lab/ledger_verifiers.py`
 - Centralized act scheduler, draft filter, and cast sweep:
   `src/upstream_story_lab/story_authoring.py`
+- Strict production adapter and atomic save/load guard:
+  `src/upstream_story_lab/ledger_io.py`
 - Complete normative envelope and external captured packet:
   `fixtures/story_recovery/v2/`
 - Rejected mutation corpus with one replayed case per machine invariant:
@@ -429,7 +452,8 @@ That directory preserves the raw Antigravity and Sonnet reports separately
 from the grounded Codex audit and synthesis. Raw reviewer confidence is not a
 contract authority.
 
-The production workflow remains unchanged. A later transplant must add its
-adapter, save guards, centralized source-bank routing, workflow wiring, and
-final seal in small tested chunks; then recreate the seven-leg render runner so
-no post-change proof uses stale code.
+The production workflow remains unchanged. A later transplant must wire the
+proven adapter, save guards, centralized source-bank routing, act scheduler,
+spoken-only draft cleanup, and final seal into current OTR in small tested
+chunks; then recreate the seven-leg render runner so no post-change proof uses
+stale code.

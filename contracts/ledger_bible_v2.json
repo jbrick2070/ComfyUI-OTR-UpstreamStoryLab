@@ -1,6 +1,6 @@
 {
   "schema_version": "otr.ledger_bible.v2",
-  "status": "candidate_ledger_constitution_not_yet_transplanted",
+  "status": "enshrined_story_lab_constitution_not_yet_transplanted",
   "decision_date": "2026-08-14",
   "review_routing": {
     "directive_date": "2026-08-11",
@@ -23,7 +23,7 @@
       "production_state",
       "final_seal"
     ],
-    "current_executable_scope": "story_ledger, story_seal, and typed append-only production_state are executable; Story Lab output keeps production_state null and final_seal remains null-only",
+    "current_executable_scope": "story_ledger, story_seal, typed append-only production_state, typed terminal final_seal, and strict atomic persistence are executable; Story Lab output still keeps production_state and final_seal null until the explicit production adapter runs",
     "story_plane": "immutable_after_acceptance",
     "production_plane": "phase_owned_append_only_receipts",
     "final_state": "immutable_after_terminal_seal"
@@ -301,9 +301,10 @@
       "sealed_at": "timezone-aware UTC, minted once, immutable"
     },
     "final_seal": {
-      "hash_target": "story digest plus complete accepted production_state after publish and audit",
-      "precondition": "every required run-plan phase has one accepted succeeded attempt",
-      "postcondition": "no ordinary ledger mutation is legal"
+      "hash_target": "the complete terminal envelope with only final_payload_sha256 omitted from its own non-recursive preimage",
+      "bindings": "episode_id, run_id, story_sha256, complete production_state SHA-256, UTC seal time, and final payload SHA-256",
+      "precondition": "every required run-plan phase has one active accepted succeeded attempt; publication is active before the successful terminal audit; the audit binds the exact pre-audit production prefix and is the final journal event",
+      "postcondition": "no ordinary story, production, acceptance, or reseal mutation is legal"
     }
   },
   "production_phase_registry": [
@@ -407,11 +408,23 @@
     "story_plane_write_after_acceptance": "reject_atomically",
     "post_final_seal_write": "reject_atomically"
   },
+  "adapter_and_persistence": {
+    "adapter_id": "otr.story-lab.production-adapter",
+    "adapter_version": "1",
+    "json_format": "otr.ledger-json.v1",
+    "accepted_input": "exact current v2 story-only LedgerEnvelope after fresh trusted story verification",
+    "legacy_or_l4_migration": "forbidden",
+    "story_preservation": "canonical story_ledger bytes, canonical StoryBody bytes, every StorySeal field, and story_sha256 remain exact",
+    "save_format": "deterministic canonical UTF-8 JSON with LF final newline and no BOM",
+    "save_law": "validate and roundtrip in memory, write and fsync a same-directory temporary file, freshly reload it, then atomically replace the target",
+    "load_law": "reject duplicate keys, malformed UTF-8, BOM, CR line endings, unknown schemas, non-finite numbers, and any failed fresh story, production, or final-seal verification",
+    "failure_law": "preserve the previous target bytes and remove the temporary artifact"
+  },
   "current_l4_compatibility": {
     "characterization_source": "contracts/ledger_consumer_matrix_l4.json",
     "automatic_migration": "forbidden",
     "reason": "current l4 has legitimate post-freeze in-place writes, mixed routing/sequence roles, and can discard SciFi fact_ids",
-    "required_path": "new explicit adapter preserving story bytes, fact_ids, speaker authority, sequence roles and seal; then production receipts move to production_state",
+    "required_path": "transplant the proven explicit v2 adapter and persistence guard into current production; preserve story bytes, fact_ids, speaker authority, sequence roles and seal while all production truth moves to production_state",
     "historical_ledgers": "read_only_evidence_unless_an_explicit_loss-accounting_migration_is_registered",
     "legacy_control": "historical semantic evidence only; c01 versus announcer identity and missing act topology require explicit migration before v2 admission",
     "id_namespace": "typed per table; identical literals in different tables are allowed and references resolve by kind"

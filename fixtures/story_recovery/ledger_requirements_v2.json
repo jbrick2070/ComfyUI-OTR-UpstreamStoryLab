@@ -96,7 +96,7 @@
     "story_seal_requires_trusted_receipt_registry": true,
     "story_ledger_post_acceptance_mutation": "forbidden",
     "production_state_post_acceptance_mutation": "phase_owned_append_only",
-    "current_executable_non_null_production_or_final_plane": "typed_production_state_allowed_final_seal_rejected",
+    "current_executable_non_null_production_or_final_plane": "typed_production_state_and_typed_final_seal_allowed",
     "final_seal_after": "publication_and_audit",
     "post_final_seal_mutation": "forbidden",
     "contract_change": "new_schema_version_and_explicit_migration",
