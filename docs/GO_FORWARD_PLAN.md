@@ -1,249 +1,197 @@
-# GO FORWARD PLAN — OTR Story Recovery Lab
+# GO FORWARD PLAN — OTR Act-Based Story Lab
 
-Updated: 2026-08-13. This is the current Story Lab handoff. The superseded
-2026-07-02 production-transplant plan remains available in git at `7df7c80`.
+Updated: 2026-08-14. This is the current handoff. The Story Lab ledger is
+enshrined and pushed; production OTR has not been changed.
 
-## WHAT IS ACTUALLY LEFT
+## Outcome now locked
 
-The live-ledger audit is complete and the Story Lab's structural story-plane
-boundary is now executable. Trusted semantic validators, production receipts,
-and the final seal are intentionally not executable yet. Do not change
-source-bank story paths, prompts, length
-planning, production OTR, or the parked render campaign until the remaining
-contract-transplant prerequisites below are complete.
-
-The order is:
-
-1. **DONE:** trace every live ledger producer, validator, serializer, mutator,
-   reload path, and downstream consumer across workflow code, scripts, tests,
-   offline tools, manifests, and filesystem joins.
-2. **DONE:** publish the code-cited current-l4 consumer matrix and chronological
-   mutation audit; retain the raw AGY report and grounded corrections.
-3. **DONE:** bless the one-JSON target envelope and make the strict
-   `story_ledger` + `story_seal` boundary executable. Non-null
-   `production_state` and `final_seal` fail until their typed models land.
-4. **DONE:** preserve and reconcile the Sonnet 5 red-team against live code;
-   retain its raw report and incorporate only grounded deltas.
-5. **DONE:** build and register the five trusted semantic outcome verifiers
-   over the sealed control/challenger evidence, then add a complete normative
-   v1 fixture and rejected mutation corpus. Receipt JSON alone is not trust.
-6. Define strict production-state receipt schemas, emit static JSON Schema,
-   and implement the explicit digest-preserving Story Lab→OTR adapter. No
-   silent l4 migration.
-7. Add save-guard and consumer-adapter tests proving every production phase
-   preserves the story digest, then define terminal audit/final-seal ordering.
-8. Then resume source-bank story-path work: four-tier bank-owned length-plan
-   experiments, compiler-owned bookends, speaker authority, narrow
-   spoken-correctness checks, and executable A/B adapters.
-9. Transplant proven pieces into OTR in small green chunks, recreate the parked
-   seven-leg runner against the changed code, and run those proofs last.
-
-## LEDGER CONSTITUTION GATE — operator-locked 2026-08-13
-
-Steps 5–7 are one hard gate delivered as small independently green commits.
-Do not call Ledger Bible v1 enshrined, and do not resume story generation,
-until all of these are executable:
-
-1. **DONE:** one complete normative v1 ledger fixture;
-2. **DONE:** five code-owned trusted semantic validators;
-3. **DONE:** a rejected mutation fixture for every invariant;
-4. generated static JSON Schema with executable human/machine parity checks;
-5. one type, default law, lifecycle owner, mutation phase, durability rule,
-   and failure policy for every ledger field;
-6. typed append-only production receipts and a terminal final seal;
-7. adapter, save-path, and consumer tests proving sealed story bytes and digest
-   remain unchanged through every legal production phase; and
-8. explicit registered migrations only—never silent repair or promotion of an
-   old ledger into v1.
-
-Until all eight pass: no source-bank prompt/path rewrite, length-tier
-experiment, Lemmy work, production OTR transplant, GPU render, or parked gate
-leg. The ledger is the ABI; downstream systems adapt to it.
-
-The raw Antigravity, Codex, and Sonnet lanes are preserved separately under
-`docs/2026-08-13-story-recovery/`. Their grounded convergence and corrections
-live only in `LEDGER_BIBLE_SYNTHESIS.md`.
-
-## Minimum ship contract
-
-These five outcomes are hard. Everything else is theory until tested:
-
-1. The ledger is intact and internally coherent.
-2. The selected news and usable factual evidence are captured.
-3. The announcer opens by introducing the story, setting, and characters.
-4. The announcer ends by summarizing the real news from captured evidence.
-5. Music is first and last.
-
-LLMs are replaceable and variable. They may author prose inside locked rows;
-they do not own these outcomes.
-
-The Story Lab emits one validated ledger JSON. It does not synthesize speech,
-render media, publish an episode, or require a GPU. Downstream OTR may later
-return duration observations, but the lab stops at the ledger boundary.
-
-## Length control — operator-locked
-
-One visible variable: `episode_length_tier`.
+The final playable script may contain only:
 
 ```text
-ultra_short
-medium
-long
-extra_long
+music
+announcer opening
+character dialogue
+announcer factual news/media/science coda
+music
 ```
 
-The order and labels above are fixed. Exact minutes, scenes, beats, lines, and
-chunk sizes are deliberately not fixed yet. Each bank maps the same tier to
-its own semantic opportunity. Actual audio duration and words are receipts;
-neither is a publish gate, and models are never asked to count them.
+Optional interstitial music may appear only inside the character drama. No
+action row, stage direction, third-person narration, or delivery note may be
+sealed or sent to TTS. Planning metadata may describe story, arc, acts, scenes,
+states, beats, and intent, but it is never a spoken row.
 
-Length is mainly a process, not a prompt: tier -> bank plan -> compiler-owned
-movements/rows -> bounded writing chunks -> intact ledger. The model is asked
-to fulfill a dramatic job for exact locked rows, not to “write a medium
-story.” Optional downstream audio measurements calibrate later mapping
-versions; they are not a Story Lab output.
+The pre-seal cleaner drops clearly standalone non-spoken draft rows. If prose is
+embedded ambiguously inside a proposed speech row, that act returns to its
+dialogue job. Trusted admission never rewrites an accepted StoryBody. After
+dialogue, the cast sweep keeps exactly one announcer plus only characters that
+own accepted dialogue; it never invents filler dialogue.
 
-## Staged evidence
+This directly guards the two observed failures in “The Light of Possibility”:
+character rows contained stage/novel narration, and the opening failed to
+introduce the scene and final speaking characters. The pinned challenger is:
 
-- Human Ledger Bible:
-  `docs/LEDGER_BIBLE.md`
-- Machine Ledger Bible:
-  `contracts/ledger_bible_v1.json`
-- Current-l4 consumer matrix:
-  `contracts/ledger_consumer_matrix_l4.json`
-- Executable target contract:
-  `src/upstream_story_lab/ledger_contract.py`
-- Code-owned trusted semantic validators:
-  `src/upstream_story_lab/ledger_verifiers.py`
-- Complete normative v1 envelope and captured source packet:
-  `fixtures/story_recovery/v1/`
-- Rejected mutation corpus covering all 17 machine-Bible story invariants:
-  `fixtures/story_recovery/v1/rejected_mutations_v1.json`
-- Independent Codex audit:
-  `docs/2026-08-13-story-recovery/CODEX_LEDGER_BIBLE_AUDIT.md`
-- Review synthesis:
-  `docs/2026-08-13-story-recovery/LEDGER_BIBLE_SYNTHESIS.md`
-
-- Ledger Bible code-audit plan:
-  `docs/2026-08-13-story-recovery/LEDGER_BIBLE_AUDIT_PLAN.md`
-- Independent Antigravity audit prompt:
-  `docs/2026-08-13-story-recovery/AGY_LEDGER_BIBLE_AUDIT_PROMPT.md`
-- Independent Sonnet audit/red-team prompt:
-  `docs/2026-08-13-story-recovery/SONNET_LEDGER_BIBLE_AUDIT_PROMPT.md`
-- Preserved raw Sonnet audit:
-  `docs/2026-08-13-story-recovery/SONNET_LEDGER_BIBLE_AUDIT.md`
-- Problem statement:
-  `docs/2026-08-13-story-recovery/PROBLEM_STATEMENT.md`
-- Port/restore/compare/exclude decisions:
-  `docs/2026-08-13-story-recovery/RECOVERY_MATRIX.md`
-- Length experiment:
-  `docs/2026-08-13-story-recovery/LENGTH_TIER_EXPERIMENT.md`
-- Paste-ready academic deep-research brief:
-  `docs/2026-08-13-story-recovery/DEEP_RESEARCH_BRIEF.md`
-- Clean control:
-  `fixtures/story_recovery/science_news_good_20260716.json`
-- Render-pass/content-fail challenger:
+- video:
+  `C:\Users\jeffr\Documents\ComfyUI\output\otr\obs\signal_lost_the_light_of_possibility_20260813_172801_silent_procgen_blended_captioned_with_credits_final.mp4`
+- live ledger:
+  `C:\Users\jeffr\Documents\ComfyUI\output\otr\episodes\signal_lost_the_light_of_possibility_20260813_172801\audio\signal_lost_the_light_of_possibility_20260813_172801_ledger.json`
+- frozen recovery projection:
   `fixtures/story_recovery/scifi_news_bad_20260813.json`
-- Machine-readable hard contract:
-  `fixtures/story_recovery/ledger_requirements_v1.json`
-- Deterministic extractor:
-  `scripts/extract_story_recovery_cases.py`
-- Evidence-integrity tests:
-  `tests/test_story_recovery_artifacts.py`
 
-The clean control is the July 16 legacy `science_news` episode “Folder of Red
-Stamps.” The challenger is the August 13 `scifi_news` / `wan_ti2v` episode “The
-Light of Possibility.” All copied surfaces and final assets are SHA-256 pinned.
-The challenger truthfully records `render_pass=true` and
-`story_content_pass=false`.
+## One hard length knob
 
-## Current technical facts
+The only visible story-length control is strict integer `act_count=1..5`.
+There is no `auto`, global target-word variable, word-count admission gate, or
+hardware-derived act count. Words and rendered minutes are observations.
 
-- Repo: `ComfyUI-OTR-UpstreamStoryLab`, branch `main`.
-- Baseline before this staging chunk: `7df7c80`, clean and equal to origin.
-- Ledger Constitution Step 5 checkpoints: trusted validators/normative fixture
-  `1b1baac`; 17-invariant mutation corpus `eb35af8`; both pushed to
-  `origin/main` with HEAD verified equal to origin after each chunk.
-- Current staging gates: 144 tests passed; `validate_lab.py` reports 4 banks,
-  12 packs, 55 validated specs, 5 visual styles, 3 public-domain manifests,
-  and no mirror drift; node smoke passed; tree verification reports 59 Python
-  files, 38 JSON files, and 0 errors.
-- `legacy_many_pass` is descriptive-only and the lab runner refuses it.
-- Only `simple_4_prompt_experimental` currently executes, through an injected
-  string-callable; it is not a live production writer.
-- `production_mirror` is pinned to OTR `d48a9d76`. It is historical and mostly
-  drifted from current OTR; never treat `mirror_drift=none` as live parity.
-- The current OTR liveness guard did not cause the bad episode. Its accepted P3
-  and P5 never fired the guard.
-- Do not copy current OTR wholesale: it is the challenger and contains the
-  speaker/topology regression this lab exists to fix.
-- Do not restore old OTR wholesale: its useful announcer/coda boundaries are
-  mixed with retired word and subjective-quality machinery.
+`act_count` creates actual scheduled model work rather than merely appearing in
+one large prompt:
 
-## Step 5 implementation receipt
+```text
+source packet
+  -> story seed
+  -> one X-act arc
+  -> for each ordered act: spine -> beats -> dialogue
+  -> cast sweep
+  -> announcer opening
+  -> factual announcer coda
+  -> compiler-owned music bookends
+  -> trusted admission and story seal
+```
 
-- Changed code/contracts: `src/upstream_story_lab/ledger_verifiers.py`,
-  `src/upstream_story_lab/ledger_contract.py`,
-  `src/upstream_story_lab/__init__.py`, `contracts/ledger_bible_v1.json`, and
-  `docs/LEDGER_BIBLE.md`.
-- Added evidence/tests: `fixtures/story_recovery/v1/`,
-  `tests/test_ledger_semantic_verifiers.py`, and
-  `tests/test_ledger_mutation_corpus.py`.
-- The official registry contains exactly five immutable validator identities.
-  News admission re-hashes exact caller-supplied captured-packet bytes and
-  compares the complete strict source/fact projection. Opening and coda prose
-  use a versioned normalized-literal policy; no LLM or network call is trusted.
-- The July control calibrates the positive opening/coda content and remains
-  historical evidence with music explicitly not evaluated. The August
-  challenger calibrates rejection findings and remains content-fail evidence.
-  Neither is silently promoted into v1.
-- No Bug Bible runner exists in this Story Lab repo. Focused tests, the full
-  suite, all three repo validation scripts, `git diff --check`, push, and
-  HEAD/origin equality checks were green for both chunks.
-- Active build threads or blockers: none. Production OTR and the GPU were not
-  touched.
+The stable schedule is `3 * act_count + 7` jobs. The base model schedule is
+`3 * act_count + 4` calls before retries: 7 calls for one act through 19 calls
+for five acts. A retry is another attempt on the same job and never creates an
+extra act.
 
-## Production and render parking lot
+Beat count, exchange count, and approximate duration may be soft per-bank or
+per-model guidance. They are not universal ledger laws. The hard requirement
+is that every accepted beat is enacted by actual character dialogue and every
+act contains coherent entry, development, and exit state.
 
-Production OTR remains separate and unchanged by this Story Lab staging chunk.
-The live render gate is 14/21 after the fresh-seed `wan_ti2v` pass. Seven legs
-remain parked:
+A 3060, 5090, or cloud route may change provider, model size, batching,
+latency, context packing, and retry cost. It must not change the ledger shape,
+act count, or spoken-only rule.
 
-- `wan_i2v`
-- `humo`
-- `humo_14B_169`
-- `humo_1.7B`
-- `humo_1.7B_169`
-- `minimax_h3_video`
-- `minimax_h3_audio_in`
+## Central compiler, creative banks
 
-Purpose: those legs must prove the post-story/Lemmy code that will ship, not
-stale pre-fix code. Recreate their runner and re-read every profile's own
-`launch.env` after the writer/Lemmy changes; never reuse the old temporary
-seven-leg runner blindly. Keep the one-coder-window law while story code moves.
+All four runnable banks retain control over source selection, tone, factual
+material, and creative prompt content:
 
-## Review routing
+- `custom_source_bank`
+- `media_archive`
+- `public_domain_story`
+- `science_news`
 
-The active operator directive is dated 2026-08-11: full r1-r4 kibitz is
-suspended. Use a Codex consult only for a genuine quandary or third attempt and
-Sonnet 5 for post-coding QA. Do not resurrect stale “mandatory full kibitz”
-language from the July artifacts.
+Every bank now declares the same central compiler and exact act schedule. No
+bank may bypass draft cleanup, cast sweep, semantic admission, or the story
+seal. This keeps upstream creative freedom while giving downstream production
+one trustworthy ABI.
+
+## Ledger constitution — complete in Story Lab
+
+The v2 envelope now has executable:
+
+- immutable `story_ledger` plus five code-owned semantic receipts;
+- `story_seal` over exact canonical story bytes;
+- typed append-only `production_state` for all 18 registered phases;
+- terminal `final_seal` after active publication and successful terminal audit;
+- strict v2-only adapter `otr.story-lab.production-adapter` version `1`;
+- deterministic UTF-8/LF/no-BOM atomic save/load with fresh story, production,
+  and final-seal verification;
+- generated Draft 2020-12 schema and 1,322-path lifecycle reference.
+
+The adapter proves canonical StoryBody, StoryLedger, every StorySeal field, and
+`story_sha256` remain exact when production state is attached. v1 recovery
+fixtures and current-l4 ledgers are evidence only; there is no silent migration.
+
+Authorities:
+
+- `docs/LEDGER_BIBLE.md`
+- `contracts/ledger_bible_v2.json`
+- `contracts/ledger_envelope_v2.schema.json`
+- `contracts/ledger_field_laws_v2.json`
+- `src/upstream_story_lab/ledger_contract.py`
+- `src/upstream_story_lab/story_authoring.py`
+- `src/upstream_story_lab/ledger_io.py`
+- `fixtures/story_recovery/v2/`
+
+## Current receipt
+
+- Repo/branch: `ComfyUI-OTR-UpstreamStoryLab`, `main`.
+- Enshrined implementation baseline (before this handoff-only commit):
+  `183298160142acd139e0120462c65e64ce28a4db`, pushed to `origin/main`.
+- Main constitution chunks:
+  - `e999c40` — typed production journal;
+  - `6033098` — act-based ledger v2 and spoken-only authoring compiler;
+  - `b01ef65` — generated v2 schema and field laws;
+  - `74c2c1b` — terminal seal plus strict adapter/save/load proof;
+  - `1832981` — enshrined human/machine constitution.
+- Full suite: 312 passed.
+- Generated artifact `--check`: passed.
+- `validate_lab.py`: 4 banks, 12 packs, 55 specs, 5 visual styles, 3
+  public-domain manifests, no mirror drift.
+- `smoke_nodes.py`: passed.
+- `verify_tree.py`: 70 Python files, 45 JSON files, 0 errors.
+- `git diff --check`: passed.
+- No Bug Bible runner exists in this repository.
+
+Production OTR remains unchanged at `707b39e9` on `v2.0-alpha`, equal to its
+remote at the last read-only check. Its existing untracked operator files were
+not touched. The production mirror in this lab is historical characterization,
+not authority for the current production head.
+
+## What is next — prove one fresh story in the Lab
+
+Do not jump directly into another production render. The next implementation
+slice is a provider-neutral staged authoring executor and prompt layer over the
+already locked schedule:
+
+1. Compile one bank packet into a source-grounded story-seed job.
+2. Ask for one coherent arc containing exactly the operator-selected acts.
+3. For each act in order, run separate spine, beat-plan, and dialogue jobs.
+4. Give every dialogue job the locked cast, source facts, full arc, current act
+   spine/states, prior exit state, and exact beat IDs/intents.
+5. Repeat in every dialogue prompt: output only words spoken aloud by the
+   assigned character; no stage directions, action, narration, delivery notes,
+   or another speaker’s words.
+6. Sanitize the draft. Drop safe standalone cues; retry only the owning act for
+   ambiguous embedded prose or missing dialogue.
+7. Sweep unused characters, then write the announcer opening from the final
+   title/setting/scene/time/cast and the coda from captured source facts.
+8. Add compiler music bookends, admit all five outcomes, seal, save, reload,
+   and compare exact story bytes.
+
+Start with an injected deterministic fake model so scheduling, retry ownership,
+context assembly, and ledger compilation are testable without a GPU. Then run
+one real Lab story through a deliberately chosen local or cloud route. The
+proof is a newly authored v2 ledger that passes admission and visibly contains
+only music, announcer, and character dialogue—not a word-count score.
+
+## Production transplant after that proof
+
+Once the fresh Lab story passes, inspect the latest production OTR head and
+transplant one proven boundary at a time:
+
+1. exact v2 envelope loader and Story Lab→production adapter;
+2. visible `act_count` 1–5 wiring and centralized staged authoring path;
+3. removal or isolation of legacy word-count/tier/auto authority on that path;
+4. spoken-only cleaner, cast sweep, announcer introduction/coda, and music
+   topology;
+5. phase receipt appends, guarded save/reload, and terminal seal.
+
+Keep current-l4 historical ledgers read-only. Do not use a lossy compatibility
+shim and do not mutate the user’s unrelated production files. Unit and
+fixture-level gates come first; GPU renders and the parked seven-leg campaign
+resume only after the transplanted story path is green.
 
 ## Next-window kickoff
 
-“State your MODEL & CREDIT BUDGET rung first. Read the 2026-08-11 review-routing
-directive here; full r1–r4 kibitz remains suspended. Open
-`docs/LEDGER_BIBLE.md`, `contracts/ledger_bible_v1.json`,
-`contracts/ledger_consumer_matrix_l4.json`, and
-`docs/2026-08-13-story-recovery/LEDGER_BIBLE_SYNTHESIS.md`. Step 5 is green at
-`eb35af8`. Execute only the first independently green Step 6 slices: define one
-type/default/lifecycle owner/mutation phase/durability/failure policy for every
-production-state field, implement strict append-only attempt/receipt schemas
-for every registered production phase, then generate static JSON Schema with
-executable human/machine parity. Keep `final_seal` non-executable until terminal
-audit ordering is defined. Do not implement the Story Lab→OTR adapter, touch a
-production save path, rewrite source-bank stories, change length tiers, resume
-Lemmy, use the GPU, or run any parked render leg in this window. Run focused
-tests, the full Story Lab suite, `validate_lab.py`, `smoke_nodes.py`, and
-`verify_tree.py`; commit and push each green chunk to Story Lab `main`, then
-verify HEAD equals origin.”
+“Read this file plus `docs/LEDGER_BIBLE.md`. Confirm Story Lab `main` equals
+`origin/main` and leave production OTR untouched. Implement only the
+provider-neutral staged authoring executor/prompt layer over
+`story_authoring.py`, with deterministic fake-model tests. The executor must
+honor hard `act_count=1..5`, keep retries on the owning job, continually demand
+actual dialogue, sanitize before admission, sweep unused cast, and compile the
+exact music→announcer→dialogue→announcer→music sequence. Generate one complete
+new v2 ledger fixture and run the full Story Lab gates. Do not add a word-count
+gate, run a GPU render, or transplant into production in that first slice.”
