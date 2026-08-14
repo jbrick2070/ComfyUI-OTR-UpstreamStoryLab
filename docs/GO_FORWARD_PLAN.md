@@ -24,9 +24,9 @@ The order is:
    `production_state` and `final_seal` fail until their typed models land.
 4. **DONE:** preserve and reconcile the Sonnet 5 red-team against live code;
    retain its raw report and incorporate only grounded deltas.
-5. Build and register the five trusted semantic outcome verifiers over the
-   sealed control/challenger fixtures, then add a complete normative v1 fixture
-   and rejected mutation corpus. Receipt JSON alone is not trust.
+5. **DONE:** build and register the five trusted semantic outcome verifiers
+   over the sealed control/challenger evidence, then add a complete normative
+   v1 fixture and rejected mutation corpus. Receipt JSON alone is not trust.
 6. Define strict production-state receipt schemas, emit static JSON Schema,
    and implement the explicit digest-preserving Story Lab→OTR adapter. No
    silent l4 migration.
@@ -44,9 +44,9 @@ Steps 5–7 are one hard gate delivered as small independently green commits.
 Do not call Ledger Bible v1 enshrined, and do not resume story generation,
 until all of these are executable:
 
-1. one complete normative v1 ledger fixture;
-2. five code-owned trusted semantic validators;
-3. a rejected mutation fixture for every invariant;
+1. **DONE:** one complete normative v1 ledger fixture;
+2. **DONE:** five code-owned trusted semantic validators;
+3. **DONE:** a rejected mutation fixture for every invariant;
 4. generated static JSON Schema with executable human/machine parity checks;
 5. one type, default law, lifecycle owner, mutation phase, durability rule,
    and failure policy for every ledger field;
@@ -113,6 +113,12 @@ versions; they are not a Story Lab output.
   `contracts/ledger_consumer_matrix_l4.json`
 - Executable target contract:
   `src/upstream_story_lab/ledger_contract.py`
+- Code-owned trusted semantic validators:
+  `src/upstream_story_lab/ledger_verifiers.py`
+- Complete normative v1 envelope and captured source packet:
+  `fixtures/story_recovery/v1/`
+- Rejected mutation corpus covering all 17 machine-Bible story invariants:
+  `fixtures/story_recovery/v1/rejected_mutations_v1.json`
 - Independent Codex audit:
   `docs/2026-08-13-story-recovery/CODEX_LEDGER_BIBLE_AUDIT.md`
 - Review synthesis:
@@ -155,12 +161,13 @@ The challenger truthfully records `render_pass=true` and
 
 - Repo: `ComfyUI-OTR-UpstreamStoryLab`, branch `main`.
 - Baseline before this staging chunk: `7df7c80`, clean and equal to origin.
-- Ledger Bible implementation/review checkpoint: `c258381`, pushed to
-  `origin/main` with a clean worktree.
-- Current staging gates: 106 tests passed; `validate_lab.py` reports 4 banks,
+- Ledger Constitution Step 5 checkpoints: trusted validators/normative fixture
+  `1b1baac`; 17-invariant mutation corpus `eb35af8`; both pushed to
+  `origin/main` with HEAD verified equal to origin after each chunk.
+- Current staging gates: 144 tests passed; `validate_lab.py` reports 4 banks,
   12 packs, 55 validated specs, 5 visual styles, 3 public-domain manifests,
-  and no mirror drift; node smoke passed; tree verification reports 56 Python
-  files, 35 JSON files, and 0 errors.
+  and no mirror drift; node smoke passed; tree verification reports 59 Python
+  files, 38 JSON files, and 0 errors.
 - `legacy_many_pass` is descriptive-only and the lab runner refuses it.
 - Only `simple_4_prompt_experimental` currently executes, through an injected
   string-callable; it is not a live production writer.
@@ -172,6 +179,29 @@ The challenger truthfully records `render_pass=true` and
   speaker/topology regression this lab exists to fix.
 - Do not restore old OTR wholesale: its useful announcer/coda boundaries are
   mixed with retired word and subjective-quality machinery.
+
+## Step 5 implementation receipt
+
+- Changed code/contracts: `src/upstream_story_lab/ledger_verifiers.py`,
+  `src/upstream_story_lab/ledger_contract.py`,
+  `src/upstream_story_lab/__init__.py`, `contracts/ledger_bible_v1.json`, and
+  `docs/LEDGER_BIBLE.md`.
+- Added evidence/tests: `fixtures/story_recovery/v1/`,
+  `tests/test_ledger_semantic_verifiers.py`, and
+  `tests/test_ledger_mutation_corpus.py`.
+- The official registry contains exactly five immutable validator identities.
+  News admission re-hashes exact caller-supplied captured-packet bytes and
+  compares the complete strict source/fact projection. Opening and coda prose
+  use a versioned normalized-literal policy; no LLM or network call is trusted.
+- The July control calibrates the positive opening/coda content and remains
+  historical evidence with music explicitly not evaluated. The August
+  challenger calibrates rejection findings and remains content-fail evidence.
+  Neither is silently promoted into v1.
+- No Bug Bible runner exists in this Story Lab repo. Focused tests, the full
+  suite, all three repo validation scripts, `git diff --check`, push, and
+  HEAD/origin equality checks were green for both chunks.
+- Active build threads or blockers: none. Production OTR and the GPU were not
+  touched.
 
 ## Production and render parking lot
 
@@ -203,14 +233,17 @@ language from the July artifacts.
 
 “State your MODEL & CREDIT BUDGET rung first. Read the 2026-08-11 review-routing
 directive here; full r1–r4 kibitz remains suspended. Open
-`docs/LEDGER_BIBLE.md` and
-`docs/2026-08-13-story-recovery/LEDGER_BIBLE_SYNTHESIS.md`. Execute only Ledger
-Constitution Gate item 1–3 / plan Step 5: implement the five code-owned trusted
-semantic outcome validators, one complete normative v1 ledger fixture, and a
-rejected mutation corpus covering every invariant. Use the sealed
-control/challenger evidence. Keep production OTR, source-bank writing, length
-tiers, Lemmy, the GPU, and all seven render legs parked. Do not start production
-receipt schemas or the OTR adapter in this window. Run focused tests, the full
-Story Lab suite, `validate_lab.py`, `smoke_nodes.py`, and `verify_tree.py`;
-commit and push each green chunk to Story Lab `main`, then verify HEAD equals
-origin.”
+`docs/LEDGER_BIBLE.md`, `contracts/ledger_bible_v1.json`,
+`contracts/ledger_consumer_matrix_l4.json`, and
+`docs/2026-08-13-story-recovery/LEDGER_BIBLE_SYNTHESIS.md`. Step 5 is green at
+`eb35af8`. Execute only the first independently green Step 6 slices: define one
+type/default/lifecycle owner/mutation phase/durability/failure policy for every
+production-state field, implement strict append-only attempt/receipt schemas
+for every registered production phase, then generate static JSON Schema with
+executable human/machine parity. Keep `final_seal` non-executable until terminal
+audit ordering is defined. Do not implement the Story Lab→OTR adapter, touch a
+production save path, rewrite source-bank stories, change length tiers, resume
+Lemmy, use the GPU, or run any parked render leg in this window. Run focused
+tests, the full Story Lab suite, `validate_lab.py`, `smoke_nodes.py`, and
+`verify_tree.py`; commit and push each green chunk to Story Lab `main`, then
+verify HEAD equals origin.”

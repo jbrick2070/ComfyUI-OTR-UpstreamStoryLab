@@ -141,8 +141,33 @@ more than it enforced. The lab contract now:
 - requires a timezone-aware UTC seal time and guards the complete seal receipt,
   not only its digest.
 
-This does not pretend that the real semantic validators or production receipt
-schemas already exist. Both remain explicit pre-transplant work.
+The real semantic validators now exist in
+`src/upstream_story_lab/ledger_verifiers.py` and the complete normative fixture
+is admitted only through their immutable five-entry registry. Production
+receipt schemas remain explicit pre-transplant work.
+
+## Step 5 executable gate completed
+
+Story Lab `main` now contains two pushed, independently green checkpoints:
+
+- `1b1baac` adds the five trusted validator identities, strict external
+  captured-packet artifact, complete normative v1 envelope, and deterministic
+  opening/coda policy; and
+- `eb35af8` adds a hash-pinned mutation corpus with exactly one replayed
+  rejection for each of the 17 `story_invariants` codes in the machine Bible.
+
+The normalized-literal prose checks are intentionally conservative. The
+opening must contain the premise, setting, opening-scene time, and all character
+names. The coda must contain the complete claim of a receipt-named fact cited
+by that line. Changing that policy requires a new validator version. The news
+validator hashes exact caller-supplied packet bytes and requires strict full
+projection equality; it does not fetch the network or trust an embedded digest
+by assertion.
+
+The historical July control supplies positive opening/coda calibration but
+still has no music-topology verdict and is not v1. The August challenger
+supplies negative topology/speaker/fact findings and is not repaired into v1.
+The Step 5 full gate is 144 tests plus all Story Lab validation scripts green.
 
 ## Decisions now locked for Story Lab
 
@@ -166,16 +191,14 @@ schemas already exist. Both remain explicit pre-transplant work.
 
 ## What remains before production transplant
 
-1. Build and register the five trusted semantic outcome verifiers over the
-   sealed control/challenger evidence, then add a complete normative v1 fixture
-   plus rejected mutation corpus.
-2. Define strict production-state attempt/receipt schemas per phase.
-3. Generate static JSON Schema and documentation from the executable models.
-4. Build the explicit Story Lab→OTR adapter and prove story-byte/digest
+1. Define strict production-state attempt/receipt schemas per phase, including
+   one type/default/lifecycle/durability/failure law for every field.
+2. Generate static JSON Schema and documentation from the executable models.
+3. Build the explicit Story Lab→OTR adapter and prove story-byte/digest
    preservation.
-5. Move current post-acceptance writers behind phase ownership and enforce the
+4. Move current post-acceptance writers behind phase ownership and enforce the
    story seal at both save paths and all wire/disk joins.
-6. Define terminal audit ordering and final-seal enforcement.
+5. Define terminal audit ordering and final-seal enforcement.
 
 Only then should source-bank story paths, the four length-tier process, Lemmy,
 or the seven parked render legs resume.
