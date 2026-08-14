@@ -660,6 +660,57 @@ def test_bare_first_name_narration_is_a_known_v1_gap() -> None:
     assert audit("Oya turns away from the desk now.") == []
 
 
+def test_cleanup_cannot_reassign_a_speaker() -> None:
+    """Cleanup may reword, convert or drop a row; it may not re-assign one.
+
+    A silent speaker swap would seal one character's words under another's
+    voice, and would also keep a character the cast sweep should have removed.
+    """
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        rows = [dict(row) for row in payload["rows"]]
+        for row in rows:
+            if row.get("char_id") == "c02":
+                row["char_id"] = "c04"  # the deliberately unused cast row
+                break
+        payload["rows"] = rows
+        return payload
+
+    provider = TamperingProvider("act_01.cleanup", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "act_01.cleanup")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("did not speak it" in reason for reason in records[0].reasons)
+    # The unused character is still swept, and no line changed voice.
+    assert [row.char_id for row in result.envelope.story_ledger.body.cast] == [
+        "announcer",
+        "c02",
+        "c03",
+    ]
+
+
+def test_rejected_cleanup_leaves_the_act_intact() -> None:
+    """A rejected cleanup must not half-replace the act it was repairing."""
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        rows = [dict(row) for row in payload["rows"]]
+        rows[0]["text"] = "[Aside.] " + rows[0]["text"]
+        payload["rows"] = rows
+        return payload
+
+    provider = TamperingProvider("act_02.cleanup", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "act_02.cleanup")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    body = result.envelope.story_ledger.body
+    assert all("[Aside.]" not in line.text for line in body.lines)
+    act_two_beats = set(body.acts[1].beat_ids)
+    covered = {
+        line.beat_id for line in body.lines if line.beat_id in act_two_beats
+    }
+    assert covered == act_two_beats, "every beat survived the rejected pass"
+
+
 def test_committed_fixture_is_current_and_loadable() -> None:
     result = author_fixture(save_path=None)
     expected = canonical_bytes(result.envelope) + b"\n"

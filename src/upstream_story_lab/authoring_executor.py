@@ -1250,8 +1250,35 @@ class _StagedRun:
         before = self.act_rows.get(act_number, ())
         reasons, notes = self._accept_dialogue(job, payload)
         if reasons:
+            # Leave the accepted draft in place; a rejected cleanup must not
+            # half-replace the act it was asked to repair.
+            self.act_rows[act_number] = before
             return reasons, notes
         after = self.act_rows.get(act_number, ())
+
+        # Cleanup may reword, convert, or drop a row.  It may not re-assign
+        # one: a speaker or beat it never received is drift, not repair, and
+        # would seal another character's words under the wrong voice.
+        def owned(rows) -> set[tuple[str, str]]:
+            return {
+                (row.beat_id, row.char_id)
+                for row in rows
+                if isinstance(row, _AcceptedSpeechRow)
+            }
+
+        invented = sorted(owned(after) - owned(before))
+        if invented:
+            self.act_rows[act_number] = before
+            return (
+                tuple(
+                    f"cleanup assigned beat {beat_id!r} to {char_id!r}, which "
+                    "did not speak it in the draft; keep each row's beat and "
+                    "speaker exactly as given"
+                    for beat_id, char_id in invented
+                ),
+                notes,
+            )
+
         changed = sum(
             1
             for old, new in zip(before, after)

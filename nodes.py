@@ -163,7 +163,10 @@ class OTR_UpstreamStoryLabValidator:
             visual_found = scan_visual_leakage(spec)
             if visual_found:
                 leaks.append(f"{bank_id}/{model_id} visual: {visual_found}")
-            assert render_prompt_preview(spec)
+            if not render_prompt_preview(spec):
+                raise RuntimeError(
+                    f"prompt preview failed to render for {bank_id}/{model_id}"
+                )
         if leaks:
             raise RuntimeError(f"Leakage detected: {leaks}")
 

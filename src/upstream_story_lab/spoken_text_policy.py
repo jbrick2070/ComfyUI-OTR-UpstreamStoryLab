@@ -614,6 +614,13 @@ def audit_spoken_text(
                 break
 
         whole_line_action = _is_whole_line_stage_action(text)
+        if whole_line_action:
+            # A row that is nothing but stage action is never speakable, and
+            # carriage cannot excuse it.  Sources print directions - "[He
+            # exits.]" - so a bracket-stripped direction is quotable from the
+            # source and would otherwise ride the exemption straight into the
+            # sealed ledger.
+            never_exempt.add((line_id, "third_person_stage_business"))
         if not quote_spans:
             narrated = bool(
                 whole_line_action

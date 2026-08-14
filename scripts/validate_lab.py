@@ -31,21 +31,61 @@ from upstream_story_lab.preview import (  # noqa: E402
 from upstream_story_lab.registry import Registry  # noqa: E402
 
 
+class LabValidationError(RuntimeError):
+    """A gate failed.  Raised, not asserted, so ``python -O`` cannot skip it."""
+
+
+def require(condition: object, message: str) -> None:
+    if not condition:
+        raise LabValidationError(message)
+
+
 def main() -> int:
     registry = Registry(ROOT)
     mirror = ROOT / "production_mirror" / "nodes"
 
     for relative_path, rendered in render_contract_artifacts().items():
         target = ROOT / relative_path
-        assert target.is_file(), f"generated ledger artifact missing: {relative_path}"
-        assert target.read_bytes() == rendered.encode("utf-8"), (
-            f"generated ledger artifact stale: {relative_path}"
+        require(
+            target.is_file(),
+            f"generated ledger artifact missing: {relative_path}",
+        )
+        require(
+            target.read_bytes() == rendered.encode("utf-8"),
+            f"generated ledger artifact stale: {relative_path}",
         )
 
-    assert tuple(extract_news_briefs_fields(mirror / "news_interpreter.py")) == NEWS_BRIEFS_FIELDS
-    assert tuple(extract_news_seed_keys(mirror / "_otr_legacy_to_stage1_adapter.py")) == NEWS_SEED_KEYS
-    assert tuple(extract_motion_role_keys(mirror / "_otr_video_engines" / "render_driver.py")) == MOTION_ROLE_KEYS
-    assert extract_visual_tails(mirror / "_otr_story_brief_helpers.py") == PRODUCTION_VISUAL_TAILS
+    for label, actual, expected in (
+        (
+            "news brief fields",
+            tuple(extract_news_briefs_fields(mirror / "news_interpreter.py")),
+            NEWS_BRIEFS_FIELDS,
+        ),
+        (
+            "news seed keys",
+            tuple(
+                extract_news_seed_keys(
+                    mirror / "_otr_legacy_to_stage1_adapter.py"
+                )
+            ),
+            NEWS_SEED_KEYS,
+        ),
+        (
+            "motion role keys",
+            tuple(
+                extract_motion_role_keys(
+                    mirror / "_otr_video_engines" / "render_driver.py"
+                )
+            ),
+            MOTION_ROLE_KEYS,
+        ),
+        (
+            "visual tails",
+            extract_visual_tails(mirror / "_otr_story_brief_helpers.py"),
+            PRODUCTION_VISUAL_TAILS,
+        ),
+    ):
+        require(actual == expected, f"mirror drift in {label}: {actual!r}")
 
     # Full declared matrix (kibitz r3, Codex S2): every runnable pack x every
     # style - the same coverage the pytest matrix asserts, so a green here
@@ -62,10 +102,11 @@ def main() -> int:
             )
             if bank_id != "science_news":
                 leaked = scan_story_leakage(registry, spec)
-                assert not leaked, f"{bank_id}/{model_id} leaked {leaked}"
+                require(not leaked, f"{bank_id}/{model_id} leaked {leaked}")
             leaked_visual = scan_visual_leakage(spec)
-            assert not leaked_visual, (
-                f"{bank_id}/{model_id}/{style_id} visual leaked {leaked_visual}"
+            require(
+                not leaked_visual,
+                f"{bank_id}/{model_id}/{style_id} visual leaked {leaked_visual}",
             )
             build_bridge_artifact(spec)
             specs += 1

@@ -35,6 +35,7 @@ DIALOGUE_JOB_INSTRUCTIONS = (
     "Write actual spoken dialogue for every assigned beat.",
     "Each dialogue row must contain only words spoken aloud by its assigned speaker.",
     "Do not write stage directions, action, narration, delivery notes, or another speaker's words.",
+    "Use only the beat IDs and character IDs you were given, keep the beats in the order listed, and make sure some row carries each assigned fact ID.",
 )
 
 #: The ledger may hold only dialogue and music.  Rather than let code rewrite
@@ -247,6 +248,8 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                 depends_on=shared_announcer_dependencies,
                 instructions=(
                     "Write only the announcer's spoken opening words; no production cues or stage directions.",
+                    "Say every phrase listed in required_literal_mentions, copied exactly, letter for letter: the story title, the setting, the scene time, and each character name.",
+                    "Introduce the story and those characters in one short spoken passage; do not paraphrase or shorten any required phrase.",
                 ),
             ),
             AuthoringJob(
@@ -256,6 +259,8 @@ def _authoring_jobs(act_count: int) -> tuple[AuthoringJob, ...]:
                 depends_on=shared_announcer_dependencies,
                 instructions=(
                     "Write only the announcer's spoken source-grounded news coda; no production cues or stage directions.",
+                    "Include the whole of closing_fact_claim word for word, exactly as given; do not paraphrase it, shorten it, or split it up.",
+                    "You may add a short spoken bridge before that claim to turn from the drama to the real source; return closing_fact_id as fact_id.",
                 ),
             ),
             AuthoringJob(
