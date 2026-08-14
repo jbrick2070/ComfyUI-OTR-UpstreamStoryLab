@@ -31,6 +31,7 @@ from .contracts import (
 from .interpreters import resolve_interpreter
 from .profiles import resolve_profile
 from .registry import Registry
+from .story_authoring import build_authoring_schedule
 
 
 class BridgeError(ValueError):
@@ -59,12 +60,14 @@ def _read_production_baseline(root: Path) -> str:
     return match.group(1)
 
 
-def build_spec(registry: Registry, *, source_bank_id: str,
+def build_spec(registry: Registry, *, source_bank_id: str, act_count: int,
                story_model_id: str = "auto", story_pipeline_id: str = "auto",
                visual_style_id: str = "auto",
                packet: SourceMaterialPacket | None = None,
                production_baseline: str = "") -> LedgerWritingSpec:
     """Resolve ids, interpret source, and assemble a cross-validated spec."""
+
+    authoring_schedule = build_authoring_schedule(act_count)
 
     resolution = registry.resolve(
         source_bank_id=source_bank_id,
@@ -107,6 +110,8 @@ def build_spec(registry: Registry, *, source_bank_id: str,
         story_model_id=model_id,
         story_pipeline_id=pipeline_id,
         visual_style_id=policy.style_id,
+        act_count=act_count,
+        authoring_schedule=authoring_schedule,
         source_material=packet,
         story_input=story_input,
         prompt_profile=profile,

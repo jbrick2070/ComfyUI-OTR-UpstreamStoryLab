@@ -14,7 +14,10 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from .story_authoring import AuthoringSchedule
+
 SCHEMA_VERSION = "v2.0"
+CENTRAL_STORY_COMPILER_ID = "otr.central_story_compiler.v1"
 
 #: Slot roles an LLM-touching pass may declare. Engine ids are runtime-owned.
 SlotRole = Literal["creative", "technical"]
@@ -422,7 +425,7 @@ class Provenance(BaseModel):
 
 
 class LedgerWritingSpec(BaseModel):
-    """Control plane for filling the existing production ledger."""
+    """Bank-specific inputs routed through one centralized story compiler."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -431,6 +434,11 @@ class LedgerWritingSpec(BaseModel):
     story_model_id: str
     story_pipeline_id: str = "legacy_many_pass"
     visual_style_id: str = "sci_fi_radio"
+    act_count: int = Field(strict=True, ge=1, le=5)
+    authoring_compiler_id: Literal[CENTRAL_STORY_COMPILER_ID] = (
+        CENTRAL_STORY_COMPILER_ID
+    )
+    authoring_schedule: AuthoringSchedule
     source_material: SourceMaterialPacket
     story_input: StoryInputPacket
     prompt_profile: StoryPromptProfile
@@ -452,6 +460,10 @@ class LedgerWritingSpec(BaseModel):
         for name, got, want in checks:
             if got != want:
                 raise ValueError(f"{name} must match spec: {got!r} != {want!r}")
+        if self.authoring_schedule.act_count != self.act_count:
+            raise ValueError(
+                "authoring_schedule.act_count must match the operator act_count"
+            )
         return self
 
 

@@ -17,13 +17,17 @@ from upstream_story_lab.compat import (
     NEWS_BRIEFS_FIELDS,
     NEWS_SEED_KEYS,
 )
-from upstream_story_lab.contracts import BridgeArtifact
+from upstream_story_lab.contracts import (
+    CENTRAL_STORY_COMPILER_ID,
+    BridgeArtifact,
+)
 from upstream_story_lab.runner import PipelineRunError, run_pipeline
+from upstream_story_lab.story_authoring import StoryAuthoringError
 
 
 def test_bridge_mirrors_are_complete_and_mapped(registry) -> None:
     for bank in ("science_news", "media_archive", "public_domain_story"):
-        spec = build_spec(registry, source_bank_id=bank)
+        spec = build_spec(registry, source_bank_id=bank, act_count=3)
         artifact = build_bridge_artifact(spec)
         news = artifact.meta_mirrors.news
         assert set(news) == set(NEWS_BRIEFS_FIELDS)
@@ -38,7 +42,7 @@ def test_bridge_mirrors_are_complete_and_mapped(registry) -> None:
 
 
 def test_bridge_artifact_round_trips_to_disk(registry, tmp_path) -> None:
-    spec = build_spec(registry, source_bank_id="media_archive")
+    spec = build_spec(registry, source_bank_id="media_archive", act_count=3)
     artifact = build_bridge_artifact(spec)
     path = emit_bridge_artifact(artifact, tmp_path / "bridge" / "artifact.json")
     raw = path.read_bytes()
@@ -49,13 +53,53 @@ def test_bridge_artifact_round_trips_to_disk(registry, tmp_path) -> None:
 
 
 def test_bridge_refuses_empty_seed(registry) -> None:
-    spec = build_spec(registry, source_bank_id="media_archive")
+    spec = build_spec(registry, source_bank_id="media_archive", act_count=3)
     stripped = spec.model_copy(deep=True)
     stripped.source_material.source_title = ""
     stripped.source_material.source_summary = ""
     stripped.source_material.raw_text = ""
     with pytest.raises(BridgeError, match="no title/summary/raw_text"):
         build_bridge_artifact(stripped)
+
+
+@pytest.mark.parametrize("act_count", range(1, 6))
+def test_every_bank_routes_through_one_exact_act_scheduler(
+    registry,
+    act_count: int,
+) -> None:
+    for bank in (
+        "science_news",
+        "media_archive",
+        "public_domain_story",
+    ):
+        spec = build_spec(
+            registry,
+            source_bank_id=bank,
+            act_count=act_count,
+        )
+        assert spec.authoring_compiler_id == CENTRAL_STORY_COMPILER_ID
+        assert spec.act_count == act_count
+        assert spec.authoring_schedule.act_count == act_count
+        assert len(
+            [
+                job
+                for job in spec.authoring_schedule.jobs
+                if job.kind == "act_dialogue"
+            ]
+        ) == act_count
+
+
+@pytest.mark.parametrize("act_count", [0, 6, "3", 3.0, True])
+def test_bridge_rejects_invalid_act_count_before_compilation(
+    registry,
+    act_count,
+) -> None:
+    with pytest.raises(StoryAuthoringError):
+        build_spec(
+            registry,
+            source_bank_id="media_archive",
+            act_count=act_count,
+        )
 
 
 # ---------------- simple_4 runner ----------------

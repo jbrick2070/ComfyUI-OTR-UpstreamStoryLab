@@ -1,4 +1,4 @@
-"""Executable Story Ledger v1 contract for the recovery lab.
+"""Executable Story Ledger v2 contract for the recovery lab.
 
 The Story Lab owns one thing: a validated, hash-sealed authored story.  Media
 production may append receipts to a separate production plane, but it may not
@@ -37,16 +37,15 @@ from .production_contract import (
 )
 
 
-ENVELOPE_SCHEMA_VERSION = "otr.ledger_envelope.v1"
-STORY_SCHEMA_VERSION = "otr.story_ledger.v1"
+ENVELOPE_SCHEMA_VERSION = "otr.ledger_envelope.v2"
+STORY_SCHEMA_VERSION = "otr.story_ledger.v2"
 STORY_SEAL_SCHEMA_VERSION = "otr.story_seal.v1"
 CANONICALIZATION_ID = "otr.canonical-json.v1"
-MINIMUM_CONTRACT_ID = "otr.minimum_ship.v1"
+MINIMUM_CONTRACT_ID = "otr.minimum_ship.v2"
 
 HEX64_PATTERN = r"^[0-9a-f]{64}$"
 ID_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
 
-EpisodeLengthTier = Literal["ultra_short", "medium", "long", "extra_long"]
 CastRole = Literal["announcer", "character"]
 SpeakerRole = Literal["announcer", "character"]
 SequenceRole = Literal[
@@ -72,7 +71,7 @@ NonBlankText = Annotated[str, AfterValidator(_require_non_blank)]
 
 
 class LedgerContractError(ValueError):
-    """The proposed story ledger violates the blessed v1 contract."""
+    """The proposed story ledger violates the candidate v2 contract."""
 
 
 class StrictModel(BaseModel):
@@ -122,6 +121,21 @@ class CastMember(StrictModel):
     character_description: str = ""
 
 
+class StoryArc(StrictModel):
+    summary: NonBlankText
+    act_ids: list[str] = Field(min_length=1, max_length=5)
+
+
+class StoryAct(StrictModel):
+    act_id: str = Field(pattern=ID_PATTERN)
+    act_number: int = Field(ge=1, le=5, strict=True)
+    spine: NonBlankText
+    entry_state: NonBlankText
+    exit_state: NonBlankText
+    speaking_char_ids: list[str] = Field(min_length=1)
+    beat_ids: list[str] = Field(min_length=1)
+
+
 class Scene(StrictModel):
     scene_id: str = Field(pattern=ID_PATTERN)
     description: NonBlankText
@@ -139,6 +153,7 @@ class Shot(StrictModel):
 
 class Beat(StrictModel):
     beat_id: str = Field(pattern=ID_PATTERN)
+    act_id: Annotated[str, Field(pattern=ID_PATTERN)] | None = None
     scene_id: str = Field(pattern=ID_PATTERN)
     shot_id: str = Field(pattern=ID_PATTERN)
     intent: NonBlankText
@@ -173,15 +188,17 @@ class SequenceItem(StrictModel):
 
 class StoryContext(StrictModel):
     episode_title: NonBlankText
-    premise: NonBlankText
+    story_seed: NonBlankText
     setting: NonBlankText
-    episode_length_tier: EpisodeLengthTier
+    act_count: int = Field(ge=1, le=5, strict=True)
 
 
 class StoryBody(StrictModel):
     context: StoryContext
     source_packet: SourcePacket
     cast: list[CastMember] = Field(min_length=2)
+    story_arc: StoryArc
+    acts: list[StoryAct] = Field(min_length=1, max_length=5)
     scenes: list[Scene] = Field(min_length=1)
     shots: list[Shot] = Field(min_length=1)
     beats: list[Beat] = Field(min_length=1)
@@ -202,6 +219,7 @@ class StoryBody(StrictModel):
         )
         fact_by_id = unique(self.source_packet.facts, "fact_id", "fact")
         cast_by_id = unique(self.cast, "char_id", "cast")
+        act_by_id = unique(self.acts, "act_id", "act")
         scene_by_id = unique(self.scenes, "scene_id", "scene")
         shot_by_id = unique(self.shots, "shot_id", "shot")
         beat_by_id = unique(self.beats, "beat_id", "beat")
@@ -214,6 +232,20 @@ class StoryBody(StrictModel):
             raise LedgerContractError("cast must contain exactly one announcer")
         if not any(row.cast_role == "character" for row in self.cast):
             raise LedgerContractError("cast must contain at least one character")
+
+        if len(self.acts) != self.context.act_count:
+            raise LedgerContractError(
+                "context.act_count must equal the exact number of acts"
+            )
+        expected_numbers = list(range(1, self.context.act_count + 1))
+        if [act.act_number for act in self.acts] != expected_numbers:
+            raise LedgerContractError(
+                "act_number values must be the exact ordered range 1..act_count"
+            )
+        if self.story_arc.act_ids != [act.act_id for act in self.acts]:
+            raise LedgerContractError(
+                "story_arc.act_ids must exactly match the ordered act table"
+            )
 
         for fact in self.source_packet.facts:
             for ref in fact.source_refs:
@@ -277,6 +309,10 @@ class StoryBody(StrictModel):
                     raise LedgerContractError(
                         f"beat {beat.beat_id!r} has invalid line {line_id!r}"
                     )
+            if beat.act_id is not None and beat.act_id not in act_by_id:
+                raise LedgerContractError(
+                    f"beat {beat.beat_id!r} references unknown act"
+                )
 
         for line in self.lines:
             beat = beat_by_id.get(line.beat_id)
@@ -311,6 +347,57 @@ class StoryBody(StrictModel):
             raise LedgerContractError(
                 "every cast member must own at least one spoken line"
             )
+
+        declared_act_beats: list[str] = []
+        for act in self.acts:
+            if len(act.beat_ids) != len(set(act.beat_ids)):
+                raise LedgerContractError(
+                    f"act {act.act_id!r} repeats a beat reference"
+                )
+            if len(act.speaking_char_ids) != len(set(act.speaking_char_ids)):
+                raise LedgerContractError(
+                    f"act {act.act_id!r} repeats a speaking character"
+                )
+            actual_speakers: list[str] = []
+            for beat_id in act.beat_ids:
+                beat = beat_by_id.get(beat_id)
+                if beat is None or beat.act_id != act.act_id:
+                    raise LedgerContractError(
+                        f"act {act.act_id!r} has invalid beat {beat_id!r}"
+                    )
+                for line_id in beat.line_ids:
+                    line = line_by_id[line_id]
+                    if line.speaker_role != "character":
+                        raise LedgerContractError(
+                            "act beats may contain only character dialogue"
+                        )
+                    if line.char_id not in actual_speakers:
+                        actual_speakers.append(line.char_id)
+            if act.speaking_char_ids != actual_speakers:
+                raise LedgerContractError(
+                    f"act {act.act_id!r} speaking_char_ids must exactly match "
+                    "its dialogue in first-speaking order"
+                )
+            declared_act_beats.extend(act.beat_ids)
+
+        actual_act_beats = [
+            beat.beat_id for beat in self.beats if beat.act_id is not None
+        ]
+        if declared_act_beats != actual_act_beats:
+            raise LedgerContractError(
+                "act beat projections must exactly cover the ordered act beats"
+            )
+        for beat in self.beats:
+            if beat.act_id is not None:
+                continue
+            if any(
+                line_by_id[line_id].speaker_role != "announcer"
+                for line_id in beat.line_ids
+            ):
+                raise LedgerContractError(
+                    "beats outside acts are reserved for compiler-owned "
+                    "announcer bookends"
+                )
 
         sequence_line_ids: list[str] = []
         sequence_cue_ids: list[str] = []
@@ -621,6 +708,7 @@ class LedgerEnvelope(StrictModel):
             "source": {row.source_id for row in body.source_packet.sources},
             "fact": {row.fact_id for row in body.source_packet.facts},
             "cast": {row.char_id for row in body.cast},
+            "act": {row.act_id for row in body.acts},
             "scene": {row.scene_id for row in body.scenes},
             "shot": {row.shot_id for row in body.shots},
             "beat": {row.beat_id for row in body.beats},
@@ -710,7 +798,7 @@ def _assert_canonical_value(value: Any, path: str = "$") -> None:
 def canonical_bytes(value: Any) -> bytes:
     """Return the exact UTF-8 bytes for ``otr.canonical-json.v1``.
 
-    Story v1 deliberately excludes floats. Combined with NFC strings, strict
+    Story v2 deliberately excludes floats. Combined with NFC strings, strict
     models, sorted keys, compact separators, and ``allow_nan=False``, this gives
     the lab and production adapter a small reproducible cross-process surface.
     A future canonicalization algorithm is a schema migration, never a silent
@@ -961,6 +1049,8 @@ __all__ = [
     "ReceiptVerifierKey",
     "STORY_SCHEMA_VERSION",
     "STORY_SEAL_SCHEMA_VERSION",
+    "StoryAct",
+    "StoryArc",
     "StoryBody",
     "StoryLedger",
     "StorySeal",

@@ -1,4 +1,4 @@
-"""Executable checks for the Story Lab Ledger Bible v1 boundary."""
+"""Executable checks for the Story Lab Ledger Bible v2 boundary."""
 
 from __future__ import annotations
 
@@ -25,6 +25,10 @@ from upstream_story_lab.ledger_contract import (
     canonical_sha256,
     verify_story_envelope,
 )
+from upstream_story_lab.production_contract import (
+    PRODUCTION_STATE_SCHEMA_VERSION,
+    STORY_REF_KINDS,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,9 +43,9 @@ def _valid_body_dict() -> dict:
     return {
         "context": {
             "episode_title": "The Clock at Patuxent",
-            "premise": "A small disagreement reveals why a refuge matters.",
+            "story_seed": "A small disagreement reveals why a refuge matters.",
             "setting": "Patuxent Research Refuge",
-            "episode_length_tier": "ultra_short",
+            "act_count": 1,
         },
         "source_packet": {
             "packet_id": "packet_001",
@@ -82,6 +86,27 @@ def _valid_body_dict() -> dict:
                 "character_description": "A field researcher.",
             },
         ],
+        "story_arc": {
+            "summary": (
+                "Mara turns a disagreement over a map into a decision to "
+                "protect the refuge."
+            ),
+            "act_ids": ["a001"],
+        },
+        "acts": [
+            {
+                "act_id": "a001",
+                "act_number": 1,
+                "spine": (
+                    "Mara challenges the false promise and commits to the "
+                    "ground it represents."
+                ),
+                "entry_state": "The refuge map is treated as sufficient.",
+                "exit_state": "Protection of the actual refuge becomes the choice.",
+                "speaking_char_ids": ["c01"],
+                "beat_ids": ["b002"],
+            }
+        ],
         "scenes": [
             {
                 "scene_id": "s001",
@@ -102,6 +127,7 @@ def _valid_body_dict() -> dict:
         "beats": [
             {
                 "beat_id": "b001",
+                "act_id": None,
                 "scene_id": "s001",
                 "shot_id": "sh001",
                 "intent": "Introduce place, time, story, and character.",
@@ -109,6 +135,7 @@ def _valid_body_dict() -> dict:
             },
             {
                 "beat_id": "b002",
+                "act_id": "a001",
                 "scene_id": "s001",
                 "shot_id": "sh001",
                 "intent": "Let the fictional disagreement play.",
@@ -116,6 +143,7 @@ def _valid_body_dict() -> dict:
             },
             {
                 "beat_id": "b003",
+                "act_id": None,
                 "scene_id": "s001",
                 "shot_id": "sh001",
                 "intent": "Summarize the captured news fact.",
@@ -204,6 +232,100 @@ def _valid_body_dict() -> dict:
             },
         ],
     }
+
+
+def _valid_body_for_act_count(act_count: int) -> dict:
+    body = _valid_body_dict()
+    dialogue_beats = []
+    dialogue_lines = []
+    acts = []
+    for index in range(1, act_count + 1):
+        beat_id = f"b{index + 1:03d}"
+        line_id = f"l{index + 1:03d}"
+        act_id = f"a{index:03d}"
+        dialogue_beats.append(
+            {
+                "beat_id": beat_id,
+                "act_id": act_id,
+                "scene_id": "s001",
+                "shot_id": "sh001",
+                "intent": f"Advance act {index} through character dialogue.",
+                "line_ids": [line_id],
+            }
+        )
+        dialogue_lines.append(
+            {
+                "line_id": line_id,
+                "scene_id": "s001",
+                "shot_id": "sh001",
+                "beat_id": beat_id,
+                "char_id": "c01",
+                "speaker": "MARA VALE",
+                "speaker_role": "character",
+                "text": f"This is the spoken choice that changes act {index}.",
+                "fact_ids": [],
+            }
+        )
+        acts.append(
+            {
+                "act_id": act_id,
+                "act_number": index,
+                "spine": f"Act {index} turns the prior choice into a new one.",
+                "entry_state": f"The story enters act {index} unresolved.",
+                "exit_state": f"The story leaves act {index} changed.",
+                "speaking_char_ids": ["c01"],
+                "beat_ids": [beat_id],
+            }
+        )
+
+    coda_beat_id = f"b{act_count + 2:03d}"
+    coda_line_id = f"l{act_count + 2:03d}"
+    open_beat = copy.deepcopy(body["beats"][0])
+    open_line = copy.deepcopy(body["lines"][0])
+    coda_beat = copy.deepcopy(body["beats"][-1])
+    coda_beat["beat_id"] = coda_beat_id
+    coda_beat["line_ids"] = [coda_line_id]
+    coda_line = copy.deepcopy(body["lines"][-1])
+    coda_line["line_id"] = coda_line_id
+    coda_line["beat_id"] = coda_beat_id
+
+    body["context"]["act_count"] = act_count
+    body["story_arc"] = {
+        "summary": "Each act turns one choice into the next and resolves the story.",
+        "act_ids": [act["act_id"] for act in acts],
+    }
+    body["acts"] = acts
+    body["beats"] = [open_beat, *dialogue_beats, coda_beat]
+    body["shots"][0]["beat_ids"] = [
+        beat["beat_id"] for beat in body["beats"]
+    ]
+    body["lines"] = [open_line, *dialogue_lines, coda_line]
+    body["sequence"] = [
+        body["sequence"][0],
+        body["sequence"][1],
+        *[
+            {
+                "sequence_id": f"q{index + 3:03d}",
+                "sequence_role": "character_dialogue",
+                "ref_kind": "line",
+                "ref_id": line["line_id"],
+            }
+            for index, line in enumerate(dialogue_lines)
+        ],
+        {
+            "sequence_id": f"q{act_count + 3:03d}",
+            "sequence_role": "announcer_news_coda",
+            "ref_kind": "line",
+            "ref_id": coda_line_id,
+        },
+        {
+            "sequence_id": f"q{act_count + 4:03d}",
+            "sequence_role": "music_close",
+            "ref_kind": "music_cue",
+            "ref_id": "music_close",
+        },
+    ]
+    return body
 
 
 def _valid_story() -> StoryLedger:
@@ -306,6 +428,76 @@ def test_canonical_story_bytes_are_stable_and_float_free() -> None:
     assert canonical_sha256(first) == canonical_sha256(second)
     with pytest.raises(LedgerContractError, match="floating point"):
         canonical_bytes({"not_story_state": 1.25})
+
+
+@pytest.mark.parametrize("act_count", range(1, 6))
+def test_act_count_one_through_five_builds_exact_locked_act_topology(
+    act_count: int,
+) -> None:
+    body = StoryBody.model_validate(_valid_body_for_act_count(act_count))
+
+    assert body.context.act_count == act_count
+    assert len(body.acts) == act_count
+    assert [act.act_number for act in body.acts] == list(
+        range(1, act_count + 1)
+    )
+    assert body.story_arc.act_ids == [act.act_id for act in body.acts]
+    assert all(act.beat_ids and act.speaking_char_ids for act in body.acts)
+
+
+@pytest.mark.parametrize("act_count", [0, 6, "3"])
+def test_act_count_rejects_out_of_range_or_non_integer_input(act_count) -> None:
+    body = _valid_body_dict()
+    body["context"]["act_count"] = act_count
+
+    with pytest.raises(ValidationError):
+        StoryBody.model_validate(body)
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda data: data["context"].__setitem__("act_count", 2),
+            "exact number of acts",
+        ),
+        (
+            lambda data: data["acts"][0].__setitem__("act_number", 2),
+            "ordered range",
+        ),
+        (
+            lambda data: data["story_arc"].__setitem__("act_ids", ["a999"]),
+            "ordered act table",
+        ),
+        (
+            lambda data: data["acts"][0].__setitem__("beat_ids", ["b999"]),
+            "invalid beat",
+        ),
+        (
+            lambda data: data["acts"][0].__setitem__(
+                "speaking_char_ids", ["announcer"]
+            ),
+            "speaking_char_ids",
+        ),
+        (
+            lambda data: data["beats"][1].__setitem__("act_id", None),
+            "invalid beat|act beat projections|outside acts",
+        ),
+        (
+            lambda data: (
+                data["beats"][0].__setitem__("act_id", "a001"),
+                data["acts"][0]["beat_ids"].insert(0, "b001"),
+            ),
+            "only character dialogue",
+        ),
+    ],
+)
+def test_act_arc_spine_and_beat_contract_fails_closed(mutate, message: str) -> None:
+    body = _valid_body_dict()
+    mutate(body)
+
+    with pytest.raises((LedgerContractError, ValidationError), match=message):
+        StoryBody.model_validate(body)
 
 
 @pytest.mark.parametrize(
@@ -449,7 +641,7 @@ def test_story_validation_receipt_binds_exact_body() -> None:
 
 
 @pytest.mark.parametrize("field", ["production_state", "final_seal"])
-def test_untyped_future_planes_fail_until_strict_schemas_land(field: str) -> None:
+def test_malformed_production_or_nonnull_final_plane_fails(field: str) -> None:
     envelope = _valid_envelope().model_dump(mode="json")
     envelope[field] = {}
 
@@ -642,19 +834,28 @@ def test_outcome_receipt_rejects_duplicate_typed_evidence() -> None:
 
 def test_machine_bible_matches_executable_contract() -> None:
     bible = json.loads(
-        (CONTRACTS / "ledger_bible_v1.json").read_text(encoding="utf-8")
+        (CONTRACTS / "ledger_bible_v2.json").read_text(encoding="utf-8")
     )
 
     assert bible["versions"]["envelope"] == ENVELOPE_SCHEMA_VERSION
     assert bible["versions"]["story_ledger"] == STORY_SCHEMA_VERSION
     assert bible["versions"]["canonicalization"] == CANONICALIZATION_ID
     assert bible["versions"]["minimum_contract"] == MINIMUM_CONTRACT_ID
-    assert bible["routing_enums"]["episode_length_tier"] == [
-        "ultra_short",
-        "medium",
-        "long",
-        "extra_long",
-    ]
+    assert bible["versions"]["production_state"] == (
+        PRODUCTION_STATE_SCHEMA_VERSION
+    )
+    assert bible["routing_enums"]["story_ref_kind"] == list(STORY_REF_KINDS)
+    assert bible["act_authoring"]["visible_length_control"] == "act_count"
+    assert (bible["act_authoring"]["minimum"], bible["act_authoring"]["maximum"]) == (1, 5)
+    assert bible["act_authoring"]["word_count"] == (
+        "not_a_control_or_acceptance_rule"
+    )
+    assert bible["act_authoring"]["stable_job_count"] == (
+        "3 * act_count + 7"
+    )
+    assert bible["act_authoring"]["base_model_job_count"] == (
+        "3 * act_count + 4"
+    )
     assert bible["routing_enums"]["speaker_role"] == [
         "announcer",
         "character",
@@ -681,9 +882,9 @@ def test_machine_bible_matches_executable_contract() -> None:
     assert set(bible["minimum_ship_evidence"]) == set(
         bible["minimum_ship_outcomes"]
     )
-    assert "non-null production_state/final_seal are rejected" in bible[
-        "boundary"
-    ]["current_executable_scope"]
+    assert "typed append-only production_state" in bible["boundary"][
+        "current_executable_scope"
+    ]
     phases = bible["production_phase_registry"]
     phase_ids = [row["phase_id"] for row in phases]
     assert len(phase_ids) == len(set(phase_ids))
@@ -712,7 +913,7 @@ def test_machine_bible_matches_executable_contract() -> None:
 
 def test_human_bible_carries_machine_versions_and_role_axes() -> None:
     machine = json.loads(
-        (CONTRACTS / "ledger_bible_v1.json").read_text(encoding="utf-8")
+        (CONTRACTS / "ledger_bible_v2.json").read_text(encoding="utf-8")
     )
     human = (ROOT / "docs" / "LEDGER_BIBLE.md").read_text(encoding="utf-8")
 
@@ -772,7 +973,7 @@ def test_consumer_matrix_records_current_mutability_and_agy_corrections() -> Non
 
 def test_requirements_file_uses_two_seals_not_monolithic_freeze() -> None:
     requirements = json.loads(
-        (RECOVERY / "ledger_requirements_v1.json").read_text(encoding="utf-8")
+        (RECOVERY / "ledger_requirements_v2.json").read_text(encoding="utf-8")
     )
 
     assert requirements["artifact_boundary"]["required_planes"] == [
@@ -791,7 +992,7 @@ def test_requirements_file_uses_two_seals_not_monolithic_freeze() -> None:
     )
     assert freeze["final_seal_after"] == "publication_and_audit"
     assert freeze["current_executable_non_null_production_or_final_plane"] == (
-        "rejected_until_strict_schemas_land"
+        "typed_production_state_allowed_final_seal_rejected"
     )
     assert freeze["current_l4_cleanup_locked_is_not_enforcement"] is True
 
@@ -813,7 +1014,7 @@ def test_unknown_story_field_and_unknown_schema_version_fail() -> None:
 
     story = _valid_story().model_dump(mode="json")
     story["schema_version"] = "l4-2026-08-07"
-    with pytest.raises(ValidationError, match="otr.story_ledger.v1"):
+    with pytest.raises(ValidationError, match="otr.story_ledger.v2"):
         StoryLedger.model_validate(story)
 
 

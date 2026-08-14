@@ -1,0 +1,142 @@
+{
+  "schema_version": "otr_story_lab.ledger_requirements.v2",
+  "artifact_boundary": {
+    "output": "validated_ledger_envelope_json",
+    "ledger_only": true,
+    "required_planes": [
+      "story_ledger",
+      "story_seal"
+    ],
+    "story_lab_null_planes": [
+      "production_state",
+      "final_seal"
+    ],
+    "excluded_outputs": [
+      "speech",
+      "audio_mix",
+      "image",
+      "video",
+      "obs_publish"
+    ]
+  },
+  "minimum_ship_contract": {
+    "ledger_integrity": {
+      "required": true,
+      "outcome": "The ledger validates, freezes atomically, and preserves required rows plus all graph, cast, source, speaker, fact, and music references."
+    },
+    "news_capture": {
+      "required": true,
+      "outcome": "The selected source packet, provenance, and usable factual claims are present before fictional dialogue is authored."
+    },
+    "announcer_open": {
+      "required": true,
+      "position": "first_spoken_row",
+      "outcome": "The announcer introduces the story, setting, and characters."
+    },
+    "announcer_news_coda": {
+      "required": true,
+      "position": "last_spoken_row",
+      "minimum_source_fact_refs": 1,
+      "outcome": "The announcer closes by summarizing the real news from captured evidence after the fictional drama."
+    },
+    "music_bookends": {
+      "required": true,
+      "first_sequence_role": "music_open",
+      "last_sequence_role": "music_close",
+      "outcome": "The ledger declares opening music first and closing music last."
+    }
+  },
+  "row_contract": {
+    "allowed_sequence_roles": [
+      "music_open",
+      "announcer_open",
+      "character_dialogue",
+      "music_inter",
+      "announcer_news_coda",
+      "music_close"
+    ],
+    "allowed_spoken_roles": [
+      "announcer_open",
+      "character_dialogue",
+      "announcer_news_coda"
+    ],
+    "music_inter_is_optional_and_script_requested": true,
+    "forbidden_sequence_roles": [
+      "action",
+      "stage_direction"
+    ],
+    "forbidden_spoken_content": [
+      "action",
+      "stage_direction",
+      "third_person_narration",
+      "delivery_note"
+    ],
+    "routing_role_axis": [
+      "announcer",
+      "character"
+    ],
+    "sequence_role_is_not_speaker_role": true,
+    "every_spoken_line_requires_score_owned_speaker_name": true,
+    "every_spoken_line_requires_fact_ids_field": true,
+    "pre_seal_draft_strip": [
+      "standalone_action",
+      "standalone_stage_direction",
+      "standalone_third_person_narration",
+      "standalone_delivery_note",
+      "unused_character"
+    ],
+    "ambiguous_embedded_prose": "reject_to_owning_act_dialogue_job",
+    "trusted_admission_mutates": false
+  },
+  "freeze_semantics": {
+    "draft_mutation_allowed_before_validation": true,
+    "freeze_requires_full_contract_validation": true,
+    "freeze_is_atomic": true,
+    "story_ledger_requires_canonical_sha256": true,
+    "story_seal_requires_trusted_receipt_registry": true,
+    "story_ledger_post_acceptance_mutation": "forbidden",
+    "production_state_post_acceptance_mutation": "phase_owned_append_only",
+    "current_executable_non_null_production_or_final_plane": "typed_production_state_allowed_final_seal_rejected",
+    "final_seal_after": "publication_and_audit",
+    "post_final_seal_mutation": "forbidden",
+    "contract_change": "new_schema_version_and_explicit_migration",
+    "current_l4_cleanup_locked_is_not_enforcement": true
+  },
+  "act_authoring": {
+    "field": "act_count",
+    "type": "strict_integer",
+    "minimum": 1,
+    "maximum": 5,
+    "resolution_authority": "operator_input",
+    "generation_method": "central_compiler_story_seed_then_arc_then_exact_act_paths",
+    "per_act_path": [
+      "spine",
+      "beats",
+      "dialogue"
+    ],
+    "outside_act_loop": [
+      "cast_sweep",
+      "announcer_open",
+      "announcer_news_coda",
+      "music_bookends",
+      "ledger_admission"
+    ],
+    "retry_law": "attempts_belong_to_existing_job_never_change_act_count",
+    "stable_job_count": "3 * act_count + 7",
+    "base_model_job_count": "3 * act_count + 4",
+    "words_are_telemetry_only": true,
+    "duration_is_downstream_observation_only": true,
+    "hardware_changes_ledger_shape": false,
+    "unknown_or_invalid_act_count": "fail_before_model_call"
+  },
+  "explicitly_experimental": [
+    "model_or_provider",
+    "prompt_wording",
+    "dialogue_exchanges_per_beat",
+    "soft_local_size_guidance",
+    "approximate_duration_guidance",
+    "scene_count_per_act",
+    "beats_per_act",
+    "model_routing_by_hardware"
+  ]
+}

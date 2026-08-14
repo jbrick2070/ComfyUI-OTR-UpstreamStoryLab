@@ -47,11 +47,12 @@ _DELIMITED_STAGE_RE = re.compile(
     re.IGNORECASE,
 )
 
-_NARRATION_VERBS = (
-    "asks",
-    "continues",
+_PHYSICAL_ACTION_VERBS = (
+    "adjusts",
     "cloud",
     "clouds",
+    "contemplates",
+    "dances",
     "drum",
     "drums",
     "enters",
@@ -63,33 +64,206 @@ _NARRATION_VERBS = (
     "leans",
     "leaves",
     "looks",
-    "murmurs",
+    "moves",
     "nods",
     "pauses",
-    "replies",
+    "paces",
     "reaches",
-    "says",
     "shrugs",
     "sighs",
+    "sits",
     "smiles",
     "stands",
     "stares",
     "steps",
+    "stops",
+    "taps",
+    "tightens",
     "turns",
     "walks",
-    "whispers",
+    "watches",
 )
-_NARRATION_VERB_PATTERN = "|".join(
-    re.escape(value) for value in _NARRATION_VERBS
+_ATTRIBUTION_VERBS = (
+    "asks",
+    "asked",
+    "continues",
+    "continued",
+    "murmurs",
+    "murmured",
+    "replies",
+    "replied",
+    "says",
+    "said",
+    "shouts",
+    "shouted",
+    "whispers",
+    "whispered",
+)
+_NAME_ACTION_VERBS = tuple(
+    dict.fromkeys((*_PHYSICAL_ACTION_VERBS, *_ATTRIBUTION_VERBS))
+)
+_PHYSICAL_ACTION_VERB_PATTERN = "|".join(
+    re.escape(value) for value in _PHYSICAL_ACTION_VERBS
+)
+_NAME_ACTION_VERB_PATTERN = "|".join(
+    re.escape(value) for value in _NAME_ACTION_VERBS
 )
 _PRONOUN_NARRATION_RE = re.compile(
-    rf"\b(?:he|she|they)\s+(?:{_NARRATION_VERB_PATTERN})\b",
+    rf"\b(?:he|she|they)\s+(?:{_PHYSICAL_ACTION_VERB_PATTERN})\b",
+    re.IGNORECASE,
+)
+_PRONOUN_ATTRIBUTION_RE = re.compile(
+    r"\b(?:he|she|they)\s+"
+    r"(?:asks|asked|continues|continued|murmurs|murmured|replies|replied|"
+    r"says|said|shouts|shouted|whispers|whispered)\b",
     re.IGNORECASE,
 )
 _PHYSICAL_NOUN_PATTERN = (
     r"eyes?|face|fingers?|hands?|gaze|voice|steps?|head|shoulders?|"
     r"breath|throat|feet|jaw|brow"
 )
+_SCENE_NARRATION_RE = re.compile(
+    r"\b(?:the\s+board(?:['’]s\s+chair)?|the\s+room|"
+    r"(?:his|her|their)\s+(?:voice|words|gaze|eyes?|steps?))\s+"
+    r"(?:clears|echoes|exchanges|exhales|falls|holds|presses|returns|"
+    r"trails|trembles)\b",
+    re.IGNORECASE,
+)
+_THIRD_PERSON_REFERENCE_RE = re.compile(
+    r"\b(?:he|she|they|her|his|their|hers|him|them)\b",
+    re.IGNORECASE,
+)
+
+_BARE_STAGE_LINE_RE = re.compile(
+    r"^\s*(?:"
+    r"(?:pause|beat|silence|laughs?|sighs?|gasps?|coughs?|sobs?|groans?)"
+    r"|(?:he|she|they|[A-Z][a-z]+)\s+"
+    r"(?:laughs?|sighs?|gasps?|coughs?|sobs?|groans?)"
+    r"|(?:the\s+)?(?:door|window|telephone|phone|bell|alarm|buzzer|clock|"
+    r"radio|static|music|footsteps?)\s+"
+    r"(?:slams?|creaks?|rings?|opens?|closes?|knocks?|buzzes?|chimes?|"
+    r"ticks?|rumbles?|crashes?|swells?|fades?|plays?|starts?|stops?|"
+    r"crackles?|approach(?:es)?|recedes?)"
+    r"|(?:thunder|wind|rain)\s+"
+    r"(?:rolls?|rumbles?|howls?|rises?|falls?|pounds?)"
+    r"|(?:a|the)\s+(?:knock|bang|crash|ring)\s+"
+    r"(?:at|on|from|inside|outside)\s+(?:the\s+)?"
+    r"(?:door|window|wall|hall|room|radio)"
+    r"|(?:the\s+)?sound\s+of\s+"
+    r"(?:thunder|rain|wind|static|footsteps?|a\s+door|a\s+bell)"
+    r")\s*[.!?]*\s*$",
+    re.IGNORECASE,
+)
+
+_DIALOGUE_OPENER_ALLOW = (
+    "looks like",
+    "sounds like",
+    "seems like",
+    "seems ",
+    "seem ",
+    "feels like",
+    "smells like",
+    "looks ",
+)
+_FIRST_SECOND_PERSON_ROOTS = frozenset(
+    {"i", "we", "you", "me", "us", "my", "your", "our"}
+)
+_THIRD_PERSON_SUBJECTS = frozenset({"he", "she", "they"})
+_THIRD_PERSON_PHYSICAL_ACTION_VERBS = frozenset(
+    {
+        "open",
+        "opens",
+        "opening",
+        "close",
+        "closes",
+        "closing",
+        "cross",
+        "crosses",
+        "crossing",
+        "switch",
+        "switches",
+        "switching",
+        "flip",
+        "flips",
+        "flipping",
+        "enter",
+        "enters",
+        "entering",
+        "exit",
+        "exits",
+        "exiting",
+        "turn",
+        "walk",
+        "step",
+        "move",
+        "reach",
+        "stand",
+        "sit",
+    }
+)
+_COPULA_MODAL = frozenset(
+    {
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "am",
+        "can",
+        "could",
+        "will",
+        "would",
+        "shall",
+        "should",
+        "may",
+        "might",
+        "must",
+        "has",
+        "have",
+        "had",
+        "do",
+        "does",
+        "did",
+    }
+)
+_DIALOGUE_STARTER = frozenset(
+    {
+        "yes",
+        "no",
+        "well",
+        "oh",
+        "maybe",
+        "please",
+        "now",
+        "listen",
+        "look",
+        "hey",
+        "okay",
+        "fine",
+        "sure",
+    }
+)
+_HONORIFICS = frozenset(
+    {
+        "dr",
+        "doctor",
+        "mr",
+        "mrs",
+        "ms",
+        "prof",
+        "professor",
+        "capt",
+        "captain",
+    }
+)
+
+
+@dataclass(frozen=True, slots=True)
+class _QuoteSpan:
+    start: int
+    end: int
 
 
 def _value(row: Any, name: str, default: Any = "") -> Any:
@@ -98,45 +272,188 @@ def _value(row: Any, name: str, default: Any = "") -> Any:
     return getattr(row, name, default)
 
 
-def _name_variants(name: str) -> tuple[str, ...]:
-    words = [word for word in re.findall(r"[\w'-]+", name) if word]
-    variants = {name.strip()}
-    if words:
-        variants.add(words[-1])
-        if words[0].casefold() not in {"dr", "doctor", "mr", "mrs", "ms"}:
-            variants.add(words[0])
-    return tuple(
-        sorted(
-            (variant for variant in variants if len(variant) > 1),
-            key=lambda item: (-len(item), item.casefold()),
+def _candidate_name_variants(name: str) -> tuple[str, ...]:
+    compact = " ".join(name.split())
+    if not compact:
+        return ()
+    words = re.findall(r"[^\W_]+(?:[-'][^\W_]+)*", compact, re.UNICODE)
+    variants = {compact}
+    if len(words) > 1 and words[0].casefold() in _HONORIFICS:
+        variants.add(" ".join(words[1:]))
+    return tuple(sorted(variants, key=lambda item: (-len(item), item.casefold())))
+
+
+def _unique_name_variants(names_by_id: dict[str, str]) -> dict[str, tuple[str, ...]]:
+    candidates = {
+        char_id: _candidate_name_variants(name)
+        for char_id, name in names_by_id.items()
+    }
+    owners: dict[str, set[str]] = {}
+    for char_id, variants in candidates.items():
+        for variant in variants:
+            owners.setdefault(variant.casefold(), set()).add(char_id)
+    return {
+        char_id: tuple(
+            variant
+            for variant in variants
+            if owners[variant.casefold()] == {char_id}
         )
-    )
+        for char_id, variants in candidates.items()
+    }
 
 
-def _quote_marker_count(text: str) -> int:
-    """Count dialogue quote marks while ignoring apostrophes in words."""
+def _is_word_apostrophe(text: str, index: int) -> bool:
+    before = text[index - 1] if index else ""
+    after = text[index + 1] if index + 1 < len(text) else ""
+    return before.isalnum() and after.isalnum()
 
-    count = sum(text.count(mark) for mark in ('"', "“", "”", "‘", "’"))
+
+def _dialogue_quote_spans(text: str) -> tuple[_QuoteSpan, ...]:
+    """Pair dialogue wrappers while treating straight/curly apostrophes as words."""
+
+    spans: list[_QuoteSpan] = []
+    active_kind: Literal["single", "double"] | None = None
+    active_start = -1
     for index, char in enumerate(text):
-        if char != "'":
+        if char in {"'", "’"} and _is_word_apostrophe(text, index):
             continue
-        before = text[index - 1] if index else ""
-        after = text[index + 1] if index + 1 < len(text) else ""
-        if not (before.isalnum() and after.isalnum()):
-            count += 1
-    return count
+
+        if active_kind == "single":
+            if char in {"'", "’"}:
+                spans.append(_QuoteSpan(active_start, index))
+                active_kind = None
+            continue
+        if active_kind == "double":
+            if char in {'"', "”"}:
+                spans.append(_QuoteSpan(active_start, index))
+                active_kind = None
+            continue
+
+        if char in {"‘"} or (
+            char == "'"
+            and index + 1 < len(text)
+            and text[index + 1].isalnum()
+        ):
+            active_kind = "single"
+            active_start = index
+        elif char in {'"', "“"}:
+            active_kind = "double"
+            active_start = index
+    return tuple(spans)
 
 
-def _name_narration_pattern(variants: Iterable[str]) -> re.Pattern[str] | None:
-    escaped = [re.escape(value) for value in variants]
+def _outside_quote_spans(
+    text: str,
+    quote_spans: Sequence[_QuoteSpan],
+) -> tuple[tuple[str, bool], ...]:
+    """Return outside-dialogue text and whether each span touches a line edge."""
+
+    if not quote_spans:
+        return ((text, True),)
+    outside: list[tuple[str, bool]] = []
+    cursor = 0
+    last_index = len(quote_spans) - 1
+    for index, span in enumerate(quote_spans):
+        outside.append((text[cursor : span.start], index == 0))
+        cursor = span.end + 1
+        if index == last_index:
+            outside.append((text[cursor:], True))
+    return tuple(outside)
+
+
+def _escape_name(value: str) -> str:
+    return r"\s+".join(re.escape(part) for part in value.split())
+
+
+def _name_narration_pattern(
+    variants: Iterable[str],
+    *,
+    verb_pattern: str = _NAME_ACTION_VERB_PATTERN,
+) -> re.Pattern[str] | None:
+    escaped = [_escape_name(value) for value in variants]
     if not escaped:
         return None
     names = "|".join(escaped)
     return re.compile(
-        rf"\b(?:{names})(?:'s|’s)?\s+(?:(?:{_PHYSICAL_NOUN_PATTERN})\s+)?"
-        rf"(?:{_NARRATION_VERB_PATTERN})\b",
+        rf"(?<![\w'])"
+        rf"(?:{names})"
+        rf"(?=\s|['’])"
+        rf"(?:\s+(?:{verb_pattern})\b|"
+        rf"(?:['’]s)\s+(?:{_PHYSICAL_NOUN_PATTERN})\s+"
+        rf"(?:{verb_pattern})\b)",
         re.IGNORECASE,
     )
+
+
+def _matches(pattern: re.Pattern[str] | None, text: str) -> bool:
+    return pattern is not None and pattern.search(text) is not None
+
+
+def _has_stage_signal(
+    text: str,
+    name_patterns: Iterable[re.Pattern[str]],
+    *,
+    include_pronoun_attribution: bool = False,
+) -> bool:
+    if not text.strip():
+        return False
+    return bool(
+        _PRONOUN_NARRATION_RE.search(text)
+        or (
+            include_pronoun_attribution
+            and _PRONOUN_ATTRIBUTION_RE.search(text)
+        )
+        or _SCENE_NARRATION_RE.search(text)
+        or any(pattern.search(text) for pattern in name_patterns)
+    )
+
+
+def _has_third_person_density(text: str) -> bool:
+    return len(_THIRD_PERSON_REFERENCE_RE.findall(text)) >= 2
+
+
+def _is_whole_line_stage_action(text: str, *, max_words: int = 32) -> bool:
+    """Recover the bounded action-chain detector without mutating dialogue."""
+
+    value = " ".join(text.split())
+    if not value or _dialogue_quote_spans(value):
+        return False
+    lower = value.casefold()
+    if any(lower.startswith(opener) for opener in _DIALOGUE_OPENER_ALLOW):
+        return False
+    words = re.findall(r"[a-z]+(?:['’][a-z]+)?", lower)
+    if not words or len(words) > max_words:
+        return False
+    for word in words:
+        root = re.split(r"['’]", word)[0]
+        if word in _FIRST_SECOND_PERSON_ROOTS or root in _FIRST_SECOND_PERSON_ROOTS:
+            return False
+
+    lead = words[0]
+    if lead in _DIALOGUE_STARTER:
+        return False
+    third_person_subject = False
+    verb = lead
+    if lead in _THIRD_PERSON_SUBJECTS and len(words) > 1:
+        third_person_subject = True
+        verb = words[1]
+    if verb in _COPULA_MODAL or verb in _DIALOGUE_STARTER:
+        return False
+
+    whitelisted = verb in _PHYSICAL_ACTION_VERBS
+    subject_action = (
+        third_person_subject and verb in _THIRD_PERSON_PHYSICAL_ACTION_VERBS
+    )
+    verbish = bool(verb) and "'" not in verb and "’" not in verb and (
+        verb.endswith("ing")
+        or verb.endswith("ed")
+        or (verb.endswith("s") and len(verb) > 2)
+    )
+    if not (whitelisted or subject_action or verbish):
+        return False
+    if not whitelisted and not subject_action and "," not in value:
+        return False
+    return True
 
 
 def audit_spoken_text(
@@ -150,9 +467,21 @@ def audit_spoken_text(
         for row in cast
         if str(_value(row, "char_id")) and str(_value(row, "name"))
     }
-    variants_by_id = {
-        char_id: _name_variants(name) for char_id, name in names_by_id.items()
+    variants_by_id = _unique_name_variants(names_by_id)
+    patterns_by_id = {
+        char_id: _name_narration_pattern(variants)
+        for char_id, variants in variants_by_id.items()
     }
+    physical_patterns_by_id = {
+        char_id: _name_narration_pattern(
+            variants,
+            verb_pattern=_PHYSICAL_ACTION_VERB_PATTERN,
+        )
+        for char_id, variants in variants_by_id.items()
+    }
+    all_name_patterns = tuple(
+        pattern for pattern in patterns_by_id.values() if pattern is not None
+    )
     findings: list[SpokenTextFinding] = []
 
     for row in lines:
@@ -173,22 +502,81 @@ def audit_spoken_text(
                     "bracketed/parenthetical action in speech",
                 )
             )
+        if _BARE_STAGE_LINE_RE.fullmatch(text):
+            findings.append(
+                SpokenTextFinding(
+                    line_id,
+                    "third_person_stage_business",
+                    "whole speech row is a production action or sound cue",
+                )
+            )
 
         if role != "character":
             continue
-        if _quote_marker_count(text) >= 2:
+
+        quote_spans = _dialogue_quote_spans(text)
+        outside_spans = _outside_quote_spans(text, quote_spans)
+        edge_spans = [value for value, is_edge in outside_spans if is_edge]
+        interior_spans = [value for value, is_edge in outside_spans if not is_edge]
+
+        if quote_spans and any(
+            _has_stage_signal(
+                value,
+                all_name_patterns,
+                include_pronoun_attribution=True,
+            )
+            for value in edge_spans
+        ):
             findings.append(
                 SpokenTextFinding(
                     line_id,
                     "quoted_novel_dialogue",
-                    "character field contains quoted dialogue plus prose",
+                    "quoted speech has narrator prose at a line edge",
                 )
             )
 
-        own_pattern = _name_narration_pattern(variants_by_id.get(char_id, ()))
-        if _PRONOUN_NARRATION_RE.search(text) or (
-            own_pattern is not None and own_pattern.search(text)
-        ):
+        own_pattern = patterns_by_id.get(char_id)
+        cross_speaker_id: str | None = None
+        for other_id, pattern in patterns_by_id.items():
+            if other_id == char_id or pattern is None:
+                continue
+            if quote_spans:
+                cross_match = any(
+                    pattern.search(value) for value, _is_edge in outside_spans
+                )
+            else:
+                physical_pattern = physical_patterns_by_id.get(other_id)
+                cross_match = bool(
+                    physical_pattern is not None
+                    and physical_pattern.search(text)
+                    and _has_third_person_density(text)
+                )
+            if cross_match:
+                cross_speaker_id = other_id
+                break
+
+        whole_line_action = _is_whole_line_stage_action(text)
+        if not quote_spans:
+            narrated = bool(
+                whole_line_action
+                or _PRONOUN_NARRATION_RE.search(text)
+                or _SCENE_NARRATION_RE.search(text)
+                or _matches(own_pattern, text)
+                or (
+                    cross_speaker_id is not None
+                    and _has_third_person_density(text)
+                )
+            )
+        else:
+            narrated = whole_line_action or any(
+                _has_stage_signal(
+                    value,
+                    (own_pattern,) if own_pattern is not None else (),
+                    include_pronoun_attribution=True,
+                )
+                for value in interior_spans
+            )
+        if narrated:
             findings.append(
                 SpokenTextFinding(
                     line_id,
@@ -197,19 +585,15 @@ def audit_spoken_text(
                 )
             )
 
-        for other_id, variants in variants_by_id.items():
-            if other_id == char_id:
-                continue
-            pattern = _name_narration_pattern(variants)
-            if pattern is not None and pattern.search(text):
-                findings.append(
-                    SpokenTextFinding(
-                        line_id,
-                        "cross_speaker_attribution",
-                        f"text attributes action/speech to {names_by_id[other_id]}",
-                    )
+        if cross_speaker_id is not None:
+            findings.append(
+                SpokenTextFinding(
+                    line_id,
+                    "cross_speaker_attribution",
+                    "text attributes action/speech to "
+                    f"{names_by_id[cross_speaker_id]}",
                 )
-                break
+            )
 
     unique: dict[tuple[str, str], SpokenTextFinding] = {}
     for finding in findings:

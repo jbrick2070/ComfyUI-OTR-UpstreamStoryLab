@@ -1,4 +1,4 @@
-"""Executable laws for the append-only Ledger Bible v1 production plane."""
+"""Executable laws for the append-only Ledger Bible v2 production plane."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import copy
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import get_args
 
 import pytest
 from pydantic import TypeAdapter, ValidationError
@@ -37,7 +38,9 @@ from upstream_story_lab.production_contract import (
     PhaseAttempt,
     ProductionContractError,
     ProductionState,
+    STORY_REF_KINDS,
     StoryRef,
+    StoryRefKind,
     WorkspaceIdentityAttempt,
     active_acceptance,
     default_run_plan,
@@ -47,9 +50,9 @@ from upstream_story_lab.production_contract import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V1 = ROOT / "fixtures" / "story_recovery" / "v1"
-NORMATIVE = V1 / "normative_ledger_envelope.json"
-PACKET = V1 / "source_packets" / "science_news_folder_red_stamps_20260716.json"
+V2 = ROOT / "fixtures" / "story_recovery" / "v2"
+NORMATIVE = V2 / "normative_ledger_envelope.json"
+PACKET = V2 / "source_packets" / "science_news_folder_red_stamps_20260716.json"
 NOW = datetime(2026, 8, 14, 6, 0, tzinfo=timezone.utc)
 RUN_ID = "run.production-contract-001"
 ARTIFACT_SHA = "a" * 64
@@ -251,6 +254,31 @@ def test_schema_exposes_exactly_18_discriminated_typed_phase_attempts() -> None:
             "failed": "#/$defs/FailedResult",
             "succeeded": f"#/$defs/SucceededResult_{receipt_name}_",
         }
+
+
+def test_story_reference_kind_inventory_is_exact_and_schema_locked() -> None:
+    expected = (
+        "source_packet",
+        "source",
+        "fact",
+        "cast",
+        "act",
+        "scene",
+        "shot",
+        "beat",
+        "line",
+        "music_cue",
+        "sequence",
+    )
+
+    assert STORY_REF_KINDS == expected
+    assert get_args(StoryRefKind) == expected
+    assert StoryRef.model_json_schema()["properties"]["kind"]["enum"] == list(
+        expected
+    )
+    assert StoryRef(kind="act", ref_id="a001").kind == "act"
+    with pytest.raises(ValidationError):
+        StoryRef.model_validate({"kind": "story_arc", "ref_id": "arc001"})
 
 
 @pytest.mark.parametrize(
@@ -582,6 +610,7 @@ def _known_story_refs(envelope: LedgerEnvelope) -> list[StoryRef]:
         StoryRef(kind="source", ref_id=body.source_packet.sources[0].source_id),
         StoryRef(kind="fact", ref_id=body.source_packet.facts[0].fact_id),
         StoryRef(kind="cast", ref_id=body.cast[0].char_id),
+        StoryRef(kind="act", ref_id=body.acts[0].act_id),
         StoryRef(kind="scene", ref_id=body.scenes[0].scene_id),
         StoryRef(kind="shot", ref_id=body.shots[0].shot_id),
         StoryRef(kind="beat", ref_id=body.beats[0].beat_id),
@@ -608,18 +637,7 @@ def test_every_typed_story_reference_namespace_closes_against_sealed_story() -> 
 
 @pytest.mark.parametrize(
     "kind",
-    [
-        "source_packet",
-        "source",
-        "fact",
-        "cast",
-        "scene",
-        "shot",
-        "beat",
-        "line",
-        "music_cue",
-        "sequence",
-    ],
+    STORY_REF_KINDS,
 )
 def test_unresolved_typed_story_reference_fails_atomically(kind: str) -> None:
     initialized = _initialized()

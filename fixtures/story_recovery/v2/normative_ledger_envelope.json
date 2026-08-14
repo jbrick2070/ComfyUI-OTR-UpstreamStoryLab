@@ -1,0 +1,391 @@
+{
+  "schema_version": "otr.ledger_envelope.v2",
+  "story_ledger": {
+    "schema_version": "otr.story_ledger.v2",
+    "episode_id": "folder_of_red_stamps_v2_20260814",
+    "body": {
+      "context": {
+        "act_count": 1,
+        "episode_title": "Folder of Red Stamps",
+        "story_seed": "A revelation neither is ready to share.",
+        "setting": "Signal Lost studios"
+      },
+      "source_packet": {
+        "packet_id": "science_news_folder_red_stamps_20260716",
+        "source_bank_id": "science_news",
+        "packet_sha256": "2391dd56a7b817da63538f0f05a1acb1d3d6aea71172b5bea0eaf4ed26b6ebf5",
+        "sources": [
+          {
+            "source_id": "bbc_wildfires_20260716",
+            "title": "What to know about the Canadian and US wildfires and their impact",
+            "locator": "fixture://story_recovery/science_news_good_20260716.json",
+            "content_sha256": "e33eb361b526a6c076fe03f84841b5d6e4c207c2112ff39ccecc70bbc08d8b56"
+          }
+        ],
+        "facts": [
+          {
+            "fact_id": "F01",
+            "claim": "Wildfires in Canada and the US cause smoke pollution, affecting air quality and prompting evacuations. Rising temperatures and climate change contribute to more frequent and intense fires, creating tension between communities and emergency responders.",
+            "source_refs": [
+              {
+                "source_id": "bbc_wildfires_20260716",
+                "evidence_locator": "/artifacts/news/script_brief"
+              }
+            ]
+          },
+          {
+            "fact_id": "F02",
+            "claim": "Wildfires continue to spread across North America, impacting air quality and prompting health advisories as climate change exacerbates the crisis.",
+            "source_refs": [
+              {
+                "source_id": "bbc_wildfires_20260716",
+                "evidence_locator": "/artifacts/news/news_close_brief"
+              }
+            ]
+          }
+        ]
+      },
+      "cast": [
+        {
+          "char_id": "announcer",
+          "name": "ANNOUNCER",
+          "cast_role": "announcer",
+          "character_description": "The period radio host who owns the program boundaries."
+        },
+        {
+          "char_id": "c02",
+          "name": "OYA REEVES",
+          "cast_role": "character",
+          "character_description": "A researcher carrying the weight of a dangerous disclosure."
+        },
+        {
+          "char_id": "c03",
+          "name": "ED STEELE",
+          "cast_role": "character",
+          "character_description": "Oya's colleague, forced to confront the cost of their work."
+        }
+      ],
+      "story_arc": {
+        "act_ids": [
+          "a001"
+        ],
+        "summary": "Oya reveals a hidden danger, Ed forces a moral accounting, and Oya chooses to face what is already in the air."
+      },
+      "acts": [
+        {
+          "act_id": "a001",
+          "act_number": 1,
+          "beat_ids": [
+            "b002",
+            "b003",
+            "b004"
+          ],
+          "entry_state": "Oya carries the hidden file while Ed does not yet know its cost.",
+          "exit_state": "Both understand that the danger is already present and must be faced.",
+          "speaking_char_ids": [
+            "c02",
+            "c03"
+          ],
+          "spine": "Oya discloses the map, Ed names the cost, and Oya accepts the irreversible consequence."
+        }
+      ],
+      "scenes": [
+        {
+          "scene_id": "s001",
+          "description": "A complete studio drama framed by the announcer.",
+          "setting": "Signal Lost studios",
+          "time": "ten:zero PM",
+          "shot_ids": [
+            "sh001",
+            "sh002"
+          ]
+        }
+      ],
+      "shots": [
+        {
+          "shot_id": "sh001",
+          "scene_id": "s001",
+          "description": "The announcer opens before Oya reveals the hidden file.",
+          "beat_ids": [
+            "b001",
+            "b002"
+          ]
+        },
+        {
+          "shot_id": "sh002",
+          "scene_id": "s001",
+          "description": "Ed answers, Oya decides, and the announcer returns to the news.",
+          "beat_ids": [
+            "b003",
+            "b004",
+            "b005"
+          ]
+        }
+      ],
+      "beats": [
+        {
+          "act_id": null,
+          "beat_id": "b001",
+          "scene_id": "s001",
+          "shot_id": "sh001",
+          "intent": "Introduce the story, setting, time, and characters.",
+          "line_ids": [
+            "l001"
+          ]
+        },
+        {
+          "act_id": "a001",
+          "beat_id": "b002",
+          "scene_id": "s001",
+          "shot_id": "sh001",
+          "intent": "Oya reveals why the hidden data matters.",
+          "line_ids": [
+            "l002"
+          ]
+        },
+        {
+          "act_id": "a001",
+          "beat_id": "b003",
+          "scene_id": "s001",
+          "shot_id": "sh002",
+          "intent": "Ed names the moral accounting they cannot escape.",
+          "line_ids": [
+            "l003"
+          ]
+        },
+        {
+          "act_id": "a001",
+          "beat_id": "b004",
+          "scene_id": "s001",
+          "shot_id": "sh002",
+          "intent": "Oya closes the fictional disagreement on a final image.",
+          "line_ids": [
+            "l004"
+          ]
+        },
+        {
+          "act_id": null,
+          "beat_id": "b005",
+          "scene_id": "s001",
+          "shot_id": "sh002",
+          "intent": "Return to the captured real-news fact.",
+          "line_ids": [
+            "l005"
+          ]
+        }
+      ],
+      "lines": [
+        {
+          "line_id": "l001",
+          "scene_id": "s001",
+          "shot_id": "sh001",
+          "beat_id": "b001",
+          "char_id": "announcer",
+          "speaker": "ANNOUNCER",
+          "speaker_role": "announcer",
+          "text": "It's ten:zero PM at the Signal Lost studios. Tonight's story, Folder of Red Stamps, finds Oya Reeves and Ed Steele at the edge of a revelation.",
+          "fact_ids": []
+        },
+        {
+          "line_id": "l002",
+          "scene_id": "s001",
+          "shot_id": "sh001",
+          "beat_id": "b002",
+          "char_id": "c02",
+          "speaker": "OYA REEVES",
+          "speaker_role": "character",
+          "text": "The code's not just numbers—it's a map of where the smoke will fall, and who'll breathe it in.",
+          "fact_ids": [
+            "F01"
+          ]
+        },
+        {
+          "line_id": "l003",
+          "scene_id": "s001",
+          "shot_id": "sh002",
+          "beat_id": "b003",
+          "char_id": "c03",
+          "speaker": "ED STEELE",
+          "speaker_role": "character",
+          "text": "The cleanup's not a choice—it's a ledger, and you're writing the numbers.",
+          "fact_ids": []
+        },
+        {
+          "line_id": "l004",
+          "scene_id": "s001",
+          "shot_id": "sh002",
+          "beat_id": "b004",
+          "char_id": "c02",
+          "speaker": "OYA REEVES",
+          "speaker_role": "character",
+          "text": "The drive's still spinning, but the smoke's already in the air.",
+          "fact_ids": []
+        },
+        {
+          "line_id": "l005",
+          "scene_id": "s001",
+          "shot_id": "sh002",
+          "beat_id": "b005",
+          "char_id": "announcer",
+          "speaker": "ANNOUNCER",
+          "speaker_role": "announcer",
+          "text": "Beyond the ash-choked skies of tonight's burning frontier: Wildfires continue to spread across North America, impacting air quality and prompting health advisories as climate change exacerbates the crisis.",
+          "fact_ids": [
+            "F02"
+          ]
+        }
+      ],
+      "music_cues": [
+        {
+          "cue_id": "music_open",
+          "description": "Opening period-radio theme.",
+          "generation_prompt": "Brief tense vintage radio opening theme.",
+          "request_authority": "compiler_bookend"
+        },
+        {
+          "cue_id": "music_inter_01",
+          "description": "A short transition between the disclosure and its cost.",
+          "generation_prompt": "Brief thoughtful vintage radio transition.",
+          "request_authority": "script"
+        },
+        {
+          "cue_id": "music_close",
+          "description": "Closing period-radio theme.",
+          "generation_prompt": "Brief reflective vintage radio closing theme.",
+          "request_authority": "compiler_bookend"
+        }
+      ],
+      "sequence": [
+        {
+          "sequence_id": "q001",
+          "sequence_role": "music_open",
+          "ref_kind": "music_cue",
+          "ref_id": "music_open"
+        },
+        {
+          "sequence_id": "q002",
+          "sequence_role": "announcer_open",
+          "ref_kind": "line",
+          "ref_id": "l001"
+        },
+        {
+          "sequence_id": "q003",
+          "sequence_role": "character_dialogue",
+          "ref_kind": "line",
+          "ref_id": "l002"
+        },
+        {
+          "sequence_id": "q004",
+          "sequence_role": "character_dialogue",
+          "ref_kind": "line",
+          "ref_id": "l003"
+        },
+        {
+          "sequence_id": "q005",
+          "sequence_role": "music_inter",
+          "ref_kind": "music_cue",
+          "ref_id": "music_inter_01"
+        },
+        {
+          "sequence_id": "q006",
+          "sequence_role": "character_dialogue",
+          "ref_kind": "line",
+          "ref_id": "l004"
+        },
+        {
+          "sequence_id": "q007",
+          "sequence_role": "announcer_news_coda",
+          "ref_kind": "line",
+          "ref_id": "l005"
+        },
+        {
+          "sequence_id": "q008",
+          "sequence_role": "music_close",
+          "ref_kind": "music_cue",
+          "ref_id": "music_close"
+        }
+      ]
+    },
+    "validation": {
+      "body_sha256": "c3248782a76b1bf3875578acaa8ec9174676dbcfd6a5c76c57f64f20f235393d",
+        "contract_id": "otr.minimum_ship.v2",
+      "outcomes": {
+        "ledger_integrity": {
+          "status": "pass",
+          "validator_id": "otr.story_validator.ledger_integrity",
+            "validator_version": "3",
+          "evidence_refs": []
+        },
+          "news_capture": {
+          "status": "pass",
+          "validator_id": "otr.story_validator.news_capture",
+            "validator_version": "1",
+          "evidence_refs": [
+            {
+              "kind": "source_packet",
+              "ref_id": "science_news_folder_red_stamps_20260716"
+            },
+            {
+              "kind": "fact",
+              "ref_id": "F01"
+            },
+            {
+              "kind": "fact",
+              "ref_id": "F02"
+            }
+          ]
+        },
+          "announcer_open": {
+          "status": "pass",
+          "validator_id": "otr.story_validator.announcer_open",
+            "validator_version": "2",
+          "evidence_refs": [
+            {
+              "kind": "line",
+              "ref_id": "l001"
+            }
+          ]
+        },
+        "announcer_news_coda": {
+          "status": "pass",
+          "validator_id": "otr.story_validator.announcer_news_coda",
+          "validator_version": "1",
+          "evidence_refs": [
+            {
+              "kind": "line",
+              "ref_id": "l005"
+            },
+            {
+              "kind": "fact",
+              "ref_id": "F02"
+            }
+          ]
+        },
+        "music_bookends": {
+          "status": "pass",
+          "validator_id": "otr.story_validator.music_bookends",
+          "validator_version": "1",
+          "evidence_refs": [
+            {
+              "kind": "music_cue",
+              "ref_id": "music_open"
+            },
+            {
+              "kind": "music_cue",
+              "ref_id": "music_close"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "story_seal": {
+    "schema_version": "otr.story_seal.v1",
+    "algorithm": "sha256",
+    "canonicalization": "otr.canonical-json.v1",
+    "story_sha256": "cc9a879b19e66276ae50b9d0d03f300f32c04c63bfc2a9e978f46a9653387493",
+    "sealed_at": "2026-08-14T12:00:00Z"
+  },
+  "production_state": null,
+  "final_seal": null
+}

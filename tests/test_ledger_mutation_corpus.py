@@ -1,4 +1,4 @@
-"""Replay the rejected Story Ledger v1 mutation corpus."""
+"""Replay the rejected Story Ledger v2 mutation corpus."""
 
 from __future__ import annotations
 
@@ -23,11 +23,11 @@ from upstream_story_lab import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V1 = ROOT / "fixtures" / "story_recovery" / "v1"
-CORPUS_PATH = V1 / "rejected_mutations_v1.json"
-MACHINE_BIBLE_PATH = ROOT / "contracts" / "ledger_bible_v1.json"
+V2 = ROOT / "fixtures" / "story_recovery" / "v2"
+CORPUS_PATH = V2 / "rejected_mutations_v2.json"
+MACHINE_BIBLE_PATH = ROOT / "contracts" / "ledger_bible_v2.json"
 PACKET_PATH = (
-    V1
+    V2
     / "source_packets"
     / "science_news_folder_red_stamps_20260716.json"
 )
@@ -161,7 +161,7 @@ def _rejection(
 
 def test_corpus_base_file_is_raw_byte_pinned_and_normatively_admitted() -> None:
     corpus = _json(CORPUS_PATH)
-    base_path = V1 / corpus["base_fixture"]
+    base_path = V2 / corpus["base_fixture"]
     base_bytes = base_path.read_bytes()
     envelope = LedgerEnvelope.model_validate_json(base_bytes)
     packet_sha = envelope.story_ledger.body.source_packet.packet_sha256
@@ -180,7 +180,7 @@ def test_corpus_has_exactly_one_rejected_case_per_machine_invariant() -> None:
     actual = [case["invariant_code"] for case in corpus["cases"]]
     case_ids = [case["case_id"] for case in corpus["cases"]]
 
-    assert len(expected) == 18
+    assert len(expected) == 21
     assert len(actual) == len(set(actual))
     assert set(actual) == set(expected)
     assert len(case_ids) == len(set(case_ids))
@@ -191,21 +191,21 @@ def test_machine_bible_names_the_executable_fixture_set() -> None:
 
     assert bible["executable_fixture_corpus"] == {
         "normative_envelope": (
-            "fixtures/story_recovery/v1/normative_ledger_envelope.json"
+            "fixtures/story_recovery/v2/normative_ledger_envelope.json"
         ),
         "captured_packet": (
-            "fixtures/story_recovery/v1/source_packets/"
+            "fixtures/story_recovery/v2/source_packets/"
             "science_news_folder_red_stamps_20260716.json"
         ),
         "rejected_mutations": (
-            "fixtures/story_recovery/v1/rejected_mutations_v1.json"
+            "fixtures/story_recovery/v2/rejected_mutations_v2.json"
         ),
         "mutation_coverage_authority": "story_invariants[].code",
         "dependent_digest_policy": (
             "recompute body and story digests before later-gate admission checks"
         ),
         "historical_control_and_challenger": (
-            "calibration_evidence_only_never_silent_v1_promotion"
+            "calibration_evidence_only_never_silent_v2_promotion"
         ),
     }
 
@@ -215,7 +215,7 @@ def test_corpus_is_story_only_and_keeps_future_planes_out_of_scope() -> None:
 
     assert corpus["scope"] == "current executable story-plane boundary only"
     assert set(corpus["excluded"]) == {
-        "production receipt schemas",
+        "production journal mutation laws",
         "Story Lab to OTR adapter",
         "terminal final seal",
     }
@@ -230,8 +230,8 @@ def test_corpus_is_story_only_and_keeps_future_planes_out_of_scope() -> None:
 def test_control_and_challenger_calibration_pins_are_live() -> None:
     corpus = _json(CORPUS_PATH)
     calibration = corpus["evidence_calibration"]
-    control = _json((V1 / calibration["control_fixture"]).resolve())
-    challenger = _json((V1 / calibration["challenger_fixture"]).resolve())
+    control = _json((V2 / calibration["control_fixture"]).resolve())
+    challenger = _json((V2 / calibration["challenger_fixture"]).resolve())
     cited_findings = {
         code
         for case in corpus["cases"]
@@ -260,7 +260,7 @@ def test_control_and_challenger_calibration_pins_are_live() -> None:
 )
 def test_every_corpus_mutation_rejects_at_its_declared_gate(case: dict) -> None:
     corpus = _json(CORPUS_PATH)
-    base_raw = _json(V1 / corpus["base_fixture"])
+    base_raw = _json(V2 / corpus["base_fixture"])
     base_envelope = LedgerEnvelope.model_validate(copy.deepcopy(base_raw))
     candidate = copy.deepcopy(base_raw)
     _apply_operations(candidate, case["operations"])

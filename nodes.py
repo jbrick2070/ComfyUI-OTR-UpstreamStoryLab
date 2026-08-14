@@ -153,7 +153,7 @@ class OTR_UpstreamStoryLabValidator:
                 continue
             spec = build_spec(
                 registry, source_bank_id=bank_id, story_model_id=model_id,
-                story_pipeline_id=pipeline_id,
+                story_pipeline_id=pipeline_id, act_count=3,
             )
             combos += 1
             if bank_id != "science_news":
@@ -196,6 +196,7 @@ class OTR_StoryPackPreview:
         return {
             "required": {
                 "source_bank_id": (_bank_choices(), {"default": "media_archive"}),
+                "act_count": ("INT", {"default": 3, "min": 1, "max": 5, "step": 1}),
                 "story_model_id": (_model_choices(), {"default": "auto"}),
                 "story_pipeline_id": (_pipeline_choices(), {"default": "auto"}),
                 "visual_style_id": (_style_choices(), {"default": "auto"}),
@@ -206,7 +207,7 @@ class OTR_StoryPackPreview:
     def IS_CHANGED(cls, **kwargs: Any) -> str:
         return _lab_state_digest()
 
-    def preview(self, source_bank_id: str, story_model_id: str,
+    def preview(self, source_bank_id: str, act_count: int, story_model_id: str,
                 story_pipeline_id: str, visual_style_id: str) -> tuple[str]:
         _ensure_lab_importable()
         from upstream_story_lab.bridge import build_bridge_artifact, build_spec
@@ -219,6 +220,7 @@ class OTR_StoryPackPreview:
         spec = build_spec(
             registry,
             source_bank_id=source_bank_id,
+            act_count=act_count,
             story_model_id=story_model_id,
             story_pipeline_id=story_pipeline_id,
             visual_style_id=visual_style_id,
@@ -254,6 +256,7 @@ class OTR_BridgeArtifactEmit:
         return {
             "required": {
                 "source_bank_id": (_bank_choices(), {"default": "media_archive"}),
+                "act_count": ("INT", {"default": 3, "min": 1, "max": 5, "step": 1}),
                 "story_model_id": (_model_choices(), {"default": "auto"}),
                 "story_pipeline_id": (_pipeline_choices(), {"default": "auto"}),
                 "visual_style_id": (_style_choices(), {"default": "auto"}),
@@ -264,7 +267,7 @@ class OTR_BridgeArtifactEmit:
     def IS_CHANGED(cls, **kwargs: Any) -> str:
         return _lab_state_digest()
 
-    def emit(self, source_bank_id: str, story_model_id: str,
+    def emit(self, source_bank_id: str, act_count: int, story_model_id: str,
              story_pipeline_id: str, visual_style_id: str) -> tuple[str]:
         _ensure_lab_importable()
         from upstream_story_lab.bridge import (
@@ -277,6 +280,7 @@ class OTR_BridgeArtifactEmit:
         spec = build_spec(
             registry,
             source_bank_id=source_bank_id,
+            act_count=act_count,
             story_model_id=story_model_id,
             story_pipeline_id=story_pipeline_id,
             visual_style_id=visual_style_id,

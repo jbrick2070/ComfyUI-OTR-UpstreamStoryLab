@@ -1,4 +1,4 @@
-"""Code-owned trusted outcome verifiers for Story Ledger v1.
+"""Code-owned trusted outcome verifiers for Story Ledger v2.
 
 The structural models in :mod:`upstream_story_lab.ledger_contract` prove that
 the story graph is closed and that receipt evidence points at real rows.  This
@@ -8,7 +8,7 @@ silently repairs its input.
 
 The prose policy is deliberately conservative: semantic claims pass only
 when their normalized literal evidence is present.  The announcer opening must
-name the setting, scene time, every story character, and the episode premise.
+name the story title, setting, scene time, and every final speaking character.
 The news coda must literally contain at least one complete fact claim that it
 cites.  A later fuzzy or model-assisted policy would need a new validator
 version; it cannot silently change these receipts.
@@ -42,7 +42,8 @@ from .spoken_text_policy import SPOKEN_TEXT_POLICY_ID, spoken_text_is_clean
 
 CAPTURED_SOURCE_PACKET_SCHEMA_VERSION = "otr.captured_source_packet.v1"
 TRUSTED_VALIDATOR_VERSION = "1"
-LEDGER_INTEGRITY_VALIDATOR_VERSION = "2"
+LEDGER_INTEGRITY_VALIDATOR_VERSION = "3"
+ANNOUNCER_OPEN_VALIDATOR_VERSION = "2"
 
 TRUSTED_VALIDATOR_IDENTITIES: Final[Mapping[str, tuple[str, str]]] = (
     MappingProxyType(
@@ -57,7 +58,7 @@ TRUSTED_VALIDATOR_IDENTITIES: Final[Mapping[str, tuple[str, str]]] = (
             ),
             "announcer_open": (
                 "otr.story_validator.announcer_open",
-                TRUSTED_VALIDATOR_VERSION,
+                ANNOUNCER_OPEN_VALIDATOR_VERSION,
             ),
             "announcer_news_coda": (
                 "otr.story_validator.announcer_news_coda",
@@ -126,7 +127,7 @@ def verify_ledger_integrity(
     body: StoryBody,
     receipt: OutcomeReceipt,
 ) -> bool:
-    """Re-run the graph plus the v1 spoken-only policy without repair."""
+    """Re-run the v2 graph plus the v1 spoken-only policy without repair."""
 
     if not _has_identity("ledger_integrity", receipt):
         return False
@@ -203,15 +204,12 @@ def verify_announcer_open(
         return False
 
     required_mentions = [
+        body.context.episode_title,
         body.context.setting,
         scene.time,
         *[row.name for row in body.cast if row.cast_role == "character"],
     ]
-    introduces_story = _contains_normalized_phrase(
-        line.text,
-        body.context.premise,
-    )
-    return introduces_story and all(
+    return all(
         _contains_normalized_phrase(line.text, phrase)
         for phrase in required_mentions
     )
@@ -288,7 +286,7 @@ def build_trusted_receipt_verifiers(
     *,
     packet_artifacts: Mapping[str, bytes],
 ) -> Mapping[ReceiptVerifierKey, ReceiptVerifier]:
-    """Return the immutable five-entry Story Ledger v1 trust registry.
+    """Return the immutable five-entry Story Ledger v2 trust registry.
 
     ``packet_artifacts`` is keyed by the SHA-256 named in
     ``source_packet.packet_sha256``.  Values are snapshotted so later caller

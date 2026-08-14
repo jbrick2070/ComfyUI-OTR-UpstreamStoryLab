@@ -1,4 +1,4 @@
-"""Strict append-only production-plane contract for Ledger Bible v1.
+"""Strict append-only production-plane contract for Ledger Bible v2.
 
 The production plane records completed attempts and explicit acceptance events.
 It never owns authored story content.  This module is deliberately independent
@@ -24,7 +24,7 @@ from pydantic import (
 )
 
 
-PRODUCTION_STATE_SCHEMA_VERSION = "otr.production_state.v1"
+PRODUCTION_STATE_SCHEMA_VERSION = "otr.production_state.v2"
 HEX64_PATTERN = r"^[0-9a-f]{64}$"
 ID_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
 
@@ -71,11 +71,25 @@ PhaseId = Literal[
     "publication",
     "audit",
 ]
+STORY_REF_KINDS = (
+    "source_packet",
+    "source",
+    "fact",
+    "cast",
+    "act",
+    "scene",
+    "shot",
+    "beat",
+    "line",
+    "music_cue",
+    "sequence",
+)
 StoryRefKind = Literal[
     "source_packet",
     "source",
     "fact",
     "cast",
+    "act",
     "scene",
     "shot",
     "beat",
@@ -112,7 +126,7 @@ ArtifactKind = Literal[
 
 
 class ProductionContractError(ValueError):
-    """The proposed production journal violates Ledger Bible v1."""
+    """The proposed production journal violates Ledger Bible v2."""
 
 
 class StrictProductionModel(BaseModel):
@@ -1354,7 +1368,9 @@ __all__ = [
     "ProductionEvent",
     "ProductionState",
     "RunPhase",
+    "STORY_REF_KINDS",
     "StoryRef",
+    "StoryRefKind",
     "active_acceptance",
     "default_run_plan",
     "iter_story_refs",

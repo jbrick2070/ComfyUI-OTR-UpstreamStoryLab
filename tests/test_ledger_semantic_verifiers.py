@@ -1,4 +1,4 @@
-"""Trusted semantic checks and the complete normative Story Ledger v1."""
+"""Trusted semantic checks and the complete normative Story Ledger v2."""
 
 from __future__ import annotations
 
@@ -33,16 +33,17 @@ from upstream_story_lab.spoken_text_policy import (
 
 ROOT = Path(__file__).resolve().parents[1]
 RECOVERY = ROOT / "fixtures" / "story_recovery"
-V1 = RECOVERY / "v1"
-NORMATIVE = V1 / "normative_ledger_envelope.json"
+V2 = RECOVERY / "v2"
+LEGACY_V1 = RECOVERY / "v1" / "normative_ledger_envelope.json"
+NORMATIVE = V2 / "normative_ledger_envelope.json"
 PACKET = (
-    V1
+    V2
     / "source_packets"
     / "science_news_folder_red_stamps_20260716.json"
 )
 CONTROL = RECOVERY / "science_news_good_20260716.json"
 CHALLENGER = RECOVERY / "scifi_news_bad_20260813.json"
-MACHINE_BIBLE = ROOT / "contracts" / "ledger_bible_v1.json"
+MACHINE_BIBLE = ROOT / "contracts" / "ledger_bible_v2.json"
 
 
 def _json(path: Path) -> dict:
@@ -74,6 +75,23 @@ def _rebound_story(
     raw["body"] = body.model_dump(mode="json")
     raw["validation"]["body_sha256"] = canonical_sha256(body)
     return StoryLedger.model_validate(raw)
+
+
+def _audit_character_text(text: str):
+    return audit_spoken_text(
+        [
+            {
+                "line_id": "probe",
+                "char_id": "c01",
+                "speaker_role": "character",
+                "text": text,
+            }
+        ],
+        [
+            {"char_id": "c01", "name": "EDNA"},
+            {"char_id": "c02", "name": "PETER"},
+        ],
+    )
 
 
 def test_registry_has_exactly_five_immutable_code_owned_identities() -> None:
@@ -157,6 +175,16 @@ def test_normative_fixture_passes_all_five_and_recomputes_exact_seal() -> None:
     ]
 
 
+def test_v1_fixture_is_preserved_but_never_silently_promoted_to_v2() -> None:
+    legacy_bytes = LEGACY_V1.read_bytes()
+
+    assert hashlib.sha256(legacy_bytes).hexdigest() == (
+        "afc723d8a854450a7b848f1132a350dbb947aac97eae988e14a053341c40fa82"
+    )
+    with pytest.raises(ValidationError, match="otr.ledger_envelope.v2"):
+        LedgerEnvelope.model_validate_json(legacy_bytes)
+
+
 def test_packet_byte_change_fails_news_capture_verification() -> None:
     envelope = _normative_envelope()
     tampered = PACKET.read_bytes() + b" "
@@ -202,14 +230,14 @@ def test_packet_projection_change_fails_even_when_new_bytes_match_new_digest() -
 @pytest.mark.parametrize(
     ("old", "new"),
     [
-        ("a revelation neither is ready to share", "a difficult choice"),
+        ("Folder of Red Stamps", "Tonight's unnamed story"),
         ("Signal Lost studios", "the studio"),
         ("ten:zero PM", "late tonight"),
         ("Oya Reeves", "one researcher"),
         ("Ed Steele", "her colleague"),
     ],
 )
-def test_opening_must_literally_introduce_each_locked_semantic(
+def test_opening_names_story_scene_time_and_final_speaking_cast(
     old: str,
     new: str,
 ) -> None:
@@ -269,7 +297,13 @@ def test_normative_fixture_uses_control_evidence_without_promoting_legacy() -> N
     assert packet.sources[0].title == control["artifacts"]["news_seed"]["headline"]
     assert packet.facts[0].claim == control["artifacts"]["news"]["script_brief"]
     assert packet.facts[1].claim == control["artifacts"]["news"]["news_close_brief"]
-    assert body.lines[0].text == control["artifacts"]["lines"][0]["text"]
+    assert body.lines[0].text != control["artifacts"]["lines"][0]["text"]
+    assert body.context.episode_title in body.lines[0].text
+    assert all(
+        row.name.casefold() in body.lines[0].text.casefold()
+        for row in body.cast
+        if row.cast_role == "character"
+    )
     assert body.lines[-1].text == control["artifacts"]["lines"][-1]["text"]
     assert control["expected"]["presentation_topology_pass"] == "not_evaluated"
 
@@ -277,7 +311,7 @@ def test_normative_fixture_uses_control_evidence_without_promoting_legacy() -> N
         LedgerEnvelope.model_validate(control)
 
 
-def test_challenger_remains_rejection_calibration_not_a_v1_candidate() -> None:
+def test_challenger_remains_rejection_calibration_not_a_v2_candidate() -> None:
     challenger = _json(CHALLENGER)
     lines = challenger["artifacts"]["p5"]["compiled"]["lines"]
     findings = set(challenger["expected"]["finding_codes"])
@@ -308,28 +342,26 @@ def test_challenger_proves_both_independent_story_failures() -> None:
     assert compiled["lines"][0]["speaker_role"] == "character"
     assert compiled["lines"][-1]["speaker_role"] == "character"
 
-    found_line_ids = {finding.line_id for finding in findings}
-    assert set(expected["narration_or_stage_line_ids"]) <= found_line_ids
-    assert set(expected["cross_speaker_line_ids"]) == {
+    narration_or_stage_line_ids = {
+        finding.line_id
+        for finding in findings
+        if finding.code != "cross_speaker_attribution"
+    }
+    cross_speaker_line_ids = {
         finding.line_id
         for finding in findings
         if finding.code == "cross_speaker_attribution"
     }
-    assert found_line_ids == {
-        "l001",
-        "l002",
-        "l004",
-        "l005",
-        "l006",
-        "l007",
-        "l008",
-        "l009",
-        "l010",
-        "l011",
-    }
+    assert narration_or_stage_line_ids == set(
+        expected["narration_or_stage_line_ids"]
+    )
+    assert cross_speaker_line_ids == set(expected["cross_speaker_line_ids"])
+    assert {finding.line_id for finding in findings} == (
+        narration_or_stage_line_ids | cross_speaker_line_ids
+    )
 
 
-def test_integrity_v2_rejects_novel_prose_after_all_hashes_are_rebound() -> None:
+def test_integrity_v3_rejects_novel_prose_after_all_hashes_are_rebound() -> None:
     story = _rebound_story(
         lambda raw: raw["body"]["lines"][1].__setitem__(
             "text",
@@ -353,6 +385,45 @@ def test_normative_story_is_clean_spoken_text() -> None:
     body = _normative_envelope().story_ledger.body
 
     assert audit_spoken_text(body.lines, body.cast) == ()
+
+
+def test_historical_control_is_clean_spoken_text() -> None:
+    control = _json(CONTROL)["artifacts"]
+
+    assert audit_spoken_text(control["lines"], control["cast"]) == ()
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "She says the code is wrong.",
+        "Peter says the code is wrong.",
+        'They called it "safe," but I saw the smoke.',
+        "the code’s not just numbers—it’s a map of who’ll breathe it in.",
+        "I heard the door slam.",
+        "Looks like rain, Watson.",
+    ],
+)
+def test_legitimate_spoken_surfaces_do_not_trip_narrow_policy(text: str) -> None:
+    assert _audit_character_text(text) == ()
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Door slams.",
+        "Music swells.",
+        "The telephone rings.",
+        "Footsteps approach.",
+        "snaps off the cap, cracks the seal, drains the vial",
+    ],
+)
+def test_whole_line_stage_business_is_rejected(text: str) -> None:
+    findings = _audit_character_text(text)
+
+    assert {finding.code for finding in findings} == {
+        "third_person_stage_business"
+    }
 
 
 def test_packet_registry_snapshots_mutable_bytes() -> None:

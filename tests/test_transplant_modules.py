@@ -23,7 +23,7 @@ from upstream_story_lab.bridge import build_bridge_artifact, build_spec  # noqa:
 
 
 def _artifact_dict(registry, bank="media_archive"):
-    spec = build_spec(registry, source_bank_id=bank)
+    spec = build_spec(registry, source_bank_id=bank, act_count=3)
     return build_bridge_artifact(spec).model_dump(mode="json")
 
 

@@ -239,9 +239,9 @@ def test_raw_transport_and_legacy_music_are_explicitly_unavailable() -> None:
 
 
 def test_machine_readable_contract_locks_only_the_operator_requirements() -> None:
-    contract = _load("ledger_requirements_v1.json")
+    contract = _load("ledger_requirements_v2.json")
 
-    assert contract["schema_version"] == "otr_story_lab.ledger_requirements.v1"
+    assert contract["schema_version"] == "otr_story_lab.ledger_requirements.v2"
     assert contract["artifact_boundary"]["output"] == (
         "validated_ledger_envelope_json"
     )
@@ -283,22 +283,22 @@ def test_machine_readable_contract_locks_only_the_operator_requirements() -> Non
         "story_ledger_post_acceptance_mutation": "forbidden",
         "production_state_post_acceptance_mutation": "phase_owned_append_only",
         "current_executable_non_null_production_or_final_plane": (
-            "rejected_until_strict_schemas_land"
+            "typed_production_state_allowed_final_seal_rejected"
         ),
         "final_seal_after": "publication_and_audit",
         "post_final_seal_mutation": "forbidden",
         "contract_change": "new_schema_version_and_explicit_migration",
         "current_l4_cleanup_locked_is_not_enforcement": True,
     }
-    assert contract["episode_length_tier"]["values_in_ui_order"] == [
-        "ultra_short",
-        "medium",
-        "long",
-        "extra_long",
+    authoring = contract["act_authoring"]
+    assert (authoring["minimum"], authoring["maximum"]) == (1, 5)
+    assert authoring["type"] == "strict_integer"
+    assert authoring["per_act_path"] == ["spine", "beats", "dialogue"]
+    assert authoring["stable_job_count"] == "3 * act_count + 7"
+    assert authoring["base_model_job_count"] == "3 * act_count + 4"
+    assert authoring["words_are_telemetry_only"] is True
+    assert authoring["hardware_changes_ledger_shape"] is False
+    assert "beats_per_act" in contract["explicitly_experimental"]
+    assert "approximate_duration_guidance" in contract[
+        "explicitly_experimental"
     ]
-    assert contract["episode_length_tier"]["words_are_telemetry_only"] is True
-    assert contract["episode_length_tier"][
-        "model_receives_resolved_chunk_not_length_label"
-    ] is True
-    assert "movement_count_per_tier" in contract["explicitly_experimental"]
-    assert "approximate_minutes_per_tier" in contract["explicitly_experimental"]

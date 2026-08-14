@@ -26,6 +26,13 @@ assert "simple_4_prompt_experimental" not in [m for m in models if m != "auto"],
 )
 assert "archival_documentary" in styles and "auto" in styles
 assert "legacy_many_pass" in pipelines
+for node_class in (
+    nodes.OTR_StoryPackPreview,
+    nodes.OTR_BridgeArtifactEmit,
+):
+    act_type, act_meta = node_class.INPUT_TYPES()["required"]["act_count"]
+    assert act_type == "INT"
+    assert act_meta == {"default": 3, "min": 1, "max": 5, "step": 1}
 
 report = nodes.OTR_UpstreamStoryLabValidator().validate()[0]
 assert report.startswith("OK Upstream Story Lab v2"), report[:80]

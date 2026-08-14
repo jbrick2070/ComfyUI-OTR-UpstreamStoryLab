@@ -1,12 +1,12 @@
-# OTR Ledger Bible v1
+# OTR Ledger Bible v2
 
-Status: blessed Story Lab story-plane contract; not yet transplanted into
-production OTR. The executable model is deliberately unable to accept a
-non-null production plane or final seal until their strict schemas land.
+Status: candidate Story Lab constitution; not yet transplanted into production
+OTR. The story plane, story seal, and typed append-only production journal are
+executable. `final_seal` remains null-only until terminal ordering lands.
 
 Machine authority:
 
-- `contracts/ledger_bible_v1.json`
+- `contracts/ledger_bible_v2.json`
 - `src/upstream_story_lab/ledger_contract.py`
 - `contracts/ledger_consumer_matrix_l4.json` (current-production
   characterization, not the target schema)
@@ -20,7 +20,7 @@ Generated full-schema/document parity is a required pre-transplant chunk.
 An episode still has one ledger JSON. The file is an envelope with two planes:
 
 ```text
-otr.ledger_envelope.v1
+otr.ledger_envelope.v2
 ├── story_ledger
 │   ├── immutable authored/source/graph/program truth
 │   └── five acceptance receipts bound to body_sha256
@@ -33,11 +33,11 @@ otr.ledger_envelope.v1
 ```
 
 The Story Lab returns this one file with `production_state=null` and
-`final_seal=null`. The current executable class rejects either field when
-non-null rather than accepting an untyped future journal. OTR will fill the
-production plane without changing one byte of the story plane only after its
-strict receipt schemas and adapter exist. After the final seal, no ordinary
-mutation is legal.
+`final_seal=null`. The current executable class can later attach and append the
+strict typed production journal without changing one byte of the story plane.
+The Story Lab→OTR adapter and save guards are not implemented yet. The final
+seal remains non-executable; after it lands, no ordinary mutation will be
+legal.
 
 This distinction matters because “the story is accepted” and “the episode has
 finished rendering” occur at different times. Pretending the entire file is
@@ -48,13 +48,13 @@ Version vocabulary is exact:
 
 | Surface | Version |
 |---|---|
-| envelope | `otr.ledger_envelope.v1` |
-| story plane | `otr.story_ledger.v1` |
+| envelope | `otr.ledger_envelope.v2` |
+| story plane | `otr.story_ledger.v2` |
 | story seal | `otr.story_seal.v1` |
 | captured source packet | `otr.captured_source_packet.v1` |
-| production plane | `otr.production_state.v1` |
+| production plane | `otr.production_state.v2` |
 | final seal | `otr.final_seal.v1` |
-| minimum outcomes | `otr.minimum_ship.v1` |
+| minimum outcomes | `otr.minimum_ship.v2` |
 | canonicalization | `otr.canonical-json.v1` |
 
 ## Identity
@@ -74,12 +74,17 @@ change the story digest.
 
 `story_ledger.body` owns:
 
-- context: episode title, premise, setting, and `episode_length_tier`;
+- context: episode title, story seed, setting, and strict integer `act_count`
+  from 1 through 5;
 - source packet: bank ID, captured-packet artifact digest, sources, facts, and
   evidence locators; the trusted news-capture validator verifies that external
   packet digest because it is not a recursive hash of the embedded projection;
 - cast: immutable character IDs, exact names, role, and description;
-- scenes, shots, beats, and spoken lines as a closed graph;
+- one story arc whose ordered act IDs exactly match `act_count`;
+- one ordered act row per act, with planning-only spine, entry state, exit
+  state, final speaking-character IDs, and ordered beat IDs;
+- scenes and shots as a separate render axis, plus beats and spoken lines as a
+  closed graph;
 - music cues as authored program requests, separate from speech, with exact
   `request_authority` (`compiler_bookend` for open/close, `script` for an
   interstitial);
@@ -94,8 +99,16 @@ Every spoken line contains:
 - `fact_ids`, present even when empty.
 
 There are no action rows, stage-direction rows, narrator-prose rows, or
-delivery-note rows. Visual intent and dramatic intent may live in typed graph
-metadata; they are never passed to a speech consumer as dialogue.
+delivery-note rows. Story seed, arc summary, act spines/states, scene/shot
+descriptions, and beat intent are planning metadata; they never pass to a
+speech consumer as dialogue.
+
+The centralized pre-seal compiler serves every source bank. It may drop
+standalone forbidden draft rows and remove characters that own no accepted
+dialogue. It never invents filler dialogue to justify a cast row. If narration
+or stage business is embedded ambiguously inside a proposed speech row, the
+compiler returns that act to its dialogue job. Trusted admission never mutates
+the proposed `StoryBody`.
 
 That shape rule is not enough by itself: the August 13 challenger put novel
 prose such as `Ada turns to Leo` inside a nominal character line. Trusted
@@ -103,7 +116,48 @@ ledger-integrity admission therefore runs `otr.spoken-text-only.v1`. It rejects
 production cues and delimited directions in every speech row, plus quoted novel
 dialogue, third-person stage business, and cross-speaker attribution in a
 character row. It never rewrites prose during admission; the draft returns to
-the writer.
+the owning act-dialogue job.
+
+## One centralized authoring compiler, many creative banks
+
+Science news, media archive, public-domain story, and custom-source banks keep
+authority over source selection, tone, story seeds, and bank-specific prompt
+content. They all feed one compiler and one admission boundary:
+
+```text
+bank packet
+  -> story seed
+  -> X-act story arc
+  -> for each act: spine -> beats -> dialogue
+  -> cast sweep
+  -> announcer opening
+  -> announcer factual coda
+  -> compiler music bookends
+  -> trusted admission and story seal
+```
+
+`act_count=X` is a scheduler input, not a request hidden in prose. It creates
+exactly X ordered act paths, where X is a strict integer from 1 through 5.
+Each path has separate spine, beat-plan, and actual-dialogue jobs. A retry is
+another attempt on the same job; it never creates another act. Open, coda,
+music, cast sweep, and admission are outside the act loop.
+
+The stable schedule contains `3 * act_count + 7` jobs. Of those,
+`3 * act_count + 4` are base model jobs: 7 model jobs for one act through 19
+for five acts, before retries. This is a compute/cost receipt, not a story
+length guarantee.
+
+Every dialogue job repeats the same output law: fill the exact beat IDs with
+actual words spoken aloud by the assigned character, and emit no narration,
+stage business, delivery notes, or another character's words. The accepted act
+row then records its spine and exact beat projection, and its
+`speaking_char_ids` must match final dialogue in first-speaking order.
+
+There is no global word-count knob or word-count acceptance gate. A dialogue
+job may receive soft local guidance such as exchanges or approximate duration
+when useful. A 3060, 5090, or cloud route may change model choice, batching,
+latency, and retry cost; it never changes the ledger shape or the chosen act
+count.
 
 ## Routing role and sequence role are different
 
@@ -136,13 +190,14 @@ The sequence is ordered authority:
 
 1. exactly one `music_open`, first;
 2. exactly one `announcer_open`, the first spoken row;
-3. one or more `character_dialogue` rows;
+3. one or more `character_dialogue` rows for every accepted act;
 4. zero or more `music_inter` cues, each explicitly requested by the script and
    located inside the character-story body;
 5. exactly one `announcer_news_coda`, the last spoken row;
 6. exactly one `music_close`, last.
 
-The opening introduces the story, place/time, and characters. The coda
+No other sequence role is legal. The opening introduces the story,
+place/time, and final speaking characters. The coda
 summarizes captured real news and references at least one valid source fact.
 Those semantic claims need explicit validator receipts; a JSON shape alone
 cannot honestly prove what prose means.
@@ -165,16 +220,18 @@ music receipt names the exact opening and closing cues. `ledger_integrity` may
 use the bound body hash alone. All five are bound to the same `body_sha256`. A
 receipt cannot survive a changed line, fact, speaker, cue, or order.
 
-The trusted v1 registry is code-owned and contains exactly five identities.
-`otr.story_validator.ledger_integrity` is validator version `2`, which adds the
-versioned spoken-only policy; the other four remain validator version `1`:
-`otr.story_validator.news_capture`, `otr.story_validator.announcer_open`,
+The trusted v2 registry is code-owned and contains exactly five identities.
+`otr.story_validator.ledger_integrity` is validator version `3`, covering the
+v2 graph plus `otr.spoken-text-only.v1`.
+`otr.story_validator.announcer_open` is version `2`: after Unicode
+normalization and case folding, the opener must literally contain the story
+title, setting, opening-scene time, and every final speaking character name.
+It does not require the planning seed, spine, or beat intent to be copied into
+spoken prose. `otr.story_validator.news_capture`,
 `otr.story_validator.announcer_news_coda`, and
-`otr.story_validator.music_bookends`. The prose policy is deliberately
-conservative and deterministic. After Unicode normalization and case folding,
-the opening must literally contain the premise, setting, opening-scene time,
-and every character name. The coda must literally contain the complete claim
-of at least one receipt-named fact cited by that line. A fuzzy or
+`otr.story_validator.music_bookends` remain version `1`. The coda must
+literally contain the complete claim of at least one receipt-named fact cited
+by that line. A fuzzy or
 model-assisted policy requires a new validator version; it is never a silent
 implementation change. Opening admission and spoken-only admission are
 independent: a clean dialogue body cannot compensate for a missing introduction,
@@ -185,14 +242,17 @@ keyed by their declared SHA-256. It hashes the exact raw bytes, parses the
 strict `otr.captured_source_packet.v1` artifact, and requires its complete
 source/fact projection to equal the accepted story projection. It performs no
 network lookup. The historical recovery control and challenger calibrate the
-positive and negative semantics; neither is itself promoted into v1.
+positive and negative semantics; neither is itself promoted into v2.
 
 ## Referential integrity
 
-The v1 graph fails closed unless:
+The v2 graph fails closed unless:
 
 - every ID is nonempty and unique in its table;
 - every fact source reference resolves;
+- `act_count`, ordered story-arc IDs, and ordered act rows agree exactly;
+- every act owns its exact ordered beat projection and final dialogue cast;
+- compiler announcer beats remain outside the act partition;
 - every scene owns its declared shots;
 - every shot owns its declared beats;
 - every beat owns its declared lines;
@@ -203,14 +263,15 @@ The v1 graph fails closed unless:
 - every line and cue appears exactly once in sequence;
 - line/cue table order matches its sequence projection, and scene/shot/beat
   child order matches the corresponding table order;
-- no scene, shot, beat, line, cue, fact, source, or cast row is orphaned.
+- no act, scene, shot, beat, line, cue, fact, source, or cast row is orphaned;
+- every retained character owns at least one accepted dialogue row.
 
 Array order is meaningful and sealed. Reordering accepted story rows is a
 story change, not a harmless cleanup.
 
 ## Story seal
 
-Story v1 canonicalization is deliberately small:
+Story v2 canonicalization is deliberately small:
 
 - UTF-8 output;
 - every string must already be NFC;
@@ -226,14 +287,14 @@ every receipt through a caller-owned trusted verifier registry. Unknown or
 failed verifier identities fail closed. The production-independent semantic
 registry lives in `src/upstream_story_lab/ledger_verifiers.py`; low-level trust
 plumbing tests may still inject explicitly synthetic verifiers, while the
-normative v1 fixture is admitted only through the code-owned registry.
+normative v2 fixture is admitted only through the code-owned registry.
 
 The complete accepted `story_ledger` is hashed with SHA-256 into
 `story_seal.story_sha256`. The whole seal receipt, including its one-time UTC
 `sealed_at`, is immutable during production extension. Changing the algorithm
 is a schema migration, never a silent implementation detail.
 
-## The production plane (normative target; executable schema pending)
+## The production plane (typed append-only schema)
 
 `production_state` is not a second story. It is an append-only execution
 journal whose phase artifacts reference immutable story IDs.
@@ -262,8 +323,9 @@ The versioned registry includes:
 
 Each phase has one declared owner. Attempts are append-only and bind the story
 digest plus dependency receipts. An accepted attempt must reference a succeeded
-attempt. Required phases cannot silently skip. Artifact references to lines,
-cues, beats, shots, or cast must resolve into the sealed story.
+attempt. Required phases cannot silently skip. Typed story references cover
+source packets, sources, facts, cast, acts, scenes, shots, beats, lines, cues,
+and sequence rows; every reference must resolve into the sealed story.
 
 Media stages may add timings, hashes, cache keys, paths, model/engine receipts,
 and measured duration. They may not alter story text, speaker ownership, facts,
@@ -289,24 +351,20 @@ The Bible does not accept or reject a story based on:
 
 - word count;
 - measured minutes;
-- scene, movement, beat, or turn count beyond graph integrity;
+- scene, beat, line, exchange, or turn count beyond each act's nonempty graph;
 - model/provider choice;
-- number of authoring passes;
 - prompt wording;
 - subjective style or quality scores.
 
-The visible length input remains exactly:
+The visible length input is exactly one strict integer:
 
 ```text
-ultra_short
-medium
-long
-extra_long
+act_count = 1..5
 ```
 
-Each source bank will later map that label to a versioned generation process.
-Words and downstream duration are receipts, not acceptance authority. That
-length experiment begins only after the Ledger Bible boundary is stable.
+It determines how many act paths the centralized compiler schedules. It does
+not prescribe words, minutes, beats per act, or exchanges. Words and downstream
+duration are receipts, not acceptance authority.
 
 ## Current l4 compatibility warning
 
@@ -321,33 +379,35 @@ Production OTR schema `l4-2026-08-07` is not this contract:
 - wire, disk, manifest, and filesystem representations diverge;
 - save paths disagree about unknown schema-version handling.
 
-There is no automatic `l4 -> v1` migration. Existing ledgers remain historical
+There is no automatic `l4 -> v2` migration. Existing ledgers remain historical
 evidence unless a named migration can account for every missing semantic field.
 New Story Lab output will need an explicit production adapter that preserves
 the story bytes/digest and writes all media truth into `production_state`.
 
 The July `science_news` control is intentionally historical evidence rather
-than a normative v1 object. For example, its cast row identifies ANNOUNCER as
+than a normative v2 object. For example, its cast row identifies ANNOUNCER as
 `c01` while its spoken rows use `char_id="announcer"`. A migration must resolve
 that identity explicitly; the fixture is never silently admitted because its
 prose happens to demonstrate the desired bookends. Reusing an ID literal in
 different typed tables (for example legacy `line_id="b001"` and
-`beat_id="b001"`) is not itself a v1 collision: uniqueness is per table and
+`beat_id="b001"`) is not itself a v2 collision: uniqueness is per table and
 references carry their kind.
 
 ## Executable evidence
 
 - Current consumer characterization:
   `contracts/ledger_consumer_matrix_l4.json`
-- Target machine contract: `contracts/ledger_bible_v1.json`
+- Target machine contract: `contracts/ledger_bible_v2.json`
 - Strict models, graph validator, canonicalization and story guard:
   `src/upstream_story_lab/ledger_contract.py`
 - Five trusted semantic validators and immutable registry:
   `src/upstream_story_lab/ledger_verifiers.py`
+- Centralized act scheduler, draft filter, and cast sweep:
+  `src/upstream_story_lab/story_authoring.py`
 - Complete normative envelope and external captured packet:
-  `fixtures/story_recovery/v1/`
+  `fixtures/story_recovery/v2/`
 - Rejected mutation corpus with one replayed case per machine invariant:
-  `fixtures/story_recovery/v1/rejected_mutations_v1.json`
+  `fixtures/story_recovery/v2/rejected_mutations_v2.json`
 - Contract tests: `tests/test_ledger_bible_contract.py`
 - Semantic and mutation-corpus tests:
   `tests/test_ledger_semantic_verifiers.py` and
@@ -361,6 +421,6 @@ from the grounded Codex audit and synthesis. Raw reviewer confidence is not a
 contract authority.
 
 The production workflow remains unchanged. A later transplant must add its
-adapter, production receipt schemas, save guards, workflow wiring, and final
-seal in small tested chunks; then recreate the seven-leg render runner so no
-post-change proof uses stale code.
+adapter, save guards, centralized source-bank routing, workflow wiring, and
+final seal in small tested chunks; then recreate the seven-leg render runner so
+no post-change proof uses stale code.

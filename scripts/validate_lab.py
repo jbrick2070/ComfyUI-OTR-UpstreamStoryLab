@@ -48,6 +48,7 @@ def main() -> int:
             spec = build_spec(
                 registry, source_bank_id=bank_id, story_model_id=model_id,
                 story_pipeline_id=pipeline_id, visual_style_id=style_id,
+                act_count=3,
             )
             if bank_id != "science_news":
                 leaked = scan_story_leakage(registry, spec)

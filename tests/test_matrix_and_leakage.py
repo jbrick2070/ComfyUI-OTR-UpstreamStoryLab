@@ -55,6 +55,7 @@ def test_declared_matrix_resolves_and_previews(registry) -> None:
                 story_model_id=model_id,
                 story_pipeline_id=pipeline_id,
                 visual_style_id=style_id,
+                act_count=3,
             )
             assert spec.story_model_id == model_id
             assert spec.visual_style_id == style_id
@@ -66,7 +67,7 @@ def test_declared_matrix_resolves_and_previews(registry) -> None:
 
 
 def test_auto_defaults_are_recorded_not_invisible(registry) -> None:
-    spec = build_spec(registry, source_bank_id="media_archive")
+    spec = build_spec(registry, source_bank_id="media_archive", act_count=3)
     decisions = {d.axis: d for d in spec.resolution.decisions}
     assert decisions["story_model"].default_applied is True
     assert decisions["story_model"].decided_by == "banks.json:default_story_model"
@@ -92,6 +93,7 @@ def test_non_science_story_previews_are_clean(registry) -> None:
         spec = build_spec(
             registry, source_bank_id=bank_id, story_model_id=model_id,
             story_pipeline_id=pipeline_id,
+            act_count=3,
         )
         preview = render_prompt_preview(spec).lower()
         hits = [t for t in NON_SCIENCE_STORY_LEAKAGE if t in preview]
@@ -110,6 +112,7 @@ def test_non_cinematic_styles_emit_no_cinema_tails(registry) -> None:
     for style_id in ("anime", "cartoon", "paper_origami"):
         spec = build_spec(
             registry, source_bank_id="media_archive", visual_style_id=style_id,
+            act_count=3,
         )
         preview = render_visual_preview(spec).lower()
         hits = [t for t in NON_CINEMA_VISUAL_LEAKAGE if t in preview]

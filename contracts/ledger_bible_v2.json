@@ -1,0 +1,419 @@
+{
+  "schema_version": "otr.ledger_bible.v2",
+  "status": "candidate_ledger_constitution_not_yet_transplanted",
+  "decision_date": "2026-08-14",
+  "review_routing": {
+    "directive_date": "2026-08-11",
+    "full_kibitz": "suspended",
+    "independent_inputs": [
+      "codex_live_code_audit",
+      "antigravity_live_code_audit",
+      "sonnet5_live_code_red_team"
+    ],
+    "additional_review": "sonnet_report_grounded_and_reconciled; raw reviewer claims never silently change this contract"
+  },
+  "boundary": {
+    "one_json_envelope": true,
+    "story_lab_output": [
+      "schema_version",
+      "story_ledger",
+      "story_seal"
+    ],
+    "story_lab_null_outputs": [
+      "production_state",
+      "final_seal"
+    ],
+    "current_executable_scope": "story_ledger, story_seal, and typed append-only production_state are executable; Story Lab output keeps production_state null and final_seal remains null-only",
+    "story_plane": "immutable_after_acceptance",
+    "production_plane": "phase_owned_append_only_receipts",
+    "final_state": "immutable_after_terminal_seal"
+  },
+  "versions": {
+    "envelope": "otr.ledger_envelope.v2",
+    "story_ledger": "otr.story_ledger.v2",
+    "story_seal": "otr.story_seal.v1",
+    "captured_source_packet": "otr.captured_source_packet.v1",
+    "production_state": "otr.production_state.v2",
+    "final_seal": "otr.final_seal.v1",
+    "minimum_contract": "otr.minimum_ship.v2",
+    "canonicalization": "otr.canonical-json.v1"
+  },
+  "identity": {
+    "episode_id": "one accepted story edition; immutable",
+    "run_id": "one production execution of a sealed story; absent at Story Lab output",
+    "workspace_id": "renameable production directory/slug identity; never story identity",
+    "resume": "retains run_id and appends a phase attempt",
+    "rerender": "new run_id, same episode_id and story_sha256",
+    "story_revision": "new sealed story artifact and new episode_id",
+    "schema_migration": "explicit registered edge and migration receipt only"
+  },
+  "routing_enums": {
+    "cast_role": [
+      "announcer",
+      "character"
+    ],
+    "speaker_role": [
+      "announcer",
+      "character"
+    ],
+    "sequence_role": [
+      "music_open",
+      "announcer_open",
+      "character_dialogue",
+      "music_inter",
+      "announcer_news_coda",
+      "music_close"
+    ],
+    "sequence_ref_kind": [
+      "line",
+      "music_cue"
+    ],
+    "music_request_authority": [
+      "compiler_bookend",
+      "script"
+    ],
+    "story_ref_kind": [
+      "source_packet",
+      "source",
+      "fact",
+      "cast",
+      "act",
+      "scene",
+      "shot",
+      "beat",
+      "line",
+      "music_cue",
+      "sequence"
+    ]
+  },
+  "act_authoring": {
+    "visible_length_control": "act_count",
+    "minimum": 1,
+    "maximum": 5,
+    "integer_only": true,
+    "resolution_authority": "operator_input_never_word_count_or_hardware",
+    "central_compiler": "all source banks retain bank-specific creative prompts but pass through one story-ledger compiler and trusted admission gate",
+    "base_order": "story_seed -> story_arc -> for each act in order: spine -> beats -> dialogue -> cast_sweep -> announcer_open -> announcer_news_coda -> music_bookends -> ledger_admission",
+    "act_fanout_law": "act_count creates exactly that many ordered act paths; retries append attempts to the same job and never create acts",
+    "stable_job_count": "3 * act_count + 7",
+    "base_model_job_count": "3 * act_count + 4",
+    "range_receipt": "act_count 1..5 yields 10..22 total jobs and 7..19 base model jobs before retries",
+    "planning_only_fields": [
+      "story_seed",
+      "story_arc.summary",
+      "acts[].spine",
+      "acts[].entry_state",
+      "acts[].exit_state",
+      "beats[].intent"
+    ],
+    "word_count": "not_a_control_or_acceptance_rule",
+    "optional_dialogue_guidance": "exchanges, approximate duration, or soft local size guidance may be supplied inside one act job",
+    "hardware_law": "3060_through_5090_or_cloud_changes_model_route_and_latency_not_ledger_shape_or_act_count",
+    "draft_clean_phase": "drop standalone non-spoken rows and unused cast before sealing; ambiguous embedded prose returns to that act dialogue job",
+    "final_sequence_whitelist": [
+      "music_open",
+      "announcer_open",
+      "character_dialogue",
+      "music_inter",
+      "announcer_news_coda",
+      "music_close"
+    ]
+  },
+  "minimum_ship_outcomes": [
+    "ledger_integrity",
+    "news_capture",
+    "announcer_open",
+    "announcer_news_coda",
+    "music_bookends"
+  ],
+  "minimum_ship_evidence": {
+    "ledger_integrity": "body_sha256 is the structural evidence; evidence_refs may be empty",
+    "news_capture": "typed refs must name the exact source packet and at least one accepted fact",
+    "announcer_open": "a typed line ref must name the exact announcer_open line",
+    "announcer_news_coda": "typed refs must name the exact coda line and at least one fact cited by that line",
+    "music_bookends": "typed music_cue refs must name the exact music_open and music_close cues"
+  },
+  "trusted_semantic_validators": {
+    "ownership": "code_owned_immutable_registry_with_caller_injected_packet_bytes",
+    "validator_versions": {
+      "ledger_integrity": "3",
+      "news_capture": "1",
+      "announcer_open": "2",
+      "announcer_news_coda": "1",
+      "music_bookends": "1"
+    },
+    "identities": {
+      "ledger_integrity": "otr.story_validator.ledger_integrity",
+      "news_capture": "otr.story_validator.news_capture",
+      "announcer_open": "otr.story_validator.announcer_open",
+      "announcer_news_coda": "otr.story_validator.announcer_news_coda",
+      "music_bookends": "otr.story_validator.music_bookends"
+    },
+    "policies": {
+      "ledger_integrity": "fresh strict StoryBody validation with identical canonical bytes plus otr.spoken-text-only.v1",
+      "news_capture": "exact external captured-packet raw-byte SHA-256 plus strict full projection equality and receipt-named packet/facts",
+      "announcer_open": "first spoken announcer line contains normalized literal story title, setting, scene time, and every final speaking character name; planning seed/spine prose need not be copied",
+      "announcer_news_coda": "last spoken announcer line contains the normalized complete claim of at least one receipt-named fact cited by that line",
+      "music_bookends": "receipt names the exact compiler-owned cues at sequence index zero and the terminal index"
+    },
+    "spoken_text_policy": {
+      "policy_id": "otr.spoken-text-only.v1",
+      "scope": "every speech row rejects production cues and delimited stage directions; character rows additionally reject quoted novel dialogue, third-person stage business, and cross-speaker attribution",
+      "calibration": "the clean normative v2 fixture and historical clean control pass; the exact 2026-08-13 Light of Possibility challenger fails",
+      "repair": "pre-seal draft compilation may drop standalone forbidden rows; trusted admission never mutates and returns remaining violations to the owning dialogue job"
+    },
+    "captured_packet_schema": "otr.captured_source_packet.v1",
+    "prose_policy_change": "new validator_version_required",
+    "network_or_llm_calls": "forbidden"
+  },
+  "executable_fixture_corpus": {
+    "normative_envelope": "fixtures/story_recovery/v2/normative_ledger_envelope.json",
+    "captured_packet": "fixtures/story_recovery/v2/source_packets/science_news_folder_red_stamps_20260716.json",
+    "rejected_mutations": "fixtures/story_recovery/v2/rejected_mutations_v2.json",
+    "mutation_coverage_authority": "story_invariants[].code",
+    "dependent_digest_policy": "recompute body and story digests before later-gate admission checks",
+    "historical_control_and_challenger": "calibration_evidence_only_never_silent_v2_promotion"
+  },
+  "story_plane": {
+    "root": "story_ledger",
+    "authoritative_sections": [
+      "body.context",
+      "body.source_packet",
+      "body.cast",
+      "body.story_arc",
+      "body.acts",
+      "body.scenes",
+      "body.shots",
+      "body.beats",
+      "body.lines",
+      "body.music_cues",
+      "body.sequence",
+      "validation"
+    ],
+    "forbidden_authored_row_types": [
+      "action",
+      "stage_direction",
+      "third_person_narration",
+      "delivery_note"
+    ],
+    "word_fields": "not_part_of_acceptance_contract",
+    "duration_fields": "not_part_of_story_plane",
+    "model_prompt_pass_fields": "transient authoring receipts only; never part of the sealed story ledger"
+  },
+  "source_packet_digest": {
+    "field": "story_ledger.body.source_packet.packet_sha256",
+    "hash_target": "captured upstream source-packet artifact before accepted-story projection",
+    "verification_owner": "trusted news_capture validator",
+    "not_a_hash_of": "the embedded source_packet object"
+  },
+  "story_invariants": [
+    {
+      "code": "STORY_VERSION_EXACT",
+      "rule": "Every schema version is exact and unknown versions fail."
+    },
+    {
+      "code": "STORY_EXTRA_FIELDS_FORBIDDEN",
+      "rule": "Unknown story-plane properties fail validation."
+    },
+    {
+      "code": "STORY_IDS_UNIQUE",
+      "rule": "IDs are nonempty and unique within every table."
+    },
+    {
+      "code": "STORY_GRAPH_CLOSED",
+      "rule": "All source, fact, cast, act, scene, shot, beat, line, cue, and sequence references resolve with no orphans."
+    },
+    {
+      "code": "STORY_ACT_TOPOLOGY_EXACT",
+      "rule": "act_count is a strict integer from 1 through 5; the ordered story arc and act table match it exactly, every act owns an ordered spine/beat projection, and each act beat contains final character dialogue."
+    },
+    {
+      "code": "STORY_CAST_SWEEP_EXACT",
+      "rule": "After draft cleanup, the final cast contains exactly one announcer plus character rows that own accepted dialogue; unused characters are removed and filler dialogue is never invented."
+    },
+    {
+      "code": "STORY_SPEAKER_AUTHORITY",
+      "rule": "Every spoken line carries speaker, speaker_role, and char_id matching the immutable cast row."
+    },
+    {
+      "code": "STORY_FINAL_SEQUENCE_WHITELIST",
+      "rule": "The final sequence contains only music, announcer opening/coda, and character-dialogue roles; action, narration, stage-direction, and delivery-note rows cannot be sealed."
+    },
+    {
+      "code": "STORY_SPOKEN_TEXT_ONLY",
+      "rule": "Every speech row contains only words intended for its assigned voice; production cues, stage directions, quoted novel prose, third-person stage business, and cross-speaker attribution fail trusted ledger-integrity admission."
+    },
+    {
+      "code": "STORY_FACTS_DURABLE",
+      "rule": "Every line carries fact_ids; each resolves to a source-backed fact."
+    },
+    {
+      "code": "STORY_SEQUENCE_EXACT_COVERAGE",
+      "rule": "Every spoken line and music cue appears exactly once in the ordered sequence, and each table order matches its sequence projection."
+    },
+    {
+      "code": "STORY_GRAPH_ORDER_PARITY",
+      "rule": "Scene child-shot, shot child-beat, and beat child-line projections exactly match the corresponding table order."
+    },
+    {
+      "code": "STORY_MUSIC_OPEN_FIRST",
+      "rule": "Exactly one music_open is sequence index zero."
+    },
+    {
+      "code": "STORY_ANNOUNCER_OPEN_FIRST_SPOKEN",
+      "rule": "Exactly one announcer_open is the first spoken row and routes as announcer."
+    },
+    {
+      "code": "STORY_DIALOGUE_PRESENT",
+      "rule": "Every one of the 1–5 acts owns one or more character_dialogue rows routed as character."
+    },
+    {
+      "code": "STORY_INTERSTITIAL_EXPLICIT",
+      "rule": "music_inter is optional, script-requested, and located inside the character-story body."
+    },
+    {
+      "code": "STORY_MUSIC_BOOKEND_AUTHORITY",
+      "rule": "music_open and music_close cues are compiler-owned bookends; only music_inter uses script request authority."
+    },
+    {
+      "code": "STORY_CODA_LAST_SPOKEN",
+      "rule": "Exactly one announcer_news_coda is the last spoken row and routes as announcer."
+    },
+    {
+      "code": "STORY_CODA_FACT_GROUNDED",
+      "rule": "The announcer_news_coda references at least one valid source fact."
+    },
+    {
+      "code": "STORY_MUSIC_CLOSE_LAST",
+      "rule": "Exactly one music_close is the final sequence row."
+    },
+    {
+      "code": "STORY_FIVE_OUTCOMES_RECEIPTED",
+      "rule": "All five outcome receipts pass, bind the same body_sha256, and carry the outcome-specific evidence declared by minimum_ship_evidence."
+    }
+  ],
+  "seals": {
+    "story_seal": {
+      "hash_target": "complete story_ledger",
+      "algorithm": "sha256",
+      "canonicalization": "UTF-8, NFC strings, no floats, sorted object keys, compact separators, no NaN/Infinity",
+      "enforcement": "fresh structural revalidation plus code-owned trusted receipt verifiers before sealing; verify before and after every future production phase and durable save",
+      "sealed_at": "timezone-aware UTC, minted once, immutable"
+    },
+    "final_seal": {
+      "hash_target": "story digest plus complete accepted production_state after publish and audit",
+      "precondition": "every required run-plan phase has one accepted succeeded attempt",
+      "postcondition": "no ordinary ledger mutation is legal"
+    }
+  },
+  "production_phase_registry": [
+    {
+      "phase_id": "workspace_identity",
+      "owner": "episode_workspace",
+      "purpose": "run_id, workspace_id, episode-local paths and rename/rebase receipts"
+    },
+    {
+      "phase_id": "cast_routing",
+      "owner": "cast_lock",
+      "purpose": "voice identity and routing receipts keyed by immutable char_id"
+    },
+    {
+      "phase_id": "voice_render",
+      "owner": "voice_renderers",
+      "purpose": "line-audio artifacts, hashes, cache and engine receipts keyed by immutable line_id"
+    },
+    {
+      "phase_id": "music_render",
+      "owner": "music_renderer",
+      "purpose": "rendered cue artifacts and hashes keyed by immutable cue_id"
+    },
+    {
+      "phase_id": "speech_timeline",
+      "owner": "scene_sequencer",
+      "purpose": "positioned speech/cue timing and sequencing receipts"
+    },
+    {
+      "phase_id": "audio_enhance",
+      "owner": "audio_enhance",
+      "purpose": "enhanced-audio artifact and processing receipts"
+    },
+    {
+      "phase_id": "master_audio",
+      "owner": "episode_assembler",
+      "purpose": "master audio, transitions, and master-audio identity"
+    },
+    {
+      "phase_id": "procgen_video",
+      "owner": "signal_lost_video",
+      "purpose": "base procedural video artifact; any rename request is resolved by the workspace_identity owner"
+    },
+    {
+      "phase_id": "visual_plan",
+      "owner": "shot_lock",
+      "purpose": "derived shot/render work bound to immutable beat and line IDs"
+    },
+    {
+      "phase_id": "image_render",
+      "owner": "image_dispatcher",
+      "purpose": "portrait/still artifacts and provenance bound to cast/shot/beat IDs"
+    },
+    {
+      "phase_id": "video_render",
+      "owner": "video_render_batch",
+      "purpose": "clip artifacts, routes, coverage and engine receipts"
+    },
+    {
+      "phase_id": "silent_composite",
+      "owner": "silent_composite",
+      "purpose": "clip-manifest composite artifact; no episode-ledger input"
+    },
+    {
+      "phase_id": "scopes",
+      "owner": "scene_aware_scopes",
+      "purpose": "scene-aware scopes artifact derived from the clip manifest"
+    },
+    {
+      "phase_id": "post_blend",
+      "owner": "post_upscale_procgen_blend",
+      "purpose": "final silent video blend/upscale artifact and processing receipt"
+    },
+    {
+      "phase_id": "captions",
+      "owner": "caption_burn",
+      "purpose": "caption artifact receipt; read-only story consumer"
+    },
+    {
+      "phase_id": "credits",
+      "owner": "credits_roll",
+      "purpose": "credits artifact receipt; read-only story/production consumer"
+    },
+    {
+      "phase_id": "publication",
+      "owner": "master_audio_mux",
+      "purpose": "final audio/video/OBS artifacts and hashes"
+    },
+    {
+      "phase_id": "audit",
+      "owner": "full_run_audit",
+      "purpose": "terminal audit receipt before final seal"
+    }
+  ],
+  "production_write_law": {
+    "one_owner_per_phase": true,
+    "attempts_append_only": true,
+    "accepted_attempt_must_succeed": true,
+    "artifact_refs_must_resolve_to_story": true,
+    "story_sha256_revalidated_at_every_handoff": true,
+    "story_plane_write_after_acceptance": "reject_atomically",
+    "post_final_seal_write": "reject_atomically"
+  },
+  "current_l4_compatibility": {
+    "characterization_source": "contracts/ledger_consumer_matrix_l4.json",
+    "automatic_migration": "forbidden",
+    "reason": "current l4 has legitimate post-freeze in-place writes, mixed routing/sequence roles, and can discard SciFi fact_ids",
+    "required_path": "new explicit adapter preserving story bytes, fact_ids, speaker authority, sequence roles and seal; then production receipts move to production_state",
+    "historical_ledgers": "read_only_evidence_unless_an_explicit_loss-accounting_migration_is_registered",
+    "legacy_control": "historical semantic evidence only; c01 versus announcer identity and missing act topology require explicit migration before v2 admission",
+    "id_namespace": "typed per table; identical literals in different tables are allowed and references resolve by kind"
+  }
+}

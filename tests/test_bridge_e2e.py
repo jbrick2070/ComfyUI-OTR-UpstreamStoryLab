@@ -24,7 +24,7 @@ from upstream_story_lab.bridge import (  # noqa: E402
 
 def test_emit_to_adapter_roundtrip(registry, tmp_path) -> None:
     for bank in ("science_news", "media_archive", "public_domain_story"):
-        spec = build_spec(registry, source_bank_id=bank)
+        spec = build_spec(registry, source_bank_id=bank, act_count=3)
         artifact = build_bridge_artifact(spec)
         path = emit_bridge_artifact(artifact, tmp_path / f"{bank}.json")
         data = adapter.load_bridge_artifact(path)
@@ -51,7 +51,7 @@ def test_close_brief_round_trip_survives_both_mappings(registry) -> None:
 
     import _otr_source_interpreter as facade
 
-    spec = build_spec(registry, source_bank_id="science_news")
+    spec = build_spec(registry, source_bank_id="science_news", act_count=3)
     artifact = build_bridge_artifact(spec)
 
     class Briefs:
@@ -69,7 +69,7 @@ def test_close_brief_round_trip_survives_both_mappings(registry) -> None:
 
 
 def test_provenance_baseline_is_live_from_manifest(registry) -> None:
-    spec = build_spec(registry, source_bank_id="media_archive")
+    spec = build_spec(registry, source_bank_id="media_archive", act_count=3)
     assert spec.provenance.production_baseline == (
         "d48a9d76f39db6db16c758d9b2c1c22a9af38d3f"
     )
@@ -85,6 +85,7 @@ def test_emit_filename_scheme_distinguishes_all_axes(registry) -> None:
     def name_for(style: str) -> str:
         spec = build_spec(
             registry, source_bank_id="media_archive", visual_style_id=style,
+            act_count=3,
         )
         content_hash = canonical_json_hash(
             spec.model_dump(mode="json")
