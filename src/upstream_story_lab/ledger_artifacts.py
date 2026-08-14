@@ -215,8 +215,11 @@ def _lifecycle_law(
         return {
             "owner": "terminal_audit",
             "mutation": "terminal_finalization",
-            "durability": "null-only until final-seal contract lands",
-            "failure": "reject non-null final seal",
+            "durability": "write once; immutable after minting",
+            "failure": (
+                "reject invalid final-seal minting; preserve unsealed "
+                "terminal envelope"
+            ),
         }
     return {
         "owner": "ledger_envelope_compiler",

@@ -19,11 +19,13 @@ from upstream_story_lab.ledger_artifacts import (
     render_lifecycle_catalog,
     render_lifecycle_markdown,
 )
+from upstream_story_lab.ledger_contract import FinalSeal
 from upstream_story_lab.production_contract import (
     PHASE_ATTEMPT_TYPES,
     PRODUCTION_PHASE_OWNERS,
     ProductionState,
 )
+from tests.test_final_seal import _minted as _minted_final_envelope
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,6 +81,10 @@ def test_envelope_schema_is_full_draft_2020_12_and_deterministic() -> None:
         "final_seal",
     }
     assert "ProductionState" in schema["$defs"]
+    assert "FinalSeal" in schema["$defs"]
+    final_seal_schema = schema["$defs"]["FinalSeal"]
+    assert final_seal_schema["additionalProperties"] is False
+    assert set(final_seal_schema["properties"]) == set(FinalSeal.model_fields)
     for attempt_type in PHASE_ATTEMPT_TYPES:
         assert attempt_type.__name__ in schema["$defs"]
     for definition in schema["$defs"].values():
@@ -89,6 +95,15 @@ def test_envelope_schema_is_full_draft_2020_12_and_deterministic() -> None:
         json.loads(NORMATIVE.read_text(encoding="utf-8"))
     )
     assert schema == envelope_schema_document()
+
+
+def test_envelope_schema_accepts_freshly_minted_terminal_seal() -> None:
+    sealed = _minted_final_envelope()["sealed"]
+
+    assert sealed.final_seal is not None
+    Draft202012Validator(envelope_schema_document()).validate(
+        sealed.model_dump(mode="json")
+    )
 
 
 def test_lifecycle_catalog_covers_roots_and_each_phase_attempt_owner() -> None:
@@ -116,6 +131,28 @@ def test_lifecycle_catalog_covers_roots_and_each_phase_attempt_owner() -> None:
     path_set = set(paths)
     for field_name in ProductionState.model_fields:
         assert f"ledger_envelope.production_state.{field_name}" in path_set
+    for field_name in FinalSeal.model_fields:
+        assert f"ledger_envelope.final_seal.{field_name}" in path_set
+
+    final_seal_rows = [
+        row
+        for row in rows
+        if row["path"].startswith("ledger_envelope.final_seal")
+    ]
+    assert final_seal_rows
+    assert {row["owner"] for row in final_seal_rows} == {"terminal_audit"}
+    assert {row["mutation"] for row in final_seal_rows} == {
+        "terminal_finalization"
+    }
+    assert {row["durability"] for row in final_seal_rows} == {
+        "write once; immutable after minting"
+    }
+    assert {row["failure"] for row in final_seal_rows} == {
+        (
+            "reject invalid final-seal minting; preserve unsealed terminal "
+            "envelope"
+        )
+    }
 
     assert {
         "ledger_envelope.story_ledger.body.context.act_count",

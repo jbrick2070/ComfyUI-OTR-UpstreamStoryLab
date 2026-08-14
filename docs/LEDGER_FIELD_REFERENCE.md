@@ -4,14 +4,23 @@ Generated from the executable `LedgerEnvelope` and story, seal, and `ProductionS
 
 Schema: `urn:otr:schema:ledger-envelope:v2`
 Lifecycle catalog: `otr.ledger_field_laws.v2`
-Covered field paths: **1313**
+Covered field paths: **1322**
 
 Each discriminated attempt branch is expanded separately so its fields name the registered phase owner rather than a generic producer.
 
 | Path | Type | Default law | Lifecycle owner | Mutation phase | Durability | Failure policy |
 |---|---|---|---|---|---|---|
 | `ledger_envelope` | `object<LedgerEnvelope>` | required; no default | `ledger_envelope_compiler` | `envelope_creation` | schema identity is immutable | reject invalid envelope |
-| `ledger_envelope.final_seal` | `null` | literal null | `terminal_audit` | `terminal_finalization` | null-only until final-seal contract lands | reject non-null final seal |
+| `ledger_envelope.final_seal` | `object<FinalSeal> \| null` | literal null | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.algorithm` | `literal["sha256"]` | literal "sha256" | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.canonicalization` | `literal["otr.canonical-json.v1"]` | literal "otr.canonical-json.v1" | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.episode_id` | `string` | required; no default | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.final_payload_sha256` | `string` | required; no default | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.production_state_sha256` | `string` | required; no default | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.run_id` | `string` | required; no default | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.schema_version` | `literal["otr.final_seal.v1"]` | literal "otr.final_seal.v1" | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.sealed_at` | `string` | required; no default | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
+| `ledger_envelope.final_seal.story_sha256` | `string` | required; no default | `terminal_audit` | `terminal_finalization` | write once; immutable after minting | reject invalid final-seal minting; preserve unsealed terminal envelope |
 | `ledger_envelope.production_state` | `object<ProductionState> \| null` | literal null | `production_journal` | `production_initialization` | immutable run root; journal append-only | reject production-state initialization |
 | `ledger_envelope.production_state.created_at` | `string` | required; no default | `production_journal` | `production_initialization` | immutable run root; journal append-only | reject production-state initialization |
 | `ledger_envelope.production_state.episode_id` | `string` | required; no default | `production_journal` | `production_initialization` | immutable run root; journal append-only | reject production-state initialization |

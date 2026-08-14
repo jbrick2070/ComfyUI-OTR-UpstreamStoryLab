@@ -1,5 +1,5 @@
 {
-  "field_count": 1313,
+  "field_count": 1322,
   "fields": [
     {
       "default": "required; no default",
@@ -12,12 +12,93 @@
     },
     {
       "default": "literal null",
-      "durability": "null-only until final-seal contract lands",
-      "failure": "reject non-null final seal",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
       "mutation": "terminal_finalization",
       "owner": "terminal_audit",
       "path": "ledger_envelope.final_seal",
-      "type": "null"
+      "type": "object<FinalSeal> | null"
+    },
+    {
+      "default": "literal \"sha256\"",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.algorithm",
+      "type": "literal[\"sha256\"]"
+    },
+    {
+      "default": "literal \"otr.canonical-json.v1\"",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.canonicalization",
+      "type": "literal[\"otr.canonical-json.v1\"]"
+    },
+    {
+      "default": "required; no default",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.episode_id",
+      "type": "string"
+    },
+    {
+      "default": "required; no default",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.final_payload_sha256",
+      "type": "string"
+    },
+    {
+      "default": "required; no default",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.production_state_sha256",
+      "type": "string"
+    },
+    {
+      "default": "required; no default",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.run_id",
+      "type": "string"
+    },
+    {
+      "default": "literal \"otr.final_seal.v1\"",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.schema_version",
+      "type": "literal[\"otr.final_seal.v1\"]"
+    },
+    {
+      "default": "required; no default",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.sealed_at",
+      "type": "string"
+    },
+    {
+      "default": "required; no default",
+      "durability": "write once; immutable after minting",
+      "failure": "reject invalid final-seal minting; preserve unsealed terminal envelope",
+      "mutation": "terminal_finalization",
+      "owner": "terminal_audit",
+      "path": "ledger_envelope.final_seal.story_sha256",
+      "type": "string"
     },
     {
       "default": "literal null",

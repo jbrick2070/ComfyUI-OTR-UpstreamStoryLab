@@ -1572,6 +1572,70 @@
       "title": "FailureReceipt",
       "type": "object"
     },
+    "FinalSeal": {
+      "additionalProperties": false,
+      "description": "Terminal, non-recursive digest over the complete accepted envelope.",
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "canonicalization": {
+          "const": "otr.canonical-json.v1",
+          "default": "otr.canonical-json.v1",
+          "title": "Canonicalization",
+          "type": "string"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "final_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Final Payload Sha256",
+          "type": "string"
+        },
+        "production_state_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Production State Sha256",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "otr.final_seal.v1",
+          "default": "otr.final_seal.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sealed_at": {
+          "format": "date-time",
+          "title": "Sealed At",
+          "type": "string"
+        },
+        "story_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Story Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "episode_id",
+        "run_id",
+        "story_sha256",
+        "production_state_sha256",
+        "sealed_at",
+        "final_payload_sha256"
+      ],
+      "title": "FinalSeal",
+      "type": "object"
+    },
     "ImageRenderAttempt": {
       "additionalProperties": false,
       "properties": {
@@ -5705,9 +5769,15 @@
   "additionalProperties": false,
   "properties": {
     "final_seal": {
-      "default": null,
-      "title": "Final Seal",
-      "type": "null"
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FinalSeal"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "production_state": {
       "anyOf": [

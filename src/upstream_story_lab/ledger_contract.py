@@ -27,19 +27,23 @@ from pydantic import (
 from .production_contract import (
     AcceptanceEvent,
     AttemptEvent,
+    PRODUCTION_PHASE_IDS,
     PhaseAcceptance,
     PhaseAttempt,
     ProductionEvent,
     ProductionState,
     RunPhase,
     SucceededResult,
+    active_acceptance,
     iter_story_refs,
+    production_sha256,
 )
 
 
 ENVELOPE_SCHEMA_VERSION = "otr.ledger_envelope.v2"
 STORY_SCHEMA_VERSION = "otr.story_ledger.v2"
 STORY_SEAL_SCHEMA_VERSION = "otr.story_seal.v1"
+FINAL_SEAL_SCHEMA_VERSION = "otr.final_seal.v1"
 CANONICALIZATION_ID = "otr.canonical-json.v1"
 MINIMUM_CONTRACT_ID = "otr.minimum_ship.v2"
 
@@ -671,12 +675,33 @@ class StorySeal(StrictModel):
         return value
 
 
+class FinalSeal(StrictModel):
+    """Terminal, non-recursive digest over the complete accepted envelope."""
+
+    schema_version: Literal[FINAL_SEAL_SCHEMA_VERSION] = FINAL_SEAL_SCHEMA_VERSION
+    algorithm: Literal["sha256"] = "sha256"
+    canonicalization: Literal[CANONICALIZATION_ID] = CANONICALIZATION_ID
+    episode_id: str = Field(pattern=ID_PATTERN)
+    run_id: str = Field(pattern=ID_PATTERN)
+    story_sha256: str = Field(pattern=HEX64_PATTERN)
+    production_state_sha256: str = Field(pattern=HEX64_PATTERN)
+    sealed_at: datetime
+    final_payload_sha256: str = Field(pattern=HEX64_PATTERN)
+
+    @field_validator("sealed_at")
+    @classmethod
+    def validate_sealed_at_is_utc(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() != timedelta(0):
+            raise LedgerContractError("final seal time must be timezone-aware UTC")
+        return value
+
+
 class LedgerEnvelope(StrictModel):
     schema_version: Literal[ENVELOPE_SCHEMA_VERSION] = ENVELOPE_SCHEMA_VERSION
     story_ledger: StoryLedger
     story_seal: StorySeal
     production_state: ProductionState | None = None
-    final_seal: None = None
+    final_seal: FinalSeal | None = None
 
     @model_validator(mode="after")
     def validate_story_seal(self) -> "LedgerEnvelope":
@@ -687,6 +712,8 @@ class LedgerEnvelope(StrictModel):
             )
         if self.production_state is not None:
             self._validate_production_bindings()
+        if self.final_seal is not None:
+            self._validate_final_seal_bindings()
         return self
 
     def _validate_production_bindings(self) -> None:
@@ -759,6 +786,29 @@ class LedgerEnvelope(StrictModel):
                     f"{attempt.phase_id} succeeded receipt must cover every {kind}"
                 )
 
+    def _validate_final_seal_bindings(self) -> None:
+        seal = self.final_seal
+        state = self.production_state
+        if seal is None:
+            return
+        if state is None:
+            raise LedgerContractError("final_seal requires production_state")
+        if seal.episode_id != self.story_ledger.episode_id:
+            raise LedgerContractError("final_seal does not bind the exact episode_id")
+        if seal.run_id != state.run_id:
+            raise LedgerContractError("final_seal does not bind the exact run_id")
+        if seal.story_sha256 != self.story_seal.story_sha256:
+            raise LedgerContractError("final_seal does not bind story_sha256")
+        if seal.production_state_sha256 != production_sha256(state):
+            raise LedgerContractError(
+                "final_seal does not bind the complete production_state"
+            )
+        _assert_terminal_production_ready(state, sealed_at=seal.sealed_at)
+        if seal.final_payload_sha256 != _final_payload_sha256(self, seal):
+            raise LedgerContractError(
+                "final_seal does not bind the non-recursive final payload"
+            )
+
 
 def _plain(value: Any) -> Any:
     if isinstance(value, BaseModel):
@@ -818,6 +868,137 @@ def canonical_bytes(value: Any) -> bytes:
 
 def canonical_sha256(value: Any) -> str:
     return hashlib.sha256(canonical_bytes(value)).hexdigest()
+
+
+def _final_payload_sha256(
+    envelope: LedgerEnvelope,
+    seal: FinalSeal | Mapping[str, Any],
+) -> str:
+    """Hash the terminal envelope with only its digest field omitted.
+
+    Including the other final-seal metadata binds the seal time and identities;
+    omitting ``final_payload_sha256`` itself keeps the preimage non-recursive.
+    """
+
+    if isinstance(seal, FinalSeal):
+        seal_metadata = seal.model_dump(
+            mode="json",
+            exclude={"final_payload_sha256"},
+        )
+    else:
+        seal_metadata = dict(seal)
+        sealed_at = seal_metadata.get("sealed_at")
+        if isinstance(sealed_at, datetime):
+            seal_metadata["sealed_at"] = sealed_at.isoformat().replace(
+                "+00:00", "Z"
+            )
+    preimage = {
+        "schema_version": envelope.schema_version,
+        "story_ledger": envelope.story_ledger.model_dump(mode="json"),
+        "story_seal": envelope.story_seal.model_dump(mode="json"),
+        "production_state": (
+            envelope.production_state.model_dump(mode="json")
+            if envelope.production_state is not None
+            else None
+        ),
+        "final_seal": seal_metadata,
+    }
+    return canonical_sha256(preimage)
+
+
+def _assert_terminal_production_ready(
+    state: ProductionState,
+    *,
+    sealed_at: datetime,
+) -> None:
+    """Fail closed unless ``state`` ends at one accepted terminal audit."""
+
+    if sealed_at.tzinfo is None or sealed_at.utcoffset() != timedelta(0):
+        raise LedgerContractError("final seal time must be timezone-aware UTC")
+
+    attempts: dict[str, PhaseAttempt] = {}
+    attempt_indices: dict[str, int] = {}
+    latest_acceptances: dict[str, PhaseAcceptance] = {}
+    acceptance_indices: dict[str, int] = {}
+    for index, event in enumerate(state.journal):
+        if isinstance(event, AttemptEvent):
+            attempts[event.attempt.attempt_id] = event.attempt
+            attempt_indices[event.attempt.attempt_id] = index
+        else:
+            acceptance = event.acceptance
+            latest_acceptances[acceptance.phase_id] = acceptance
+            acceptance_indices[acceptance.acceptance_id] = index
+
+    active: dict[str, PhaseAcceptance] = {}
+    for phase_id in PRODUCTION_PHASE_IDS:
+        acceptance = active_acceptance(state, phase_id)
+        if acceptance is not None:
+            active[phase_id] = acceptance
+
+    for phase_id, latest in latest_acceptances.items():
+        current = active.get(phase_id)
+        if current is None or current.acceptance_id != latest.acceptance_id:
+            raise LedgerContractError(
+                f"phase {phase_id!r} has a stale accepted dependency"
+            )
+
+    for row in state.run_plan:
+        if row.disposition != "required":
+            continue
+        acceptance = active.get(row.phase_id)
+        if acceptance is None:
+            raise LedgerContractError(
+                f"required phase {row.phase_id!r} has no active acceptance"
+            )
+        attempt = attempts[acceptance.accepted_attempt_id]
+        if not isinstance(attempt.result, SucceededResult):
+            raise LedgerContractError(
+                f"required phase {row.phase_id!r} did not accept a succeeded attempt"
+            )
+
+    publication = active.get("publication")
+    audit = active.get("audit")
+    if publication is None:
+        raise LedgerContractError(
+            "final_seal requires an active publication acceptance"
+        )
+    if audit is None:
+        raise LedgerContractError("final_seal requires an active audit acceptance")
+
+    audit_attempt = attempts[audit.accepted_attempt_id]
+    publication_index = acceptance_indices[publication.acceptance_id]
+    audit_attempt_index = attempt_indices[audit_attempt.attempt_id]
+    audit_index = acceptance_indices[audit.acceptance_id]
+    if not publication_index < audit_attempt_index < audit_index:
+        raise LedgerContractError(
+            "publication must be accepted before the terminal audit"
+        )
+    if audit_index != len(state.journal) - 1:
+        raise LedgerContractError(
+            "the active audit acceptance must be the terminal production event"
+        )
+    if sealed_at < audit.accepted_at:
+        raise LedgerContractError(
+            "final seal time cannot precede the terminal audit acceptance"
+        )
+
+    if not isinstance(audit_attempt.result, SucceededResult):
+        raise LedgerContractError("terminal audit attempt did not succeed")
+    receipt = audit_attempt.result.receipt
+    if receipt.publication_acceptance_id != publication.acceptance_id:
+        raise LedgerContractError(
+            "terminal audit does not bind the active publication acceptance"
+        )
+    if any(check.status != "pass" for check in receipt.checks):
+        raise LedgerContractError("terminal audit contains a failed check")
+
+    prefix_payload = state.model_dump(mode="json")
+    prefix_payload["journal"] = prefix_payload["journal"][:audit_attempt_index]
+    pre_audit_state = ProductionState.model_validate(prefix_payload)
+    if receipt.pre_audit_production_sha256 != production_sha256(pre_audit_state):
+        raise LedgerContractError(
+            "terminal audit does not bind the exact pre-audit production_state"
+        )
 
 
 ReceiptVerifier = Callable[[StoryBody, OutcomeReceipt], bool]
@@ -899,6 +1080,62 @@ def verify_story_envelope(
     return validated
 
 
+def verify_final_seal(
+    envelope: LedgerEnvelope,
+    *,
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> LedgerEnvelope:
+    """Freshly verify story trust, terminal ordering, and every final digest."""
+
+    validated = verify_story_envelope(
+        envelope,
+        receipt_verifiers=receipt_verifiers,
+    )
+    if validated.final_seal is None:
+        raise LedgerContractError("final_seal is not minted")
+    validated._validate_final_seal_bindings()
+    return validated
+
+
+def mint_final_seal(
+    envelope: LedgerEnvelope,
+    *,
+    sealed_at: datetime,
+    receipt_verifiers: Mapping[ReceiptVerifierKey, ReceiptVerifier],
+) -> LedgerEnvelope:
+    """Return a newly terminal envelope without mutating the accepted input."""
+
+    before = verify_story_envelope(
+        envelope,
+        receipt_verifiers=receipt_verifiers,
+    )
+    if before.final_seal is not None:
+        raise LedgerContractError("final_seal is already minted")
+    state = before.production_state
+    if state is None:
+        raise LedgerContractError("final_seal requires production_state")
+    _assert_terminal_production_ready(state, sealed_at=sealed_at)
+
+    metadata: dict[str, Any] = {
+        "schema_version": FINAL_SEAL_SCHEMA_VERSION,
+        "algorithm": "sha256",
+        "canonicalization": CANONICALIZATION_ID,
+        "episode_id": before.story_ledger.episode_id,
+        "run_id": state.run_id,
+        "story_sha256": before.story_seal.story_sha256,
+        "production_state_sha256": production_sha256(state),
+        "sealed_at": sealed_at,
+    }
+    seal = FinalSeal(
+        **metadata,
+        final_payload_sha256=_final_payload_sha256(before, metadata),
+    )
+    payload = before.model_dump(mode="json")
+    payload["final_seal"] = seal.model_dump(mode="json")
+    after = LedgerEnvelope.model_validate(payload)
+    return verify_final_seal(after, receipt_verifiers=receipt_verifiers)
+
+
 def assert_story_unchanged(before: LedgerEnvelope, after: LedgerEnvelope) -> None:
     """Guard a production extension: the story bytes and digest cannot move."""
 
@@ -952,6 +1189,8 @@ def initialize_production_state(
         envelope,
         receipt_verifiers=receipt_verifiers,
     )
+    if before.final_seal is not None:
+        raise LedgerContractError("production initialization after final_seal is forbidden")
     if before.production_state is not None:
         raise LedgerContractError("production_state is already initialized")
     state = ProductionState(
@@ -980,6 +1219,8 @@ def _append_production_event(
         envelope,
         receipt_verifiers=receipt_verifiers,
     )
+    if before.final_seal is not None:
+        raise LedgerContractError("production append after final_seal is forbidden")
     if before.production_state is None:
         raise LedgerContractError("production_state is not initialized")
     payload = before.model_dump(mode="json")
@@ -1041,6 +1282,8 @@ def verify_production_state(
 __all__ = [
     "CANONICALIZATION_ID",
     "ENVELOPE_SCHEMA_VERSION",
+    "FINAL_SEAL_SCHEMA_VERSION",
+    "FinalSeal",
     "LedgerContractError",
     "LedgerEnvelope",
     "MINIMUM_CONTRACT_ID",
@@ -1062,6 +1305,8 @@ __all__ = [
     "canonical_bytes",
     "canonical_sha256",
     "initialize_production_state",
+    "mint_final_seal",
+    "verify_final_seal",
     "verify_story_acceptance",
     "verify_story_envelope",
     "verify_production_state",
