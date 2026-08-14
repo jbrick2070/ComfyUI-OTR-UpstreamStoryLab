@@ -1,0 +1,881 @@
+{
+  "schema_version": "otr_story_recovery_case.v1",
+  "case_id": "scifi_news_bad_20260813_light_of_possibility",
+  "arm": "challenger",
+  "case_kind": "current_scifi_codex_v4",
+  "capabilities": {
+    "p3_compiled": true,
+    "p5_compiled": true,
+    "raw_transport": false,
+    "source_facts": true,
+    "music_topology": true
+  },
+  "provenance": {
+    "episode_id": "signal_lost_the_light_of_possibility_20260813_172801",
+    "otr_commit": "8c3ed304",
+    "source_bank": "scifi_news",
+    "source_ledger_path_hint": "output/otr/episodes/signal_lost_the_light_of_possibility_20260813_172801/audio/signal_lost_the_light_of_possibility_20260813_172801_ledger.json",
+    "source_ledger_sha256": "a1146b22dcf0e122348e901070969089c5bfc92604f7b41395dca092212546fe",
+    "source_digest": "340c91cc39c579fd3e562a54ee28ba0e348be3fc1ff13d4abcaa7303afda8a69"
+  },
+  "render_receipt": {
+    "render_pass": true,
+    "result_path_hint": "_w45_results.json",
+    "result_sha256": "65b81d6d7c11262f71bdf82568b7e9ba8f380f51ee188dbefe98ce3d3706f2f5",
+    "result": [
+      {
+        "ok": true,
+        "asset": "signal_lost_the_light_of_possibility_20260813_172801_silent_procgen_blended_captioned_with_credits_final.mp4",
+        "dims": "1920,1080,4826",
+        "seconds": 193.04,
+        "audio": "aac",
+        "coverage": "audio 168.06s video 169.12s clips 13 COVERS",
+        "reuse": {
+          "clips_checked": 13,
+          "clips_skipped_static": 0,
+          "skipped": [],
+          "findings": [
+            {
+              "clip": "shot_l002_character_video_wan_ti2v.mp4",
+              "why": "mirror/ping-pong",
+              "detail": "9-frame reflection about frame 167"
+            },
+            {
+              "clip": "shot_l008_character_video_wan_ti2v.mp4",
+              "why": "mirror/ping-pong",
+              "detail": "9-frame reflection about frame 255"
+            },
+            {
+              "clip": "shot_l010_character_video_wan_ti2v.mp4",
+              "why": "mirror/ping-pong",
+              "detail": "8-frame reflection about frame 167"
+            },
+            {
+              "clip": "shot_music_closing_001_music_visual_wan_ti2v.mp4",
+              "why": "mirror/ping-pong",
+              "detail": "30-frame reflection about frame 51"
+            },
+            {
+              "clip": "shot_music_opening_001_music_visual_wan_ti2v.mp4",
+              "why": "mirror/ping-pong",
+              "detail": "23-frame reflection about frame 117"
+            }
+          ],
+          "registry_readable": true
+        },
+        "delivered": [
+          "wan_ti2v"
+        ],
+        "engine": "wan_ti2v",
+        "profile": "otr_w45_wan_ti2v",
+        "exit": 0,
+        "minutes": 179.8,
+        "log": "_w45_wan_ti2v.log"
+      }
+    ],
+    "published_asset_path_hint": "output/otr/obs/signal_lost_the_light_of_possibility_20260813_172801_silent_procgen_blended_captioned_with_credits_final.mp4",
+    "published_asset_sha256": "ef35bada7cca3e35b0c338d6825c7b0ab5ff502ef50d53a2005a321d1b9d1d4c",
+    "published_asset_bytes": 158445244
+  },
+  "object_sha256": {
+    "cast_plan": "d4940a552a4fdea404165046edb01f6985533266acf92b93a4d143696ddaca25",
+    "fact_index": "53dac3a5de69d52b0031187218a35ec597dca5c3fb7b9fcf8811d4e0fc3f0732",
+    "p3_compiled": "1763e0acb7983e0ba0885dbd87369964641446442a990097c7c025fbbef7874e",
+    "p5_compiled": "9d6df0daf1f00c066a32d722cd6c06cfebef26fa864a311e527413e4b7bc5594",
+    "p3_request_receipt": "e3ff5ef154b629e41f1a6bcdec038403d3d2981c1048d2ac36816acf2d3b8484",
+    "p5_request_receipt": "a690091e8f860086bb25f6ad9b952534c23c5f03c8b9324028e90ab85a8ddb86",
+    "word_budget_telemetry": "2ef5dd2fee601a4244ee940741d737f5f9ba8eaf1d7b083b0fbf27ba04004bd4",
+    "render_result": "913fc79e670bf229b4ffd256c3082892510c9403a1eafc09108d2b111e8ea0d9"
+  },
+  "projection_sha256": "ac3aeb3899e91e518afad874ccf3ccbba1d42cc1300caf2d7b0ebf156a98e29a",
+  "authorities": {
+    "cast_plan": {
+      "cast": [
+        {
+          "char_id": "announcer",
+          "name": "ANNOUNCER",
+          "character_description": "The calm, factual narrator of events, never passing judgment",
+          "gender": "Non-binary",
+          "role_in_conflict": "Lucid Witness",
+          "voice_slot": "announcer"
+        },
+        {
+          "char_id": "c01",
+          "name": "Dr. Ada",
+          "character_description": "A brilliant yet desperate biologist willing to risk everything for a chance to have a child",
+          "gender": "Female",
+          "role_in_conflict": "Driving Want",
+          "voice_slot": "c01"
+        },
+        {
+          "char_id": "c02",
+          "name": "Dr. Leo",
+          "character_description": "A cautious colleague who believes in Ada's genius but fears her recklessness",
+          "gender": "Male",
+          "role_in_conflict": "Cautious Advisor",
+          "voice_slot": "c02"
+        },
+        {
+          "char_id": "c03",
+          "name": "MIT Ethics Board",
+          "character_description": "The official body responsible for ensuring ethical practices in research",
+          "gender": "Collective",
+          "role_in_conflict": "Reversal",
+          "voice_slot": "c03"
+        }
+      ]
+    },
+    "fact_index": {
+      "facts": [
+        {
+          "fact_id": "F01",
+          "claim": "MIT scientists used light to control how a single cell jiggles and moves during its earliest stage of development",
+          "source_spans": [
+            {
+              "field": "full_text",
+              "start": 816,
+              "end": 938,
+              "quote": "Now MIT scientists have used light to control how a single cell jiggles and moves during its earliest stage of development"
+            }
+          ],
+          "numeric_tokens": []
+        },
+        {
+          "fact_id": "F02",
+          "claim": "Scientists engineered starfish cells to shape-shift in response to light",
+          "source_spans": [
+            {
+              "field": "seed_text",
+              "start": 0,
+              "end": 74,
+              "quote": "MIT scientists engineer starfish cells to shape-shift in response to light"
+            }
+          ],
+          "numeric_tokens": []
+        },
+        {
+          "fact_id": "F03",
+          "claim": "They studied the motion of egg cells produced by starfish",
+          "source_spans": [
+            {
+              "field": "full_text",
+              "start": 940,
+              "end": 1001,
+              "quote": "The team studied the motion of egg cells produced by starfish"
+            }
+          ],
+          "numeric_tokens": []
+        },
+        {
+          "fact_id": "F04",
+          "claim": "The research may enable the design of synthetic, light-activated cells for wound healing or drug delivery",
+          "source_spans": [
+            {
+              "field": "seed_text",
+              "start": 75,
+              "end": 180,
+              "quote": "The research may enable the design of synthetic, light-activated cells for wound healing or drug delivery"
+            }
+          ],
+          "numeric_tokens": []
+        },
+        {
+          "fact_id": "F05",
+          "claim": "The team genetically designed a light-sensitive version of an enzyme that triggers a cascade of motion within a starfish egg cell",
+          "source_spans": [
+            {
+              "field": "full_text",
+              "start": 1215,
+              "end": 1321,
+              "quote": "They genetically designed a light-sensitive version of the same enzyme, which they injected into egg cells"
+            }
+          ],
+          "numeric_tokens": []
+        },
+        {
+          "fact_id": "F06",
+          "claim": "The team could stimulate cells to exhibit small pinches or sweeping contractions, depending on the pattern of light they induced",
+          "source_spans": [
+            {
+              "field": "full_text",
+              "start": 1525,
+              "end": 1673,
+              "quote": "For instance, the scientists could stimulate cells to exhibit small pinches or sweeping contractions, depending on the pattern of light they induced"
+            }
+          ],
+          "numeric_tokens": []
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "E01",
+          "name": "MIT scientists",
+          "source_spans": [
+            {
+              "field": "full_text",
+              "start": 820,
+              "end": 834,
+              "quote": "MIT scientists"
+            }
+          ]
+        },
+        {
+          "entity_id": "E02",
+          "name": "MIT scientists",
+          "source_spans": [
+            {
+              "field": "seed_text",
+              "start": 0,
+              "end": 14,
+              "quote": "MIT scientists"
+            }
+          ]
+        },
+        {
+          "entity_id": "E03",
+          "name": "starfish",
+          "source_spans": [
+            {
+              "field": "full_text",
+              "start": 993,
+              "end": 1001,
+              "quote": "starfish"
+            }
+          ]
+        },
+        {
+          "entity_id": "E04",
+          "name": "starfish cells",
+          "source_spans": [
+            {
+              "field": "seed_text",
+              "start": 24,
+              "end": 38,
+              "quote": "starfish cells"
+            }
+          ]
+        }
+      ],
+      "numbers": [],
+      "tone": "Discovering how life begins",
+      "payload_sha256": "340c91cc39c579fd3e562a54ee28ba0e348be3fc1ff13d4abcaa7303afda8a69"
+    }
+  },
+  "artifacts": {
+    "p3": {
+      "compiled": {
+        "title": "The Light of Possibility",
+        "premise": "A brilliant biologist risks everything to manipulate her own reproductive cells, challenging the ethics of her research and her own desperation for a child",
+        "setting": "The offices and labs of MIT, Boston, present day",
+        "advisory_word_plan": {
+          "advisory_total_center": 45,
+          "per_beat": [
+            {
+              "beat_id": "b000",
+              "advisory_word_center": 4
+            },
+            {
+              "beat_id": "b001",
+              "advisory_word_center": 8
+            },
+            {
+              "beat_id": "b002",
+              "advisory_word_center": 11
+            },
+            {
+              "beat_id": "b003",
+              "advisory_word_center": 4
+            },
+            {
+              "beat_id": "b004",
+              "advisory_word_center": 7
+            },
+            {
+              "beat_id": "b005",
+              "advisory_word_center": 11
+            }
+          ]
+        },
+        "scenes": [
+          {
+            "scene_id": "scene_001",
+            "env": "MIT Lab",
+            "description": "Dr. Ada, a determined woman, works late in her lab, surrounded by test tubes and microscopes. She stares at a starfish cell under a microscope, her eyes reflecting the light from the instrument. She looks tired but resolute, her fingers drumming on the desk, lost in thought about her own eggs and the light-activated cells she's studying. The lab is quiet, except for the hum of the equipment and the occasional flicker of the microscope's light source. The visual prompt is the glow of the microscope, casting a soft light on Dr. Ada's face, highlighting her determination and weariness in equal measure",
+            "shots": [
+              {
+                "shot_id": "shot_001",
+                "scene_id": "scene_001",
+                "description": "Dr. Ada at her microscope, studying a starfish cell",
+                "visual_prompt": "The glow of the microscope, casting a soft light on Dr. Ada's face"
+              }
+            ],
+            "beats": [
+              {
+                "beat_id": "b000",
+                "scene_id": "scene_001",
+                "shot_id": "shot_001",
+                "speaker": "Dr. Ada",
+                "char_id": "c01",
+                "speaker_role": "character",
+                "line_ids": [
+                  "l001",
+                  "l002"
+                ],
+                "order": 1,
+                "intent": "To understand the potential of light-activated cells",
+                "arc_phase": "Dr. Ada's determination grows as she studies the starfish cell",
+                "fact_ids": [
+                  "F01",
+                  "F02"
+                ],
+                "advisory_voiced_word_center": 4
+              },
+              {
+                "beat_id": "b001",
+                "scene_id": "scene_001",
+                "shot_id": "shot_001",
+                "speaker": "ANNOUNCER",
+                "char_id": "announcer",
+                "speaker_role": "announcer",
+                "line_ids": [
+                  "l003"
+                ],
+                "order": 2,
+                "intent": "To introduce Dr. Ada's personal struggle",
+                "arc_phase": "The listener learns about Dr. Ada's desperation for a child",
+                "fact_ids": [],
+                "advisory_voiced_word_center": 8
+              }
+            ]
+          },
+          {
+            "scene_id": "scene_002",
+            "env": "MIT Office",
+            "description": "Dr. Ada sits in her office, surrounded by books and papers. Dr. Leo, her colleague, enters, looking concerned. He sits down, his eyes meeting hers, ready to discuss her latest idea. The room is filled with the soft hum of conversation and the rustling of papers. The visual prompt is the stack of papers on Dr. Ada's desk, representing her research and the weight of her decision",
+            "shots": [
+              {
+                "shot_id": "shot_002",
+                "scene_id": "scene_002",
+                "description": "Dr. Ada and Dr. Leo discussing her idea",
+                "visual_prompt": "The stack of papers on Dr. Ada's desk"
+              }
+            ],
+            "beats": [
+              {
+                "beat_id": "b002",
+                "scene_id": "scene_002",
+                "shot_id": "shot_002",
+                "speaker": "Dr. Ada",
+                "char_id": "c01",
+                "speaker_role": "character",
+                "line_ids": [
+                  "l004",
+                  "l005"
+                ],
+                "order": 3,
+                "intent": "To share her idea with Dr. Leo",
+                "arc_phase": "Dr. Ada reveals her plan to manipulate her own cells",
+                "fact_ids": [
+                  "F03",
+                  "F04"
+                ],
+                "advisory_voiced_word_center": 11
+              },
+              {
+                "beat_id": "b003",
+                "scene_id": "scene_002",
+                "shot_id": "shot_002",
+                "speaker": "Dr. Leo",
+                "char_id": "c02",
+                "speaker_role": "character",
+                "line_ids": [
+                  "l006",
+                  "l007"
+                ],
+                "order": 4,
+                "intent": "To express caution about Dr. Ada's plan",
+                "arc_phase": "Dr. Leo voices his concerns about the ethics and safety of Dr. Ada's plan",
+                "fact_ids": [],
+                "advisory_voiced_word_center": 4
+              }
+            ]
+          },
+          {
+            "scene_id": "scene_003",
+            "env": "MIT Lab",
+            "description": "Dr. Ada stands before the MIT Ethics Board, a group of stern-faced individuals sitting behind a long table. She presents her case, her voice steady despite the gravity of the situation. The room is filled with the tension of impending decision, the air thick with the weight of responsibility. The visual prompt is the MIT logo on the wall, symbolizing the institution's stake in the matter",
+            "shots": [
+              {
+                "shot_id": "shot_003",
+                "scene_id": "scene_003",
+                "description": "Dr. Ada presenting her case to the MIT Ethics Board",
+                "visual_prompt": "The MIT logo on the wall"
+              }
+            ],
+            "beats": [
+              {
+                "beat_id": "b004",
+                "scene_id": "scene_003",
+                "shot_id": "shot_003",
+                "speaker": "Dr. Ada",
+                "char_id": "c01",
+                "speaker_role": "character",
+                "line_ids": [
+                  "l008",
+                  "l009"
+                ],
+                "order": 5,
+                "intent": "To plead her case to the MIT Ethics Board",
+                "arc_phase": "Dr. Ada makes her final appeal, hoping to gain approval for her controversial research",
+                "fact_ids": [
+                  "F05",
+                  "F06"
+                ],
+                "advisory_voiced_word_center": 7
+              },
+              {
+                "beat_id": "b005",
+                "scene_id": "scene_003",
+                "shot_id": "shot_003",
+                "speaker": "MIT Ethics Board",
+                "char_id": "c03",
+                "speaker_role": "character",
+                "line_ids": [
+                  "l010",
+                  "l011"
+                ],
+                "order": 6,
+                "intent": "To deliver the board's decision",
+                "arc_phase": "The listener learns the outcome of Dr. Ada's request",
+                "fact_ids": [],
+                "advisory_voiced_word_center": 11
+              }
+            ]
+          }
+        ],
+        "music_cues": [
+          {
+            "cue_id": "music_open",
+            "placement": "open",
+            "description": "A tense, dramatic piece that sets the tone for Dr. Ada's struggle",
+            "generation_prompt": "Create a tense, dramatic piece that sets the tone for Dr. Ada's struggle",
+            "anchor_line_id": "l001",
+            "anchor_beat_id": "b000"
+          },
+          {
+            "cue_id": "music_inter",
+            "placement": "inter",
+            "description": "A thoughtful, introspective piece that reflects Dr. Ada's internal conflict",
+            "generation_prompt": "Create a thoughtful, introspective piece that reflects Dr. Ada's internal conflict",
+            "anchor_line_id": "l005",
+            "anchor_beat_id": "b002"
+          },
+          {
+            "cue_id": "music_close",
+            "placement": "close",
+            "description": "A reflective, melancholic piece that leaves the listener to ponder the cost of Dr. Ada's actions",
+            "generation_prompt": "Create a reflective, melancholic piece that leaves the listener to ponder the cost of Dr. Ada's actions",
+            "anchor_line_id": "l011",
+            "anchor_beat_id": "b005"
+          }
+        ]
+      },
+      "accepted_transport_receipt": {
+        "schema": "RadioScoreDraftV4",
+        "chars": 4224,
+        "sha256": "e88cd4998f1139acd91ba0dfd9285832744dd0ea016baca301132aebd1bfd61a"
+      },
+      "accepted_attempt_raw_sha256": "990ee8de8778075612af21094d410eec4fc515e9ac658fb67b8bfdd1bbdb0bff"
+    },
+    "p5": {
+      "compiled": {
+        "schema_version": "scifi_codex.script_artifact.v4",
+        "title": "The Light of Possibility",
+        "scenes": [
+          {
+            "scene_id": "scene_001",
+            "env": "MIT Lab",
+            "description": "Dr. Ada, a determined woman, works late in her lab, surrounded by test tubes and microscopes. She stares at a starfish cell under a microscope, her eyes reflecting the light from the instrument. She looks tired but resolute, her fingers drumming on the desk, lost in thought about her own eggs and the light-activated cells she's studying. The lab is quiet, except for the hum of the equipment and the occasional flicker of the microscope's light source. The visual prompt is the glow of the microscope, casting a soft light on Dr. Ada's face, highlighting her determination and weariness in equal measure"
+          },
+          {
+            "scene_id": "scene_002",
+            "env": "MIT Office",
+            "description": "Dr. Ada sits in her office, surrounded by books and papers. Dr. Leo, her colleague, enters, looking concerned. He sits down, his eyes meeting hers, ready to discuss her latest idea. The room is filled with the soft hum of conversation and the rustling of papers. The visual prompt is the stack of papers on Dr. Ada's desk, representing her research and the weight of her decision"
+          },
+          {
+            "scene_id": "scene_003",
+            "env": "MIT Lab",
+            "description": "Dr. Ada stands before the MIT Ethics Board, a group of stern-faced individuals sitting behind a long table. She presents her case, her voice steady despite the gravity of the situation. The room is filled with the tension of impending decision, the air thick with the weight of responsibility. The visual prompt is the MIT logo on the wall, symbolizing the institution's stake in the matter"
+          }
+        ],
+        "lines": [
+          {
+            "line_id": "l001",
+            "beat_id": "b000",
+            "shot_id": "shot_001",
+            "char_id": "c01",
+            "speaker_role": "character",
+            "text": "Under the microscope, the starfish cell dances, a tiny, light-activated wonder. I've seen it respond to the slightest change in wavelength, Ada murmurs, her eyes reflecting the glow. It's as if I can see my own eggs, wriggling with potential.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "shot_start",
+            "arc_phase": "Dr. Ada's determination grows as she studies the starfish cell",
+            "compose_flags": [],
+            "beat_intent": "To understand the potential of light-activated cells",
+            "dialogue_slot_id": null,
+            "fact_ids": [
+              "F01",
+              "F02"
+            ]
+          },
+          {
+            "line_id": "l002",
+            "beat_id": "b000",
+            "shot_id": "shot_001",
+            "char_id": "c01",
+            "speaker_role": "character",
+            "text": "Ada's fingers drum on the desk, lost in thought. Her lab, bathed in the hum of equipment, is her sanctuary. Here, she's not just a desperate woman, longing for a child. Here, she's Dr. Ada, explorer of the infinitesimal, tamer of light.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "continue",
+            "arc_phase": "Dr. Ada's determination grows as she studies the starfish cell",
+            "compose_flags": [],
+            "beat_intent": "To understand the potential of light-activated cells",
+            "dialogue_slot_id": null,
+            "fact_ids": [
+              "F01",
+              "F02"
+            ]
+          },
+          {
+            "line_id": "l003",
+            "beat_id": "b001",
+            "shot_id": "shot_001",
+            "char_id": "announcer",
+            "speaker_role": "announcer",
+            "text": "But Dr. Ada's desperation is no secret. Her colleagues whisper, their voices echoing in the sterile halls of MIT. They know her struggle, her secret hope.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "beat_start",
+            "arc_phase": "The listener learns about Dr. Ada's desperation for a child",
+            "compose_flags": [],
+            "beat_intent": "To introduce Dr. Ada's personal struggle",
+            "dialogue_slot_id": null,
+            "fact_ids": []
+          },
+          {
+            "line_id": "l004",
+            "beat_id": "b002",
+            "shot_id": "shot_002",
+            "char_id": "c01",
+            "speaker_role": "character",
+            "text": "Ada turns to Leo, her eyes alight. 'What if we manipulate my own cells, Leo? What if we give them life, using this light?' Her voice trembles with excitement and fear.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "shot_start",
+            "arc_phase": "Dr. Ada reveals her plan to manipulate her own cells",
+            "compose_flags": [],
+            "beat_intent": "To share her idea with Dr. Leo",
+            "dialogue_slot_id": null,
+            "fact_ids": [
+              "F03",
+              "F04"
+            ]
+          },
+          {
+            "line_id": "l005",
+            "beat_id": "b002",
+            "shot_id": "shot_002",
+            "char_id": "c01",
+            "speaker_role": "character",
+            "text": "Leo's face clouds with concern. 'Ada, we've spoken about the ethics. The risks...' His words trail off, swallowed by the weight of their shared history.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "continue",
+            "arc_phase": "Dr. Ada reveals her plan to manipulate her own cells",
+            "compose_flags": [],
+            "beat_intent": "To share her idea with Dr. Leo",
+            "dialogue_slot_id": null,
+            "fact_ids": [
+              "F03",
+              "F04"
+            ]
+          },
+          {
+            "line_id": "l006",
+            "beat_id": "b003",
+            "shot_id": "shot_002",
+            "char_id": "c02",
+            "speaker_role": "character",
+            "text": "'I know,' Ada whispers, her gaze returning to the starfish cell. 'But what if this is our chance, Leo? Our chance to defy the odds?'",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "beat_start",
+            "arc_phase": "Dr. Leo voices his concerns about the ethics and safety of Dr. Ada's plan",
+            "compose_flags": [],
+            "beat_intent": "To express caution about Dr. Ada's plan",
+            "dialogue_slot_id": null,
+            "fact_ids": []
+          },
+          {
+            "line_id": "l007",
+            "beat_id": "b003",
+            "shot_id": "shot_002",
+            "char_id": "c02",
+            "speaker_role": "character",
+            "text": "Leo sighs, running a hand through his hair. 'And what if it's not, Ada? What if we're playing God, for nothing?' The room falls silent, the weight of his words hanging heavy.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "continue",
+            "arc_phase": "Dr. Leo voices his concerns about the ethics and safety of Dr. Ada's plan",
+            "compose_flags": [],
+            "beat_intent": "To express caution about Dr. Ada's plan",
+            "dialogue_slot_id": null,
+            "fact_ids": []
+          },
+          {
+            "line_id": "l008",
+            "beat_id": "b004",
+            "shot_id": "shot_003",
+            "char_id": "c01",
+            "speaker_role": "character",
+            "text": "Ada stands before the Ethics Board, her voice steady. 'We've developed a way to control cell movement using light. I propose we use this on my own eggs.' The room holds its breath.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "shot_start",
+            "arc_phase": "Dr. Ada makes her final appeal, hoping to gain approval for her controversial research",
+            "compose_flags": [],
+            "beat_intent": "To plead her case to the MIT Ethics Board",
+            "dialogue_slot_id": null,
+            "fact_ids": [
+              "F05",
+              "F06"
+            ]
+          },
+          {
+            "line_id": "l009",
+            "beat_id": "b004",
+            "shot_id": "shot_003",
+            "char_id": "c01",
+            "speaker_role": "character",
+            "text": "'Think of the possibilities,' Ada continues, her voice barely above a whisper. 'A child, born from light. A life, created with purpose.' The board exchanges glances, the gravity of her words settling upon them.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "continue",
+            "arc_phase": "Dr. Ada makes her final appeal, hoping to gain approval for her controversial research",
+            "compose_flags": [],
+            "beat_intent": "To plead her case to the MIT Ethics Board",
+            "dialogue_slot_id": null,
+            "fact_ids": [
+              "F05",
+              "F06"
+            ]
+          },
+          {
+            "line_id": "l010",
+            "beat_id": "b005",
+            "shot_id": "shot_003",
+            "char_id": "c03",
+            "speaker_role": "character",
+            "text": "The board's chair clears her throat. 'Dr. Ada, your proposal raises significant ethical concerns. We'll need time to consider.' The room exhales, the decision suspended in the balance.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "beat_start",
+            "arc_phase": "The listener learns the outcome of Dr. Ada's request",
+            "compose_flags": [],
+            "beat_intent": "To deliver the board's decision",
+            "dialogue_slot_id": null,
+            "fact_ids": []
+          },
+          {
+            "line_id": "l011",
+            "beat_id": "b005",
+            "shot_id": "shot_003",
+            "char_id": "c03",
+            "speaker_role": "character",
+            "text": "Ada leaves the room, her steps echoing in the empty hallway. The weight of her request presses down on her, the cost of her ambition palpable. But she's Ada, explorer of the infinitesimal, tamer of light. And she's not done yet.",
+            "skip": false,
+            "tts_skip_reason": null,
+            "traits": "",
+            "boundary": "continue",
+            "arc_phase": "The listener learns the outcome of Dr. Ada's request",
+            "compose_flags": [],
+            "beat_intent": "To deliver the board's decision",
+            "dialogue_slot_id": null,
+            "fact_ids": []
+          }
+        ],
+        "music_cues": [
+          {
+            "cue_id": "music_open",
+            "placement": "open",
+            "description": "A tense, dramatic piece that sets the tone for Dr. Ada's struggle",
+            "generation_prompt": "Create a tense, dramatic piece that sets the tone for Dr. Ada's struggle",
+            "anchor_line_id": "l001",
+            "anchor_beat_id": "b000"
+          },
+          {
+            "cue_id": "music_inter",
+            "placement": "inter",
+            "description": "A thoughtful, introspective piece that reflects Dr. Ada's internal conflict",
+            "generation_prompt": "Create a thoughtful, introspective piece that reflects Dr. Ada's internal conflict",
+            "anchor_line_id": "l005",
+            "anchor_beat_id": "b002"
+          },
+          {
+            "cue_id": "music_close",
+            "placement": "close",
+            "description": "A reflective, melancholic piece that leaves the listener to ponder the cost of Dr. Ada's actions",
+            "generation_prompt": "Create a reflective, melancholic piece that leaves the listener to ponder the cost of Dr. Ada's actions",
+            "anchor_line_id": "l011",
+            "anchor_beat_id": "b005"
+          }
+        ]
+      },
+      "accepted_transport_receipt": {
+        "schema": "ScriptTextDraftV4",
+        "chars": 2389,
+        "sha256": "855de8c5f411fc2512bc944605c4e5ea64ff39c477e0ccf821443c0d71380ea2"
+      },
+      "accepted_attempt_raw_sha256": "855de8c5f411fc2512bc944605c4e5ea64ff39c477e0ccf821443c0d71380ea2",
+      "script_digest": "9d6df0daf1f00c066a32d722cd6c06cfebef26fa864a311e527413e4b7bc5594",
+      "authorship_receipt_sha256": "9d6df0daf1f00c066a32d722cd6c06cfebef26fa864a311e527413e4b7bc5594"
+    },
+    "word_budget_telemetry": {
+      "schema_version": 4,
+      "target_words": 45,
+      "planned_voiced_words": 45,
+      "owner": "scifi_codex",
+      "policy": "requested_context_actual_count_only",
+      "stage": "freeze_pre_media",
+      "target_status": "valid",
+      "actual_character_words": 331,
+      "actual_announcer_words": 26,
+      "actual_total_voiced_words": 357,
+      "actual_character_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7",
+      "actual_announcer_text_sha256": "f77cbdbaabc36026ab406e5fc645180ca4f32f2f94f9754e5bd1d2990f53a281",
+      "actual_total_voiced_text_sha256": "38aef4f7611614c04b583f4e8bc793d9b3f913facb8fd970800cb1917303af4f",
+      "actual_voiced_words": 331,
+      "actual_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7",
+      "actual_receipts": {
+        "scifi_codex_assembled": {
+          "schema_version": 4,
+          "stage": "scifi_codex_assembled",
+          "target_status": "valid",
+          "target_words": 45,
+          "actual_character_words": 331,
+          "actual_announcer_words": 26,
+          "actual_total_voiced_words": 357,
+          "actual_character_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7",
+          "actual_announcer_text_sha256": "f77cbdbaabc36026ab406e5fc645180ca4f32f2f94f9754e5bd1d2990f53a281",
+          "actual_total_voiced_text_sha256": "38aef4f7611614c04b583f4e8bc793d9b3f913facb8fd970800cb1917303af4f",
+          "actual_voiced_words": 331,
+          "actual_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7"
+        },
+        "writer_final_rows": {
+          "schema_version": 4,
+          "stage": "writer_final_rows",
+          "target_status": "valid",
+          "target_words": 45,
+          "actual_character_words": 331,
+          "actual_announcer_words": 26,
+          "actual_total_voiced_words": 357,
+          "actual_character_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7",
+          "actual_announcer_text_sha256": "f77cbdbaabc36026ab406e5fc645180ca4f32f2f94f9754e5bd1d2990f53a281",
+          "actual_total_voiced_text_sha256": "38aef4f7611614c04b583f4e8bc793d9b3f913facb8fd970800cb1917303af4f",
+          "actual_voiced_words": 331,
+          "actual_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7"
+        },
+        "freeze_pre_media": {
+          "schema_version": 4,
+          "stage": "freeze_pre_media",
+          "target_status": "valid",
+          "target_words": 45,
+          "actual_character_words": 331,
+          "actual_announcer_words": 26,
+          "actual_total_voiced_words": 357,
+          "actual_character_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7",
+          "actual_announcer_text_sha256": "f77cbdbaabc36026ab406e5fc645180ca4f32f2f94f9754e5bd1d2990f53a281",
+          "actual_total_voiced_text_sha256": "38aef4f7611614c04b583f4e8bc793d9b3f913facb8fd970800cb1917303af4f",
+          "actual_voiced_words": 331,
+          "actual_text_sha256": "09879395cca0a8defb4ba80f4208ee02bf3c2a697cd98bbff56815b050a3eaf7"
+        }
+      }
+    }
+  },
+  "request_receipts": {
+    "radio_score_draft_surface": {
+      "schema": "RadioScoreDraftV4",
+      "output_budget_mode": "provider_capacity",
+      "requested_max_new_tokens": null,
+      "full_result_json_schema_in_prompt": false,
+      "max_scenes": 3,
+      "max_shots_per_scene": 2,
+      "max_beats_per_scene": 4,
+      "max_total_shots": 6,
+      "max_total_beats": 12,
+      "max_lines_per_beat": 2,
+      "max_line_count_per_beat": 2,
+      "max_music_cues": 3,
+      "max_fact_ids_per_beat": 2,
+      "authored_text_bounds": "structural_ceilings",
+      "max_authored_text_chars": 12000,
+      "degeneracy_reject_at_chars": 11872,
+      "p5_line_bounds": "shared_with_p3",
+      "requested_words": 45,
+      "beat_count": 4
+    },
+    "script_transport": {
+      "transport_schema": "ScriptTextDraftV4",
+      "requested_words": 45,
+      "accepted_line_count": 11,
+      "output_budget_mode": "provider_capacity",
+      "requested_max_new_tokens": null
+    }
+  },
+  "expected": {
+    "story_content_pass": false,
+    "presentation_topology_pass": false,
+    "finding_codes": [
+      "ANNOUNCER_OPEN_MISSING",
+      "ANNOUNCER_CODA_MISSING",
+      "ANNOUNCER_INTERIOR_ONLY",
+      "FACTUAL_CODA_MISSING",
+      "P5_SPEAKER_AUTHORITY_MISSING",
+      "SPOKEN_NARRATION_OR_STAGE_BUSINESS",
+      "CROSS_SPEAKER_TEXT",
+      "MUSIC_OPEN_ANCHOR_NOT_ANNOUNCER",
+      "MUSIC_CLOSE_ANCHOR_NOT_ANNOUNCER"
+    ],
+    "narration_or_stage_line_ids": [
+      "l001",
+      "l002",
+      "l004",
+      "l005",
+      "l007",
+      "l008",
+      "l009",
+      "l010",
+      "l011"
+    ],
+    "cross_speaker_line_ids": [
+      "l005",
+      "l006",
+      "l011"
+    ]
+  },
+  "evidence_limits": [
+    "The compact raw P3/P5 JSON text was not persisted; only its byte/character receipt and SHA-256 survive.",
+    "The compiled accepted objects are exact ledger evidence and must not be described as raw transport replay."
+  ]
+}

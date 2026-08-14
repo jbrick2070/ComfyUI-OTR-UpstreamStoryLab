@@ -1,99 +1,186 @@
-# GO FORWARD PLAN - OTR Upstream Transplant
+# GO FORWARD PLAN — OTR Story Recovery Lab
 
-Updated: 2026-07-02 (overnight session, Fable). Single source of truth for
-resuming this build. Repo: ComfyUI-OTR-UpstreamStoryLab (transplant
-workspace), remote github.com/jbrick2070/ComfyUI-OTR-UpstreamStoryLab.
+Updated: 2026-08-13. This is the current Story Lab handoff. The superseded
+2026-07-02 production-transplant plan remains available in git at `7df7c80`.
 
-## CURRENT STEP
+## WHAT IS ACTUALLY LEFT
 
-Execute the production transplant (chunk T1 below). Everything upstream of
-production is DONE and green; production repo is UNTOUCHED.
+The live-ledger audit is complete and the Story Lab's structural story-plane
+boundary is now executable. Trusted semantic validators, production receipts,
+and the final seal are intentionally not executable yet. Do not change
+source-bank story paths, prompts, length
+planning, production OTR, or the parked render campaign until the remaining
+contract-transplant prerequisites below are complete.
 
-## What is done (verified tonight)
+The order is:
 
-- Workspace rebuilt: v1 lab archived in git (41c6512), production mirrored
-  @ ComfyUI-OldTimeRadio d48a9d76 (SFX-free) with hash manifest
-  (PRODUCTION_MIRROR_MANIFEST.md).
-- Kibitz arc r1-r4 run over the architecture + coding plan (Codex, Claude
-  Code, Antigravity r1; agy quota-died mid-r2 and was dropped per skill
-  fallback). Finals: kibitz-runs/2026-07-02-upstream-transplant-v2/r*/final.md.
-- v2 lab BUILT and green on the real ComfyUI venv. Gate commands (run these,
-  do not trust historical counts - kibitz r4):
-  `.venv\Scripts\python.exe -m pytest tests -q`
-  `.venv\Scripts\python.exe scripts\validate_lab.py`
-  `.venv\Scripts\python.exe scripts\smoke_nodes.py`
-  `python scripts\verify_tree.py`
-  - JSON owns ALL content: fixtures/banks.json (4 banks, defaults,
-    interpreter bindings), fixtures/pipelines.json (legacy descriptive +
-    simple_4 executable), 12 seam-complete story packs, 5 visual styles
-    (sci_fi_radio byte-pinned to production tails), 3 source packets with
-    fixture briefs, 3 PD source folders.
-  - Python owns behavior only: contracts.py (strict models, per-seam
-    template variable validation), registry.py (fail-loud loader/router,
-    auditable Resolution), profiles.py (pack -> profile, no prose),
-    interpreters.py (allowlisted bindings), bridge.py (spec + dual meta
-    mirrors + adapter article + provenance hashes + round-trip emit),
-    preview.py (pack-driven leakage scans), runner.py (simple_4 FakeLLM,
-    loud per-pass failure), compat.py (pinned production shapes + AST
-    drift extractors).
-  - ComfyUI nodes v2: Validator / StoryPackPreview / BridgeArtifactEmit,
-    all choices registry-discovered.
-- Staged production modules (transplant_work/production_new_modules/, pure
-  dict-in/dict-out, tested): _otr_ledger_input_adapter.py,
-  _otr_story_prompt_profile.py, _otr_visual_style_policy.py,
-  _otr_source_interpreter.py.
-- transplant_work/PATCH_PLAN.md: module-level production edit map,
-  FALLBACK_INVENTORY table (6 sites, per-lane decisions), widget default +
-  append-only + explicit-socket rules. NO line hunks (generated at
-  transplant against live HEAD).
+1. **DONE:** trace every live ledger producer, validator, serializer, mutator,
+   reload path, and downstream consumer across workflow code, scripts, tests,
+   offline tools, manifests, and filesystem joins.
+2. **DONE:** publish the code-cited current-l4 consumer matrix and chronological
+   mutation audit; retain the raw AGY report and grounded corrections.
+3. **DONE:** bless the one-JSON target envelope and make the strict
+   `story_ledger` + `story_seal` boundary executable. Non-null
+   `production_state` and `final_seal` fail until their typed models land.
+4. **DONE:** preserve and reconcile the Sonnet 5 red-team against live code;
+   retain its raw report and incorporate only grounded deltas.
+5. Build and register the five trusted semantic outcome verifiers over the
+   sealed control/challenger fixtures, then add a complete normative v1 fixture
+   and rejected mutation corpus. Receipt JSON alone is not trust.
+6. Define strict production-state receipt schemas, emit static JSON Schema,
+   and implement the explicit digest-preserving Story Lab→OTR adapter. No
+   silent l4 migration.
+7. Add save-guard and consumer-adapter tests proving every production phase
+   preserves the story digest, then define terminal audit/final-seal ordering.
+8. Then resume source-bank story-path work: four-tier bank-owned length-plan
+   experiments, compiler-owned bookends, speaker authority, narrow
+   spoken-correctness checks, and executable A/B adapters.
+9. Transplant proven pieces into OTR in small green chunks, recreate the parked
+   seven-leg runner against the changed code, and run those proofs last.
 
-## Chunk T1 - production transplant (tomorrow, in ComfyUI-OldTimeRadio)
+The raw Antigravity, Codex, and Sonnet lanes are preserved separately under
+`docs/2026-08-13-story-recovery/`. Their grounded convergence and corrections
+live only in `LEDGER_BIBLE_SYNTHESIS.md`.
 
-0. Re-mirror check: compare production HEAD vs d48a9d76; if moved, refresh
-   production_mirror + rerun lab drift tests (they fail loudly if shapes
-   moved). ALSO (kibitz r4): verify the live RSS import in the production
-   venv - `from nodes import story_orchestrator;
-   story_orchestrator._fetch_science_news` - and exercise its failure path
-   once; story_orchestrator is deliberately not mirrored.
-1. Drop the four staged modules into nodes/ verbatim; add production-side
-   tests (adapter validated against the real NewsBriefs class).
-2. Writer edits per PATCH_PLAN item 1 (resolution before fetch, RSS gated
-   science-only, article-dict entry for packet lanes, meta stamps, title
-   label, coda facade call, style/style_custom precedence test).
-3. line_composer coda facade + grounding (item 2); style_picker kwargs
-   (item 3, NEW kwargs); outline/pitch/select/dramatic profile threading
-   (items 5-6); science baseline byte-pin tests BEFORE and AFTER.
-4. brief_helpers policy seam (item 7) - unstamped meta = byte-identical.
-5. Whitelists (item 9), then workflow JSON LAST (item 10) behind the full
-   gate list (docs/FABLE_FINAL_REVIEW_2026-07-02.md TEST/VALIDATION GATES).
-Visual deep stage (meta_brief/shot_lock/render_driver) stays a separate
-later chunk (item 8).
+## Minimum ship contract
 
-## Hard rules (unchanged)
+These five outcomes are hard. Everything else is theory until tested:
 
-Only edit production in the explicit transplant chunk. No fallbacks between
-lanes ever; grandfathered science quality-floors per FALLBACK_INVENTORY.
-No hidden models: slot plan declared, engine ids runtime-stamped. Workflow
-JSON: append-only widgets, forceInput sockets, validators green first.
+1. The ledger is intact and internally coherent.
+2. The selected news and usable factual evidence are captured.
+3. The announcer opens by introducing the story, setting, and characters.
+4. The announcer ends by summarizing the real news from captured evidence.
+5. Music is first and last.
 
-## Kickoff prompt for the next window
+LLMs are replaceable and variable. They may author prose inside locked rows;
+they do not own these outcomes.
 
-"Resume the OTR build. Read docs/GO_FORWARD_PLAN.md in
-ComfyUI-OTR-UpstreamStoryLab; current step is chunk T1 (production
-transplant). Start with the re-mirror check, then step 1."
+The Story Lab emits one validated ledger JSON. It does not synthesize speech,
+render media, publish an episode, or require a GPU. Downstream OTR may later
+return duration observations, but the lab stops at the ledger boundary.
 
-## DEFERRED STORY-LLM FIXES (park here; operator 2026-07-02: no story-LLM changes in production until this refactor lands)
+## Length control — operator-locked
 
-- **Director-note leak into spoken dialogue** (proof7 `Lab Race Against Time` b003,
-  operator eyeball catch): the composer emitted `Can't hold back the surge much
-  longer! Oya's voice should be more tense and urgent.` -- an UN-parenthesized
-  writing note inside `line.text`, so TTS read it aloud and the captions showed it.
-  The existing production scrubs only catch (...) / [...] spans (stage-direction
-  scrub, OTR_LedgerScriptWriter I.6a) and leading self-vocatives (I.6b).
-  Proposed fix (drafted + reverted out of production same day per operator hold):
-  a pre-freeze scrub (c) that drops whole SENTENCES matching a high-precision
-  director-note class -- `<name|his|her|their|the>('s)? voice (should|must|needs to)`,
-  `should sound more`, `deliver this line` -- keeping the original text (LOUD warn)
-  if the scrub would leave <2 words. Fold this into the v2 writer's line-hygiene
-  stage instead (root-cause: the composer prompt should ban delivery notes in
-  dialogue; the scrub is defense-in-depth).
+One visible variable: `episode_length_tier`.
+
+```text
+ultra_short
+medium
+long
+extra_long
+```
+
+The order and labels above are fixed. Exact minutes, scenes, beats, lines, and
+chunk sizes are deliberately not fixed yet. Each bank maps the same tier to
+its own semantic opportunity. Actual audio duration and words are receipts;
+neither is a publish gate, and models are never asked to count them.
+
+Length is mainly a process, not a prompt: tier -> bank plan -> compiler-owned
+movements/rows -> bounded writing chunks -> intact ledger. The model is asked
+to fulfill a dramatic job for exact locked rows, not to “write a medium
+story.” Optional downstream audio measurements calibrate later mapping
+versions; they are not a Story Lab output.
+
+## Staged evidence
+
+- Human Ledger Bible:
+  `docs/LEDGER_BIBLE.md`
+- Machine Ledger Bible:
+  `contracts/ledger_bible_v1.json`
+- Current-l4 consumer matrix:
+  `contracts/ledger_consumer_matrix_l4.json`
+- Executable target contract:
+  `src/upstream_story_lab/ledger_contract.py`
+- Independent Codex audit:
+  `docs/2026-08-13-story-recovery/CODEX_LEDGER_BIBLE_AUDIT.md`
+- Review synthesis:
+  `docs/2026-08-13-story-recovery/LEDGER_BIBLE_SYNTHESIS.md`
+
+- Ledger Bible code-audit plan:
+  `docs/2026-08-13-story-recovery/LEDGER_BIBLE_AUDIT_PLAN.md`
+- Independent Antigravity audit prompt:
+  `docs/2026-08-13-story-recovery/AGY_LEDGER_BIBLE_AUDIT_PROMPT.md`
+- Independent Sonnet audit/red-team prompt:
+  `docs/2026-08-13-story-recovery/SONNET_LEDGER_BIBLE_AUDIT_PROMPT.md`
+- Preserved raw Sonnet audit:
+  `docs/2026-08-13-story-recovery/SONNET_LEDGER_BIBLE_AUDIT.md`
+- Problem statement:
+  `docs/2026-08-13-story-recovery/PROBLEM_STATEMENT.md`
+- Port/restore/compare/exclude decisions:
+  `docs/2026-08-13-story-recovery/RECOVERY_MATRIX.md`
+- Length experiment:
+  `docs/2026-08-13-story-recovery/LENGTH_TIER_EXPERIMENT.md`
+- Paste-ready academic deep-research brief:
+  `docs/2026-08-13-story-recovery/DEEP_RESEARCH_BRIEF.md`
+- Clean control:
+  `fixtures/story_recovery/science_news_good_20260716.json`
+- Render-pass/content-fail challenger:
+  `fixtures/story_recovery/scifi_news_bad_20260813.json`
+- Machine-readable hard contract:
+  `fixtures/story_recovery/ledger_requirements_v1.json`
+- Deterministic extractor:
+  `scripts/extract_story_recovery_cases.py`
+- Evidence-integrity tests:
+  `tests/test_story_recovery_artifacts.py`
+
+The clean control is the July 16 legacy `science_news` episode “Folder of Red
+Stamps.” The challenger is the August 13 `scifi_news` / `wan_ti2v` episode “The
+Light of Possibility.” All copied surfaces and final assets are SHA-256 pinned.
+The challenger truthfully records `render_pass=true` and
+`story_content_pass=false`.
+
+## Current technical facts
+
+- Repo: `ComfyUI-OTR-UpstreamStoryLab`, branch `main`.
+- Baseline before this staging chunk: `7df7c80`, clean and equal to origin.
+- Current staging gates: 106 tests passed; `validate_lab.py` reports 4 banks,
+  12 packs, 55 validated specs, 5 visual styles, 3 public-domain manifests,
+  and no mirror drift; node smoke passed; tree verification reports 56 Python
+  files, 35 JSON files, and 0 errors.
+- `legacy_many_pass` is descriptive-only and the lab runner refuses it.
+- Only `simple_4_prompt_experimental` currently executes, through an injected
+  string-callable; it is not a live production writer.
+- `production_mirror` is pinned to OTR `d48a9d76`. It is historical and mostly
+  drifted from current OTR; never treat `mirror_drift=none` as live parity.
+- The current OTR liveness guard did not cause the bad episode. Its accepted P3
+  and P5 never fired the guard.
+- Do not copy current OTR wholesale: it is the challenger and contains the
+  speaker/topology regression this lab exists to fix.
+- Do not restore old OTR wholesale: its useful announcer/coda boundaries are
+  mixed with retired word and subjective-quality machinery.
+
+## Production and render parking lot
+
+Production OTR remains separate and unchanged by this Story Lab staging chunk.
+The live render gate is 14/21 after the fresh-seed `wan_ti2v` pass. Seven legs
+remain parked:
+
+- `wan_i2v`
+- `humo`
+- `humo_14B_169`
+- `humo_1.7B`
+- `humo_1.7B_169`
+- `minimax_h3_video`
+- `minimax_h3_audio_in`
+
+Purpose: those legs must prove the post-story/Lemmy code that will ship, not
+stale pre-fix code. Recreate their runner and re-read every profile's own
+`launch.env` after the writer/Lemmy changes; never reuse the old temporary
+seven-leg runner blindly. Keep the one-coder-window law while story code moves.
+
+## Review routing
+
+The active operator directive is dated 2026-08-11: full r1-r4 kibitz is
+suspended. Use a Codex consult only for a genuine quandary or third attempt and
+Sonnet 5 for post-coding QA. Do not resurrect stale “mandatory full kibitz”
+language from the July artifacts.
+
+## Next-window kickoff
+
+“Open `docs/LEDGER_BIBLE.md` and
+`docs/2026-08-13-story-recovery/LEDGER_BIBLE_SYNTHESIS.md`. Keep production OTR
+and the seven render legs parked. Implement the five trusted semantic outcome
+verifiers and normative accepted/rejected v1 fixtures first; then define strict
+production-state phase receipts and the digest-preserving Story Lab→OTR
+adapter. Every adapter/consumer test must prove the sealed story bytes and
+digest remain unchanged.”

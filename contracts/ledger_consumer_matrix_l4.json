@@ -1,0 +1,737 @@
+{
+  "schema_version": "otr.ledger_consumer_matrix.l4.v1",
+  "audited_at": "2026-08-13",
+  "production_schema_version": "l4-2026-08-07",
+  "production_repo": "ComfyUI-OldTimeRadio",
+  "canonical_workflow": "workflows/otr_canonical.json",
+  "workflow_scan": {
+    "json_files": 59,
+    "full_otr_variants_with_same_ledger_topology": 51,
+    "story_only_writer_freeze_graphs": 1,
+    "stock_or_native_non_otr_graphs": 7
+  },
+  "current_freeze_verdict": {
+    "whole_ledger_immutable": false,
+    "authored_core_save_guard_present": false,
+    "phase_10_behavior": "validates selected structure and stamps status metadata",
+    "cleanup_locked_production_readers": 0,
+    "post_phase_10_mutation_is_normal": true
+  },
+  "records": [
+    {
+      "component": "LedgerScriptWriter",
+      "phase": "draft_and_acceptance",
+      "classification": "producer_mutator",
+      "reads": [
+        "source packet",
+        "story pack",
+        "writer inputs"
+      ],
+      "writes": [
+        "cast",
+        "scenes",
+        "shots",
+        "beats",
+        "lines",
+        "music",
+        "meta authorship/source/story fields"
+      ],
+      "durability": "disk_and_wire",
+      "failure_policy": "mixed; bank-owned structured passes fail closed on structural acceptance defects",
+      "evidence": [
+        "nodes/OTR_LedgerScriptWriter.py:4025-4134",
+        "nodes/OTR_LedgerScriptWriter.py:6679-6853",
+        "nodes/production_ledger.py:998-1348"
+      ]
+    },
+    {
+      "component": "LedgerFreezeCascade",
+      "phase": "acceptance",
+      "classification": "validator_mutator",
+      "reads": [
+        "schema_version",
+        "cast",
+        "scenes",
+        "shots",
+        "beats",
+        "lines",
+        "music",
+        "clips",
+        "meta"
+      ],
+      "writes": [
+        "delivery/readiness projections",
+        "gap-audit receipts",
+        "cleanup_locked",
+        "freeze_timestamp",
+        "freeze_verdict",
+        "freeze capability/disposition/telemetry"
+      ],
+      "durability": "disk_and_wire",
+      "failure_policy": "structural/authorship defects fail closed; status stamps are not mutation guards",
+      "evidence": [
+        "nodes/_otr_ledger_freeze.py:125-656",
+        "nodes/_otr_ledger_freeze.py:901-961",
+        "nodes/_otr_freeze_cascade.py:709-1149"
+      ]
+    },
+    {
+      "component": "FreezeNodeWrapper",
+      "phase": "acceptance",
+      "classification": "mutator",
+      "reads": [
+        "cascade result",
+        "writer seed",
+        "live singleton"
+      ],
+      "writes": [
+        "meta.freeze_unload_ok"
+      ],
+      "durability": "wire_and_live_memory_only_after_last_disk_save",
+      "failure_policy": "unload result stays visible on wire even without a second durable save",
+      "evidence": [
+        "nodes/OTR_LedgerFreezeCascade.py:206-430"
+      ]
+    },
+    {
+      "component": "CastLock",
+      "phase": "cast_routing",
+      "classification": "consumer_mutator",
+      "reads": [
+        "cast",
+        "lines",
+        "meta.freeze_verdict",
+        "meta.freeze_unload_ok",
+        "voice policy"
+      ],
+      "writes": [
+        "cast voice/engine/provider/presentation fields",
+        "cast policy receipts",
+        "local lines[].speaker_role announcer correction"
+      ],
+      "durability": "cast_and_meta_disk; line_role_correction_wire_only",
+      "failure_policy": "needs_full_rerun blocks; unknown/absent legacy verdict accepted",
+      "evidence": [
+        "nodes/cast_lock.py:177-366",
+        "nodes/cast_lock.py:448-551",
+        "nodes/cast_lock.py:932-1049"
+      ]
+    },
+    {
+      "component": "CharacterVoice",
+      "phase": "voice_render",
+      "classification": "consumer_mutator",
+      "reads": [
+        "ordered lines with speaker_role=character",
+        "text/text_for_tts",
+        "cast voice routes",
+        "episode seed",
+        "audio/cache paths"
+      ],
+      "writes": [
+        "per-line TTS engine, preset, duration, hashes, cache, provider and route receipts"
+      ],
+      "durability": "disk_by_exact_line_id",
+      "failure_policy": "route-specific persistence may fail closed; ordinary receipt persistence can degrade",
+      "evidence": [
+        "nodes/batch_character_voices.py:26-45",
+        "nodes/_otr_voice_node_common.py:381-426",
+        "nodes/_otr_voice_node_common.py:1036-1197"
+      ]
+    },
+    {
+      "component": "AnnouncerVoice",
+      "phase": "voice_render",
+      "classification": "consumer_mutator",
+      "reads": [
+        "ordered lines with speaker_role=announcer",
+        "text/text_for_tts",
+        "announcer voice route",
+        "episode seed"
+      ],
+      "writes": [
+        "per-line announcer TTS receipts"
+      ],
+      "durability": "disk_by_exact_line_id",
+      "failure_policy": "same common voice-render contract",
+      "evidence": [
+        "nodes/announcer_voice.py:25-44",
+        "nodes/_otr_voice_node_common.py:381-426",
+        "nodes/_otr_voice_node_common.py:1036-1197"
+      ]
+    },
+    {
+      "component": "AudioCacheValidation",
+      "phase": "voice_render",
+      "classification": "consumer",
+      "reads": [
+        "meta ledger schema version",
+        "cast lock revision",
+        "cast voice_ref_id"
+      ],
+      "writes": [],
+      "durability": "none",
+      "failure_policy": "cast-locked ledgers require voice refs; legacy/pre-lock exempt",
+      "evidence": [
+        "nodes/_otr_audio_cache.py:190-236"
+      ]
+    },
+    {
+      "component": "StableAudioTheme",
+      "phase": "music_render",
+      "classification": "consumer_mutator",
+      "reads": [
+        "ordered music cues",
+        "legacy music sentinel lines",
+        "brief/style/title/seed"
+      ],
+      "writes": [
+        "meta.music_engine",
+        "rendered cue manifest returned separately"
+      ],
+      "durability": "meta_on_disk; cue_manifest_on_wire",
+      "failure_policy": "legacy cue derivation has explicit placement fallbacks",
+      "evidence": [
+        "nodes/stable_audio_theme.py:42-379",
+        "nodes/_otr_cue_manifest.py:277-359"
+      ]
+    },
+    {
+      "component": "SceneSequencer",
+      "phase": "timeline",
+      "classification": "consumer_mutator",
+      "reads": [
+        "ordered non-skipped lines",
+        "speaker roles",
+        "line IDs",
+        "castlocked voice buses",
+        "cue manifest IDs and anchors"
+      ],
+      "writes": [
+        "line start/duration/time-space",
+        "music reconciliation",
+        "audio gates",
+        "phase/git telemetry"
+      ],
+      "durability": "disk",
+      "failure_policy": "voice-bus count mismatches fail; ledger save return is ignored",
+      "evidence": [
+        "nodes/scene_sequencer.py:59-99",
+        "nodes/scene_sequencer.py:873-1149"
+      ]
+    },
+    {
+      "component": "AudioEnhance",
+      "phase": "audio_enhance",
+      "classification": "mutator",
+      "reads": [
+        "active durable ledger identity"
+      ],
+      "writes": [
+        "audio gate",
+        "phase/git telemetry"
+      ],
+      "durability": "best_effort_disk",
+      "failure_policy": "ledger absence/save failure does not block audio output",
+      "evidence": [
+        "nodes/audio_enhance.py:426-471"
+      ]
+    },
+    {
+      "component": "EpisodeAssembler",
+      "phase": "timeline",
+      "classification": "consumer_mutator",
+      "reads": [
+        "durable lines/music/clips/audio/paths/timing",
+        "cue manifest identity and placement"
+      ],
+      "writes": [
+        "master audio hash and ledger_frozen flag",
+        "master-space timing",
+        "music rows",
+        "music mirror lines",
+        "chronological line reorder",
+        "transitions",
+        "audio gates"
+      ],
+      "durability": "best_effort_disk",
+      "failure_policy": "broad writeback failure can still emit audio_done",
+      "evidence": [
+        "nodes/scene_sequencer.py:59-68",
+        "nodes/scene_sequencer.py:1379-1402",
+        "nodes/scene_sequencer.py:1463-1936"
+      ]
+    },
+    {
+      "component": "SignalLostVideo",
+      "phase": "workspace_identity",
+      "classification": "consumer_mutator",
+      "reads": [
+        "cast",
+        "ordered lines",
+        "visual style/plan",
+        "episode title chain"
+      ],
+      "writes": [
+        "rename/rebased episode identity and paths",
+        "final video/duration/procgen fields"
+      ],
+      "durability": "best_effort_disk",
+      "failure_policy": "timing overlay and ledger save are fail-soft",
+      "evidence": [
+        "nodes/video_engine.py:2265-2365",
+        "nodes/video_engine.py:2607-2673",
+        "nodes/production_ledger.py:791-944"
+      ]
+    },
+    {
+      "component": "ShotLock",
+      "phase": "visual_plan",
+      "classification": "consumer_wire_mutator",
+      "reads": [
+        "post-audio durable overlay",
+        "ordered lines/cast/music",
+        "audio/gates/transitions/paths",
+        "video policy"
+      ],
+      "writes": [
+        "wire video roles, policy, shots, coverage and revision"
+      ],
+      "durability": "wire_only",
+      "failure_policy": "strict same-run post-audio join when audio_done is present",
+      "evidence": [
+        "nodes/otr_shot_lock.py:170-540",
+        "nodes/otr_shot_lock.py:1782-1942"
+      ]
+    },
+    {
+      "component": "MetaBriefImagePrompt",
+      "phase": "visual_plan",
+      "classification": "consumer",
+      "reads": [
+        "episode title/style/setting",
+        "cast appearance",
+        "ordered lines",
+        "video targets"
+      ],
+      "writes": [],
+      "durability": "none",
+      "failure_policy": "node-level malformed input may degrade to defaults",
+      "evidence": [
+        "nodes/otr_meta_brief_image_prompt.py:976-1313",
+        "nodes/otr_meta_brief_image_prompt.py:1691-1770",
+        "nodes/otr_meta_brief_image_prompt.py:2261-2324"
+      ]
+    },
+    {
+      "component": "ImageDispatcher",
+      "phase": "image_render",
+      "classification": "consumer_mutator",
+      "reads": [
+        "wire video shot requests",
+        "cast",
+        "existing images",
+        "episode/freeze identity",
+        "image policy/prompts"
+      ],
+      "writes": [
+        "wire episode ID correction",
+        "wire portrait content hash",
+        "images section",
+        "meta.image_engines"
+      ],
+      "durability": "images_and_image_engines_disk; identity_and_portrait_hash_wire_only",
+      "failure_policy": "identity-gated active-directory resolution",
+      "evidence": [
+        "nodes/otr_image_gen_dispatcher.py:412-492",
+        "nodes/otr_image_gen_dispatcher.py:1509-1538",
+        "nodes/_otr_shared/portrait_ledger.py:113-188"
+      ]
+    },
+    {
+      "component": "SaveToEpisodeWorkspace",
+      "phase": "noncanonical_image_sink",
+      "classification": "consumer",
+      "reads": [
+        "active durable root episode_id"
+      ],
+      "writes": [
+        "episode-local still or portrait image files"
+      ],
+      "durability": "filesystem_only; no episode-ledger write",
+      "failure_policy": "missing episode identity fails loud so assets cannot fall into a flat workspace; mkdir failure warns and returns empty output",
+      "evidence": [
+        "nodes/otr_save_to_episode_workspace.py:47-87",
+        "nodes/otr_save_to_episode_workspace.py:125-175"
+      ]
+    },
+    {
+      "component": "VideoRenderBatch",
+      "phase": "video_render",
+      "classification": "consumer_mutator",
+      "reads": [
+        "wire video.shots",
+        "wire images.images",
+        "episode/cast/line/beat/audio/style/route/coverage fields"
+      ],
+      "writes": [
+        "deep-copy wire video result",
+        "meta.render_engines",
+        "audio motion receipt",
+        "clip manifest and filesystem clips"
+      ],
+      "durability": "render_engine_and_audio_motion_meta_disk; video_shots_wire_capture; clips_filesystem_and_manifest",
+      "failure_policy": "missing video shots returns an error report; still-spine/route gates fail closed",
+      "evidence": [
+        "nodes/otr_video_render_batch.py:175-234",
+        "nodes/otr_video_render_batch.py:368-495",
+        "nodes/_otr_video_engines/render_driver.py:3828-3990",
+        "nodes/_otr_video_engines/render_driver.py:4633-4689"
+      ]
+    },
+    {
+      "component": "SilentComposite",
+      "phase": "composite",
+      "classification": "checked_not_a_ledger_consumer",
+      "reads": [
+        "clip_manifest_json",
+        "base video",
+        "canvas/fps/upscale selection"
+      ],
+      "writes": [],
+      "durability": "media_only",
+      "failure_policy": "manifest-driven",
+      "evidence": [
+        "nodes/otr_silent_composite.py:1261-1305"
+      ]
+    },
+    {
+      "component": "SceneAwareScopes",
+      "phase": "composite",
+      "classification": "checked_not_a_ledger_consumer",
+      "reads": [
+        "clip manifest",
+        "optional audio"
+      ],
+      "writes": [],
+      "durability": "media_only",
+      "failure_policy": "empty clip manifest fails early",
+      "evidence": [
+        "nodes/otr_scene_aware_scopes.py:372-423"
+      ]
+    },
+    {
+      "component": "PostUpscaleProcgenBlend",
+      "phase": "composite",
+      "classification": "mutator",
+      "reads": [
+        "active ledger identity only after media success"
+      ],
+      "writes": [
+        "final_video_path",
+        "meta.post_upscale_blend"
+      ],
+      "durability": "best_effort_disk",
+      "failure_policy": "stamp failure does not invalidate the existing media artifact",
+      "evidence": [
+        "nodes/otr_post_upscale_procgen_blend.py:156-232"
+      ],
+      "scope_note": "standard macOS/FFmpeg upscaling is proven and closed"
+    },
+    {
+      "component": "CaptionBurn",
+      "phase": "captions",
+      "classification": "consumer",
+      "reads": [
+        "timed ordered speech lines",
+        "raw text",
+        "start/duration",
+        "cast names"
+      ],
+      "writes": [],
+      "durability": "ASS_and_video_only",
+      "failure_policy": "normally fail-soft; planned hero-title failure can be terminal",
+      "evidence": [
+        "nodes/otr_caption_burn.py:134-178",
+        "nodes/otr_caption_burn.py:304-354",
+        "nodes/_otr_captions.py:392-537"
+      ]
+    },
+    {
+      "component": "CreditsRoll",
+      "phase": "credits",
+      "classification": "consumer",
+      "reads": [
+        "live singleton ledger",
+        "required production receipts",
+        "cast",
+        "ordered speech transcript",
+        "source/news/provenance"
+      ],
+      "writes": [],
+      "durability": "credits_media_only",
+      "failure_policy": "missing required receipt fails loud late in pipeline",
+      "evidence": [
+        "nodes/otr_credits_roll.py:118-124",
+        "nodes/otr_credits_roll.py:266-566",
+        "nodes/otr_credits_roll.py:1479-1558"
+      ]
+    },
+    {
+      "component": "MasterAudioMux",
+      "phase": "publication",
+      "classification": "consumer_mutator",
+      "reads": [
+        "active ledger episode directory/identity",
+        "media paths"
+      ],
+      "writes": [
+        "final_audio_path",
+        "final_video_path",
+        "meta.obs_final_path"
+      ],
+      "durability": "published_media_then_best_effort_disk",
+      "failure_policy": "publication may succeed even when terminal ledger stamp fails",
+      "evidence": [
+        "nodes/otr_master_audio_mux.py:298-351",
+        "nodes/otr_master_audio_mux.py:458-613"
+      ]
+    },
+    {
+      "component": "LedgerSerializationAndDiscovery",
+      "phase": "all",
+      "classification": "serializer_mutator",
+      "reads": [
+        "whole ledger",
+        "schema/path metadata",
+        "disk merge candidates"
+      ],
+      "writes": [
+        "schema/version mirrors",
+        "meta.paths",
+        "merged disk fields"
+      ],
+      "durability": "atomic_disk_replace",
+      "failure_policy": "two save paths disagree on foreign-version preservation; active discovery has newest-mtime fallback",
+      "evidence": [
+        "nodes/_otr_ledger.py:58-160",
+        "nodes/_otr_ledger.py:335-581",
+        "nodes/production_ledger.py:527-571",
+        "nodes/production_ledger.py:1432-1768"
+      ]
+    },
+    {
+      "component": "FullRunAudit",
+      "phase": "audit",
+      "classification": "consumer_mutator",
+      "reads": [
+        "lines",
+        "clips",
+        "line IDs",
+        "roles/source kinds/durations"
+      ],
+      "writes": [
+        "meta.audit_verdict"
+      ],
+      "durability": "best_effort_disk",
+      "failure_policy": "fallback may select newest mtime ledger",
+      "evidence": [
+        "scripts/audit_otr_full_run.py:116-199",
+        "scripts/audit_otr_full_run.py:321-364"
+      ]
+    },
+    {
+      "component": "LegacyMediaScripts",
+      "phase": "offline_tools",
+      "classification": "consumer",
+      "reads": [
+        "legacy root cast/scenes/shots/lines/timing/final paths"
+      ],
+      "writes": [],
+      "durability": "derived_media_only",
+      "failure_policy": "multiple skip/default behaviors; preserve only for explicit compatibility",
+      "evidence": [
+        "scripts/render_flux_batch.py:192-345",
+        "scripts/render_humo_batch.py:204-887",
+        "scripts/render_episode_concat.py:119-424"
+      ]
+    },
+    {
+      "component": "BuildSilentTestEpisode",
+      "phase": "offline_recovery_fixture",
+      "classification": "consumer_transformer",
+      "reads": [
+        "source episode_id/schema",
+        "cast",
+        "scenes",
+        "lines",
+        "music",
+        "source total duration"
+      ],
+      "writes": [
+        "separate transformed test ledger",
+        "synthetic clip-line topology",
+        "optional silence master WAV",
+        "separate build metadata"
+      ],
+      "durability": "separate_offline_fixture_artifacts; source ledger remains read-only",
+      "failure_policy": "explicit CLI source/output paths; legacy schema transformer, never a canonical production save path",
+      "evidence": [
+        "scripts/build_silent_test_episode.py:437-510",
+        "scripts/build_silent_test_episode.py:511-691"
+      ]
+    },
+    {
+      "component": "VisualReplayBundle",
+      "phase": "offline_tools",
+      "classification": "consumer_copy_mutator",
+      "reads": [
+        "images paths",
+        "line wav paths",
+        "video shot init images"
+      ],
+      "writes": [
+        "rewritten paths in a deep-copied replay ledger"
+      ],
+      "durability": "separate_replay_artifact",
+      "failure_policy": "requires nested video shots",
+      "evidence": [
+        "scripts/otr_visual_smoke.py:80-183",
+        "scripts/otr_visual_smoke.py:302-318"
+      ]
+    },
+    {
+      "component": "AuditAndCampaignReaders",
+      "phase": "offline_tools",
+      "classification": "consumer",
+      "reads": [
+        "provenance/citations",
+        "cast voice/gender",
+        "video acceptance",
+        "A/V timing",
+        "delivered engines"
+      ],
+      "writes": [],
+      "durability": "reports_only",
+      "failure_policy": "several tools use first/newest glob fallback rather than immutable run identity",
+      "evidence": [
+        "scripts/audit_spoken_citations.py:93-209",
+        "scripts/audit_voice_gender_consistency.py:126-375",
+        "scripts/grade_episode.py:43-118",
+        "scripts/otr_measure_av_offset.py:507-532",
+        "scripts/otr_w45_campaign.py:594-626"
+      ]
+    },
+    {
+      "component": "LedgerViewer",
+      "phase": "offline_tools",
+      "classification": "consumer",
+      "reads": [
+        "whole ledger via local server",
+        "legacy root fields in browser viewer"
+      ],
+      "writes": [],
+      "durability": "none",
+      "failure_policy": "old-layout discovery/view fields; arbitrary path query lacks containment enforcement",
+      "evidence": [
+        "scripts/serve_ledger.py:27-167",
+        "viewer/index.html:312-359"
+      ]
+    },
+    {
+      "component": "VRAMContextProbe",
+      "phase": "diagnostic",
+      "classification": "noncanonical_mutator",
+      "reads": [
+        "active ledger"
+      ],
+      "writes": [
+        "meta.vram_test_results"
+      ],
+      "durability": "best_effort_disk",
+      "failure_policy": "manual diagnostic only",
+      "evidence": [
+        "nodes/vram_context_test.py:378-400"
+      ]
+    }
+  ],
+  "checked_not_consumers": [
+    {
+      "component": "WorkflowValidator",
+      "reason": "validates LiteGraph topology, not episode-ledger fields",
+      "evidence": "nodes/otr_workflow_validator.py"
+    },
+    {
+      "component": "VideoDirector",
+      "reason": "emits video policy from widgets",
+      "evidence": "nodes/otr_video_director.py:228-245"
+    },
+    {
+      "component": "ImageDirector",
+      "reason": "consumes video policy and emits image policy",
+      "evidence": "nodes/otr_image_director.py:246-302"
+    },
+    {
+      "component": "IndividualVideoEngineAdapters",
+      "reason": "consume normalized render requests; full ledger access is centralized in render_driver",
+      "evidence": "nodes/_otr_video_engines/"
+    },
+    {
+      "component": "CanonicalApiConversion",
+      "reason": "treats ledger wire as an opaque linked string",
+      "evidence": "scripts/otr_api.py:541-657"
+    },
+    {
+      "component": "CanonicalApiRunner",
+      "reason": "loads/submits the canonical graph without parsing ledger fields",
+      "evidence": "scripts/otr_canonical_api_run.py:132-165"
+    },
+    {
+      "component": "ProjectState",
+      "reason": "separate project_state.json contract",
+      "evidence": "nodes/project_state.py:62-123"
+    },
+    {
+      "component": "CloudBillingLedger",
+      "reason": "separate append-only billing_ledger.jsonl",
+      "evidence": "nodes/_otr_shared/cloud_media_backend.py:375-394"
+    },
+    {
+      "component": "W45OvernightHistoryLedger",
+      "reason": "campaign history file named LEDGER, not an episode ledger",
+      "evidence": "scripts/otr_w45_overnight.py:40-104"
+    }
+  ],
+  "agy_claim_adjudication": [
+    {
+      "claim": "Narrative plane is strictly frozen at Phase 10",
+      "verdict": "disagree",
+      "correction": "Phase 10 validates and stamps; there is no whole/authored-core save-time guard, cleanup_locked reader, deep immutable wrapper, or complete story hash."
+    },
+    {
+      "claim": "SilentComposite writes ledger phase metadata",
+      "verdict": "disagree",
+      "correction": "SilentComposite has no episode-ledger input and consumes the clip manifest."
+    },
+    {
+      "claim": "CaptionBurn writes ledger phase metadata",
+      "verdict": "disagree",
+      "correction": "CaptionBurn reads a timed ledger and writes ASS/video only."
+    },
+    {
+      "claim": "CreditsRoll writes meta.credits_receipt",
+      "verdict": "disagree",
+      "correction": "CreditsRoll reads get_ledger().data and renders media; it does not persist a ledger mutation."
+    },
+    {
+      "claim": "Canonical VideoRenderBatch durably writes ledger clips and video shots",
+      "verdict": "disagree",
+      "correction": "Video shots are enriched on a deep-copied wire/state capture; clips persist as files plus manifest. Durable ledger stamps are render-engine and optional audio-motion metadata."
+    },
+    {
+      "claim": "Current system is operationally dual-plane",
+      "verdict": "partial",
+      "correction": "Its behavior reveals authored and production concerns, but they remain mixed in one mutable dict. The explicit two-plane contract is the target, not an already enforced current architecture."
+    }
+  ]
+}

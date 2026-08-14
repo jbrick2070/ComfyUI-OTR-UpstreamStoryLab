@@ -1,0 +1,238 @@
+{
+  "schema_version": "otr_story_recovery_case.v1",
+  "case_id": "science_news_good_20260716_folder_of_red_stamps",
+  "arm": "control",
+  "case_kind": "legacy_science_news_control",
+  "capabilities": {
+    "p3_compiled": false,
+    "p5_compiled": false,
+    "raw_transport": false,
+    "source_facts": true,
+    "music_topology": false
+  },
+  "provenance": {
+    "episode_id": "signal_lost_folder_of_red_stamps_20260716_152501",
+    "otr_commit": "ee0b2318",
+    "source_bank": "science_news",
+    "source_ledger_path_hint": "output/otr/episodes/signal_lost_folder_of_red_stamps_20260716_152501/audio/signal_lost_folder_of_red_stamps_20260716_152501_ledger.json",
+    "source_ledger_sha256": "ad5285a08a88d7682ad707baf44dea2e8c094b9c08e153f466a7233d8af2ee8f",
+    "source_digest": "28223d202358f6721a993c408d39b5e6bdbed61b2531c61e9f550041b181d024"
+  },
+  "render_receipt": {
+    "render_pass": true,
+    "published_asset_path_hint": "output/otr/episodes/signal_lost_folder_of_red_stamps_20260716_152501_silent_procgen_blended_captioned/signal_lost_folder_of_red_stamps_20260716_152501_silent_procgen_blended_captioned_with_credits_final.mp4",
+    "published_asset_sha256": "45738f2a8e0c2de2e52e15352010d40698729bfcf8f877930da6fd2f089b2ca7",
+    "published_asset_bytes": 63880406,
+    "audio_duration_seconds": 54.717666666666666,
+    "spoken_word_count_telemetry": 105
+  },
+  "object_sha256": {
+    "cast": "53b8d39fc0be0ae032c1c79d97cabb7d61fba6d5ae2d7b9d1f2375ddc53fd3ab",
+    "lines": "e5fcef3d20813d4e625298a711e1334ee82b1bfd019680d01c029332ca3f46df",
+    "news": "c99d9517c8678e7844beef5b54f655cbd872ed8ab84b9ac64ffe65dcb697f532",
+    "news_seed": "663139e4445984ff32a2b846161b5c5794593e29ea9db5de4c8f6395d6c5a325"
+  },
+  "projection_sha256": "f39af1b39ce58083628d78ed63ce2a4055be639d52f67c9218ca6a0e7f42cb45",
+  "artifacts": {
+    "cast": [
+      {
+        "char_id": "c01",
+        "name": "ANNOUNCER",
+        "character_description": "Period radio announcer; reads the science story and frames the drama between beats.",
+        "gender": "female",
+        "tts_model": "kokoro",
+        "voice_preset": "bf_emma",
+        "voice_params": null,
+        "line_count": 0,
+        "word_count": 0,
+        "voice_ref_id": "bm_george",
+        "voice_engine": "kokoro",
+        "commercial_clean": true
+      },
+      {
+        "char_id": "c02",
+        "name": "OYA REEVES",
+        "character_description": "40s, lead. Face: angular, sharp-browed, narrow nose, firm mouth, high cheekbones. Hair: short, salt-and-pepper, receding hairline. One distinctive story-linked detail: a scar across the left eyebrow from a fire incident. Presence: carries the weight of decisions, posture tense but controlled. Voice: warm, steady, with a subtle tremor in the lower register.",
+        "gender": "female",
+        "tts_model": "bark",
+        "voice_preset": "v2/en_speaker_4",
+        "voice_params": null,
+        "line_count": 2,
+        "word_count": 35,
+        "voice_ref_id": "vz_caro_davy",
+        "voice_engine": "indextts2",
+        "commercial_clean": true
+      },
+      {
+        "char_id": "c03",
+        "name": "ED STEELE",
+        "character_description": "40s, foil. Face: angular, high-bridged nose, thin lips, sharp jawline, receding hairline, one scar across the left eyebrow. Presence: carries the weight of unspoken orders, eyes constantly scanning for weakness or deception. Voice: clipped, formal, with a deliberate pause before each sentence.",
+        "gender": "male",
+        "tts_model": "bark",
+        "voice_preset": "v2/en_speaker_3",
+        "voice_params": null,
+        "line_count": 1,
+        "word_count": 16,
+        "voice_ref_id": "vz_donor_kditz",
+        "voice_engine": "indextts2",
+        "commercial_clean": true
+      }
+    ],
+    "lines": [
+      {
+        "line_id": "b001",
+        "shot_id": null,
+        "beat_id": "b001",
+        "char_id": "announcer",
+        "text": "It's ten:zero PM at the Signal Lost studios where Oya Reeves and Ed Steele stand on the edge of a revelation neither is ready to share.",
+        "traits": "welcoming",
+        "boundary": null,
+        "char_count": 135,
+        "word_count": 26,
+        "bark_wav_path": null,
+        "start_s": 9.5,
+        "dur_s": 10.443041666666666,
+        "speaker_role": "announcer",
+        "arc_phase": "scene",
+        "compose_flags": [
+          "announcer_intro",
+          "announcer_intro_rewritten"
+        ],
+        "beat_intent": "Open the episode and orient the listener.",
+        "target_words": 15,
+        "dialogue_slot_id": "d001",
+        "start_s_space": "master_mix"
+      },
+      {
+        "line_id": "b002",
+        "shot_id": null,
+        "beat_id": "b002",
+        "char_id": "c02",
+        "text": "the code’s not just numbers—it’s a map of where the smoke will fall, and who’ll breathe it in.",
+        "traits": "oppressive",
+        "boundary": null,
+        "char_count": 94,
+        "word_count": 22,
+        "bark_wav_path": null,
+        "start_s": 19.943041666666666,
+        "dur_s": 4.7485,
+        "speaker_role": "character",
+        "arc_phase": "scene",
+        "compose_flags": [],
+        "beat_intent": "Oya forces Ed to confront the moral cost of their work by revealing a hidden file that could expose their complici; the scene is set: the wetland's survey is already in play before the pressure builds",
+        "target_words": 10,
+        "dialogue_slot_id": "d002",
+        "start_s_space": "master_mix"
+      },
+      {
+        "line_id": "b003",
+        "shot_id": null,
+        "beat_id": "b003",
+        "char_id": "c03",
+        "text": "the cleanup’s not a choice—it’s a ledger, and you’re writing the numbers.",
+        "traits": "tense",
+        "boundary": null,
+        "char_count": 73,
+        "word_count": 16,
+        "bark_wav_path": null,
+        "start_s": 24.691541666666666,
+        "dur_s": 4.334895833333333,
+        "speaker_role": "character",
+        "arc_phase": "scene",
+        "compose_flags": [],
+        "beat_intent": "Ed confronts Oya with a moral dilemma, demanding she reveal the full truth about their role in the climate crisis; what is personally at stake turns on the cleanup's funding",
+        "target_words": 10,
+        "dialogue_slot_id": "d003",
+        "start_s_space": "master_mix"
+      },
+      {
+        "line_id": "b004",
+        "shot_id": null,
+        "beat_id": "b004",
+        "char_id": "c02",
+        "text": "the drive’s still spinning, but the smoke’s already in the air.",
+        "traits": "tense",
+        "boundary": null,
+        "char_count": 63,
+        "word_count": 13,
+        "bark_wav_path": null,
+        "start_s": 29.0264375,
+        "dur_s": 3.417520833333333,
+        "speaker_role": "character",
+        "arc_phase": "scene",
+        "compose_flags": [],
+        "beat_intent": "Oya refuses to divulge the algorithm's full code, choosing to protect her brother's life over the greater good; on-stage, they part over the monitoring data -- gaining and losing in one breath",
+        "target_words": 10,
+        "dialogue_slot_id": "d004",
+        "start_s_space": "master_mix"
+      },
+      {
+        "line_id": "b005",
+        "shot_id": null,
+        "beat_id": "b005",
+        "char_id": "announcer",
+        "text": "Beyond the ash-choked skies of tonight's burning frontier: Wildfires continue to spread across North America, impacting air quality and prompting health advisories as climate change exacerbates the crisis.",
+        "traits": "reflective",
+        "boundary": null,
+        "char_count": 205,
+        "word_count": 28,
+        "bark_wav_path": null,
+        "start_s": 32.443958333333335,
+        "dur_s": 14.786041666666666,
+        "speaker_role": "announcer",
+        "arc_phase": "scene",
+        "compose_flags": [
+          "news_coda_bridge"
+        ],
+        "beat_intent": "Sign off on a single concrete final image or sound. Do NOT state, summarize, or resolve the outcome -- not who won or what was decided. The resolution belongs to the final beat.",
+        "target_words": 15,
+        "dialogue_slot_id": "d005",
+        "start_s_space": "master_mix"
+      }
+    ],
+    "news": {
+      "casting_brief": "Residents, firefighters, First Nation communities, officials",
+      "script_brief": "Wildfires in Canada and the US cause smoke pollution, affecting air quality and prompting evacuations. Rising temperatures and climate change contribute to more frequent and intense fires, creating tension between communities and emergency responders.",
+      "news_close_brief": "Wildfires continue to spread across North America, impacting air quality and prompting health advisories as climate change exacerbates the crisis.",
+      "key_terms": [
+        "wildfires",
+        "Canada",
+        "US",
+        "Ontario",
+        "Minnesota",
+        "First Nation communities",
+        "climate change"
+      ],
+      "source_hash": "28223d202358f6721a993c408d39b5e6bdbed61b2531c61e9f550041b181d024",
+      "source_chars": 6212,
+      "prompt_version": "news_interpreter_v1",
+      "schema_version": "l3-2026-05-14",
+      "model_id": "unsloth/Qwen3-8B-GGUF",
+      "decoder_profile": "default_v1",
+      "seed": 0,
+      "attempts": 1,
+      "attempt_failures": []
+    },
+    "news_seed": {
+      "headline": "What to know about the Canadian and US wildfires and their impact",
+      "source": "BBC News",
+      "url": "https://www.bbc.co.uk/news/articles/c5ywdl9ne3yo?at_medium=RSS&at_campaign=rss",
+      "date": "Thu, 16 Jul 2026 16:08:40 GMT",
+      "body_chars": 6212,
+      "selected_at": "2026-07-16T15:22:00"
+    }
+  },
+  "expected": {
+    "story_content_pass": true,
+    "presentation_topology_pass": "not_evaluated",
+    "first_spoken_role": "announcer",
+    "last_spoken_role": "announcer",
+    "closing_line_contains_exact_news_close_brief": true,
+    "character_rows_are_direct_dialogue": true
+  },
+  "evidence_limits": [
+    "This legacy ledger has no structured music cue rows.",
+    "Opening/closing music topology is not evaluated for this control and must never be inferred as a pass.",
+    "The fixture is a clean semantic control, not a claim that the retired many-pass pipeline should return."
+  ]
+}
