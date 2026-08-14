@@ -454,6 +454,208 @@ def test_every_model_request_carries_a_decode_guard() -> None:
     assert dialogue_guards == {2400}
 
 
+def _cast(*rows: tuple[str, str, str]):
+    from upstream_story_lab.ledger_contract import CastMember
+
+    return tuple(
+        CastMember(
+            char_id=char_id,
+            name=name,
+            cast_role=role,
+            character_description="A voice in tonight's drama.",
+        )
+        for char_id, name, role in rows
+    )
+
+
+ANNOUNCER_ROW = ("announcer", "ANNOUNCER", "announcer")
+
+
+class CountingProvider(ScriptedStoryProvider):
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def run_job(self, request: ModelJobRequest):
+        self.calls += 1
+        return super().run_job(request)
+
+
+def test_blind_cast_is_refused_before_any_model_call() -> None:
+    """A shared name variant silently disables the narration detector.
+
+    "MR. DARCY" also answers to "DARCY", so pairing the two makes the policy
+    drop that variant from both rows.  Narrated prose then passes every gate
+    and seals into the ledger - the exact defect the spoken-only law exists to
+    stop - so the cast itself must be refused.
+    """
+
+    brief = build_fixture_brief().model_copy(
+        update={
+            "act_count": 1,
+            "cast": _cast(
+                ANNOUNCER_ROW,
+                ("c02", "DARCY", "character"),
+                ("c03", "MR. DARCY", "character"),
+            ),
+        }
+    )
+    provider = CountingProvider()
+    with pytest.raises(Exception, match="blinds the narration detector"):
+        author_story_ledger(
+            brief, provider, sealed_at=FIXTURE_SEALED_AT, save_path=None
+        )
+    assert provider.calls == 0, "an unsafe brief must not buy any model work"
+
+
+def test_blind_cast_would_otherwise_seal_narration() -> None:
+    """Document why the refusal exists, using the detector directly."""
+
+    from upstream_story_lab.spoken_text_policy import audit_spoken_text
+
+    line = [
+        {
+            "line_id": "l001",
+            "char_id": "c02",
+            "speaker": "DARCY",
+            "speaker_role": "character",
+            "text": "Darcy turns away now.",
+        }
+    ]
+    colliding = [
+        {"char_id": "announcer", "name": "ANNOUNCER", "cast_role": "announcer"},
+        {"char_id": "c02", "name": "DARCY", "cast_role": "character"},
+        {"char_id": "c03", "name": "MR. DARCY", "cast_role": "character"},
+    ]
+    distinct = [row for row in colliding if row["char_id"] != "c03"]
+
+    assert not audit_spoken_text(line, colliding)
+    assert [f.code for f in audit_spoken_text(line, distinct)] == [
+        "third_person_stage_business"
+    ]
+
+
+def test_non_nfc_operator_text_is_refused() -> None:
+    import unicodedata
+
+    brief = build_fixture_brief().model_copy(
+        update={
+            "cast": _cast(
+                ANNOUNCER_ROW,
+                ("c02", unicodedata.normalize("NFD", "RENÉE VOSS"), "character"),
+                ("c03", "ED STEELE", "character"),
+            )
+        }
+    )
+    with pytest.raises(Exception, match="NFC"):
+        author_story_ledger(
+            brief,
+            ScriptedStoryProvider(),
+            sealed_at=FIXTURE_SEALED_AT,
+            save_path=None,
+        )
+
+
+@pytest.mark.parametrize(
+    "update",
+    [
+        {"scene_time": "--"},
+        {
+            "cast": _cast(
+                ANNOUNCER_ROW,
+                ("c02", "-", "character"),
+                ("c03", "ED STEELE", "character"),
+            )
+        },
+    ],
+)
+def test_unpronounceable_operator_text_is_refused(update: dict) -> None:
+    """The opening validator must be satisfiable before work is scheduled."""
+
+    brief = build_fixture_brief().model_copy(update=update)
+    with pytest.raises(Exception, match="pronounceable"):
+        author_story_ledger(
+            brief,
+            ScriptedStoryProvider(),
+            sealed_at=FIXTURE_SEALED_AT,
+            save_path=None,
+        )
+
+
+@pytest.mark.parametrize(
+    "narration",
+    [
+        # Caught by the draft sanitizer's pronoun rule...
+        "She turns away from the desk now.",
+        # ...and this one falls through to the spoken-text policy's name rule.
+        "Oya Reeves turns away from the desk now.",
+    ],
+)
+def test_narration_is_caught_per_act_with_a_distinct_cast(
+    narration: str,
+) -> None:
+    """Two independent layers reject narrated prose in a character row."""
+
+    def mutate(payload: dict[str, Any], request: ModelJobRequest):
+        rows = [dict(row) for row in payload["rows"]]
+        rows[0]["text"] = narration
+        payload["rows"] = rows
+        return payload
+
+    provider = TamperingProvider("act_01.dialogue", {1}, mutate)
+    result = run_lab(provider)
+    records = attempts_for(result, "act_01.dialogue")
+    assert [record.status for record in records] == ["rejected", "accepted"]
+    assert any("narrat" in reason for reason in records[0].reasons)
+    assert all(
+        "turns away" not in line.text
+        for line in result.envelope.story_ledger.body.lines
+    )
+
+
+def test_bare_first_name_narration_is_a_known_v1_gap() -> None:
+    """Pin the measured edge of the current policy.
+
+    ``otr.spoken-text-only.v1`` recognizes a cast name and its
+    honorific-stripped form, not a bare first name, so narration that uses
+    only a first name escapes when the cast name has several words.  Widening
+    this is a v2 decision, not a silent change: common first names collide
+    with ordinary words.  This test documents the boundary so a future policy
+    version has to move it deliberately.
+    """
+
+    from upstream_story_lab.spoken_text_policy import audit_spoken_text
+
+    cast = [
+        {"char_id": "announcer", "name": "ANNOUNCER", "cast_role": "announcer"},
+        {"char_id": "c02", "name": "OYA REEVES", "cast_role": "character"},
+    ]
+
+    def audit(text: str) -> list[str]:
+        return [
+            finding.code
+            for finding in audit_spoken_text(
+                [
+                    {
+                        "line_id": "l001",
+                        "char_id": "c02",
+                        "speaker": "OYA REEVES",
+                        "speaker_role": "character",
+                        "text": text,
+                    }
+                ],
+                cast,
+            )
+        ]
+
+    assert audit("She turns away from the desk now.") == [
+        "third_person_stage_business"
+    ]
+    assert audit("Oya Reeves turns away from the desk now.") == [
+        "third_person_stage_business"
+    ]
+    assert audit("Oya turns away from the desk now.") == []
+
+
 def test_committed_fixture_is_current_and_loadable() -> None:
     result = author_fixture(save_path=None)
     expected = canonical_bytes(result.envelope) + b"\n"

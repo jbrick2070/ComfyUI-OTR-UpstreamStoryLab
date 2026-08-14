@@ -87,6 +87,48 @@ implementation change."* Concretely:
 - Non-adaptation lanes (`science_news`, `media_archive` original drama) are
   unaffected and keep full heuristic strictness.
 
+## Two defects found while measuring, both now fixed or pinned
+
+**1. A colliding cast name blinded the detector (fixed).** The policy resolves
+name ambiguity by dropping any variant two cast rows could own. `MR. DARCY`
+also answers to `DARCY`, so pairing it with a separate `DARCY` dropped that
+variant from *both* rows and left the character with no narration pattern at
+all. Measured end to end: with that cast, `Darcy turns away now.` passed the
+per-act gate, passed the cast sweep, passed trusted admission, and **sealed
+into the ledger** — the precise defect the spoken-only law exists to stop.
+
+The fix refuses the cast before any model work is bought, using the detector's
+own `_unique_name_variants` so the guard cannot drift from the rule it
+protects. `author_story_ledger` also revalidates its brief on entry, because
+`model_copy(update=...)` builds a brief without running field validators.
+Two further preflight refusals came from the same review: operator text that
+is not already Unicode NFC (the seal rejects composed strings only at the very
+end, after the whole schedule is paid for) and a character name with no
+pronounceable word token (which makes the announcer-opening validator
+unsatisfiable, so that job burns every attempt).
+
+**2. Bare first-name narration escapes v1 (pinned, not silently changed).**
+Measured with cast name `OYA REEVES`:
+
+| Line | v1 verdict |
+|---|---|
+| `She turns away from the desk now.` | caught (draft sanitizer, pronoun rule) |
+| `Oya Reeves turns away from the desk now.` | caught (policy, name rule) |
+| `Oya turns away from the desk now.` | **escapes** |
+
+v1 recognizes a cast name and its honorific-stripped form, not a bare first
+name. Widening this is a genuine tradeoff rather than an obvious win: common
+first names collide with ordinary words (`Will`, `Mark`, `Rose`, `Grace`), and
+the lab now refuses casts whose variants collide, so a careless widening would
+start rejecting legitimate casts. The boundary is pinned by
+`test_bare_first_name_narration_is_a_known_v1_gap` so a future policy version
+has to move it deliberately. Decide it as part of v2.
+
+Note also that narration is caught by two independent layers — the draft
+sanitizer's pronoun rule in `story_authoring.py` and the policy's name rule in
+`spoken_text_policy.py`. The v2 source-carried exemption must be applied to
+**both**, or faithful source text will still be rejected by the sanitizer.
+
 ## What this does not change
 
 - The spoken-only law itself. No action rows, stage directions, narration, or

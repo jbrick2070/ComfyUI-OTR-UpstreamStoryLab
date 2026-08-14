@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import unicodedata
 from collections import Counter
 from collections.abc import Mapping
 from datetime import datetime
@@ -63,9 +64,16 @@ from .ledger_verifiers import (
     CapturedSourcePacketArtifact,
     TRUSTED_VALIDATOR_IDENTITIES,
     _contains_normalized_phrase,
+    _normalized_words,
     build_trusted_receipt_verifiers,
 )
-from .spoken_text_policy import audit_spoken_text
+from .spoken_text_policy import (
+    # The blind-cast guard below must ask the detector itself which names it
+    # can still recognize; re-deriving that logic here would let the two drift
+    # apart and silently reopen the hole.
+    _unique_name_variants,
+    audit_spoken_text,
+)
 from .story_authoring import (
     AuthoringJob,
     JobExecutor,
@@ -156,6 +164,65 @@ class AuthoringBrief(StrictExecutorModel):
             raise AuthoringExecutionError(
                 "locked cast requires at least one character"
             )
+
+        # A cast whose names share a variant blinds the narration detector.
+        # "MR. DARCY" also answers to "DARCY", so pairing it with a separate
+        # "DARCY" makes the policy drop that variant from both rows and stop
+        # recognizing either name.  Narrated prose then passes every gate and
+        # seals into the ledger, which is precisely the defect the spoken-only
+        # law exists to stop.  Refuse the cast instead of authoring blind.
+        blind = [
+            row.name
+            for row, variants in zip(
+                self.cast,
+                _unique_name_variants(
+                    {row.char_id: row.name for row in self.cast}
+                ).values(),
+                strict=True,
+            )
+            if not variants
+        ]
+        if blind:
+            raise AuthoringExecutionError(
+                f"locked cast names {blind} share a name variant with another "
+                "cast row, which blinds the narration detector for them; "
+                "rename one of the rows"
+            )
+
+        for label, value in (
+            ("setting", self.setting),
+            ("scene_time", self.scene_time),
+            *[(f"cast name {row.char_id}", row.name) for row in self.cast],
+            *[
+                (f"cast description {row.char_id}", row.character_description)
+                for row in self.cast
+            ],
+        ):
+            # Canonical story bytes must already be NFC; a composed string
+            # would only fail at the seal, after the whole schedule is paid for.
+            if unicodedata.normalize("NFC", value) != value:
+                raise AuthoringExecutionError(
+                    f"{label} must already be Unicode NFC; the story seal "
+                    "rejects composed strings"
+                )
+
+        # The opening validator proves the announcer literally named the
+        # setting, time, and every character.  A value with no word tokens can
+        # never satisfy that, so the announcer job would burn every attempt.
+        for label, value in (
+            ("setting", self.setting),
+            ("scene_time", self.scene_time),
+            *[
+                (f"cast name {row.char_id}", row.name)
+                for row in self.cast
+                if row.cast_role == "character"
+            ],
+        ):
+            if not _normalized_words(value):
+                raise AuthoringExecutionError(
+                    f"{label} has no pronounceable word the announcer opening "
+                    "could name"
+                )
         return self
 
 
@@ -1537,8 +1604,14 @@ def author_story_ledger(
 ) -> StagedAuthoringResult:
     """Run the complete staged schedule and return one sealed v2 envelope."""
 
+    # ``model_copy(update=...)`` builds a brief without re-running field
+    # validators, so an unsafe cast can reach this entry point unchecked.
+    # Revalidate before scheduling any work.
     return _StagedRun(
-        brief, provider, sealed_at=sealed_at, save_path=save_path
+        AuthoringBrief.model_validate(brief),
+        provider,
+        sealed_at=sealed_at,
+        save_path=save_path,
     ).run()
 
 
