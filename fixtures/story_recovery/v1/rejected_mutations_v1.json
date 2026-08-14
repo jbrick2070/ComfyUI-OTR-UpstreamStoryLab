@@ -1,0 +1,312 @@
+{
+  "schema_version": "otr.story_ledger_mutation_corpus.v1",
+  "base_fixture": "normative_ledger_envelope.json",
+  "base_file_sha256": "e0dfbd3d91cb5fd60327200a34a6da484b5361ab3a6305c6911816d3b472afe4",
+  "scope": "current executable story-plane boundary only",
+  "excluded": [
+    "production receipt schemas",
+    "Story Lab to OTR adapter",
+    "terminal final seal"
+  ],
+  "evidence_calibration": {
+    "control_fixture": "../science_news_good_20260716.json",
+    "control_projection_sha256": "f39af1b39ce58083628d78ed63ce2a4055be639d52f67c9218ca6a0e7f42cb45",
+    "challenger_fixture": "../scifi_news_bad_20260813.json",
+    "challenger_projection_sha256": "ac3aeb3899e91e518afad874ccf3ccbba1d42cc1300caf2d7b0ebf156a98e29a"
+  },
+  "cases": [
+    {
+      "case_id": "version.story_schema_is_exact",
+      "invariant_code": "STORY_VERSION_EXACT",
+      "description": "A current-production l4 ledger is never silently admitted as v1.",
+      "expected_gate": "story_validate",
+      "expected_message_regex": "otr.story_ledger.v1",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/schema_version",
+          "value": "l4-2026-08-07"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "strict.spoken_delivery_note_is_forbidden",
+      "invariant_code": "STORY_EXTRA_FIELDS_FORBIDDEN",
+      "description": "A delivery note cannot enter the strict spoken-row surface.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "Extra inputs are not permitted",
+      "operations": [
+        {
+          "op": "add",
+          "path": "/story_ledger/body/lines/0/delivery_note",
+          "value": "whisper this"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "ids.duplicate_line",
+      "invariant_code": "STORY_IDS_UNIQUE",
+      "description": "Line IDs remain unique inside the line table.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "line IDs must be unique",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/lines/1/line_id",
+          "value": "l001"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "graph.fact_source_is_closed",
+      "invariant_code": "STORY_GRAPH_CLOSED",
+      "description": "Every accepted fact resolves to a captured source.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "references unknown source",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/source_packet/facts/0/source_refs/0/source_id",
+          "value": "missing_source"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "speaker.score_name_is_authority",
+      "invariant_code": "STORY_SPEAKER_AUTHORITY",
+      "description": "A character line cannot claim another cast member's speaker name.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "speaker does not match cast authority",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/lines/1/speaker",
+          "value": "ED STEELE"
+        }
+      ],
+      "challenger_finding_codes": [
+        "P5_SPEAKER_AUTHORITY_MISSING",
+        "CROSS_SPEAKER_TEXT"
+      ]
+    },
+    {
+      "case_id": "facts.line_fact_ids_is_required",
+      "invariant_code": "STORY_FACTS_DURABLE",
+      "description": "Even a line with no facts must carry the fact_ids field.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "Field required",
+      "operations": [
+        {
+          "op": "remove",
+          "path": "/story_ledger/body/lines/1/fact_ids"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "sequence.duplicate_line_reference",
+      "invariant_code": "STORY_SEQUENCE_EXACT_COVERAGE",
+      "description": "The sequence cannot duplicate one line and omit another.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "every spoken line must appear exactly once",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/sequence/2/ref_id",
+          "value": "l003"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "graph.shot_table_order_matches_children",
+      "invariant_code": "STORY_GRAPH_ORDER_PARITY",
+      "description": "Reordering the shot table without its child projection is illegal.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "shot table order",
+      "operations": [
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/shots/0",
+          "other": "/story_ledger/body/shots/1"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "topology.music_open_is_first",
+      "invariant_code": "STORY_MUSIC_OPEN_FIRST",
+      "description": "Opening music cannot move behind the first spoken row.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "music_open/music_close must bookend sequence",
+      "operations": [
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/sequence/0",
+          "other": "/story_ledger/body/sequence/1"
+        }
+      ],
+      "challenger_finding_codes": [
+        "MUSIC_OPEN_ANCHOR_NOT_ANNOUNCER"
+      ]
+    },
+    {
+      "case_id": "topology.announcer_open_role_is_missing",
+      "invariant_code": "STORY_ANNOUNCER_OPEN_FIRST_SPOKEN",
+      "description": "The first spoken announcer row cannot be relabeled as dialogue.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "character_dialogue has wrong speech routing role",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/sequence/1/sequence_role",
+          "value": "character_dialogue"
+        }
+      ],
+      "challenger_finding_codes": [
+        "ANNOUNCER_OPEN_MISSING",
+        "ANNOUNCER_INTERIOR_ONLY"
+      ]
+    },
+    {
+      "case_id": "topology.character_dialogue_is_absent",
+      "invariant_code": "STORY_DIALOGUE_PRESENT",
+      "description": "Relabeling every character row as announcer speech is rejected by routing authority.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "announcer_open has wrong speech routing role",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/sequence/2/sequence_role",
+          "value": "announcer_open"
+        },
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/sequence/3/sequence_role",
+          "value": "announcer_open"
+        },
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/sequence/5/sequence_role",
+          "value": "announcer_open"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "music.interstitial_requires_script_authority",
+      "invariant_code": "STORY_INTERSTITIAL_EXPLICIT",
+      "description": "An interstitial cannot be invented by compiler bookend authority.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "music_inter must be explicitly requested by the script",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/music_cues/1/request_authority",
+          "value": "compiler_bookend"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "music.open_requires_compiler_authority",
+      "invariant_code": "STORY_MUSIC_BOOKEND_AUTHORITY",
+      "description": "A script cannot claim ownership of the opening bookend.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "opening and closing music are compiler-owned bookends",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/music_cues/0/request_authority",
+          "value": "script"
+        }
+      ],
+      "challenger_finding_codes": []
+    },
+    {
+      "case_id": "topology.coda_is_not_last_spoken",
+      "invariant_code": "STORY_CODA_LAST_SPOKEN",
+      "description": "A coherent reorder still fails when character dialogue follows the coda.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "last spoken row must be announcer_news_coda",
+      "operations": [
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/sequence/5",
+          "other": "/story_ledger/body/sequence/6"
+        },
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/lines/3",
+          "other": "/story_ledger/body/lines/4"
+        },
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/beats/3",
+          "other": "/story_ledger/body/beats/4"
+        },
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/shots/1/beat_ids/1",
+          "other": "/story_ledger/body/shots/1/beat_ids/2"
+        }
+      ],
+      "challenger_finding_codes": [
+        "ANNOUNCER_CODA_MISSING",
+        "ANNOUNCER_INTERIOR_ONLY"
+      ]
+    },
+    {
+      "case_id": "facts.coda_has_no_fact",
+      "invariant_code": "STORY_CODA_FACT_GROUNDED",
+      "description": "The final announcer row cannot discard its captured fact reference.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "announcer_news_coda must reference at least one source fact",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/story_ledger/body/lines/4/fact_ids",
+          "value": []
+        }
+      ],
+      "challenger_finding_codes": [
+        "FACTUAL_CODA_MISSING"
+      ]
+    },
+    {
+      "case_id": "topology.music_close_is_not_last",
+      "invariant_code": "STORY_MUSIC_CLOSE_LAST",
+      "description": "Closing music cannot move in front of the coda.",
+      "expected_gate": "body_validate",
+      "expected_message_regex": "music_open/music_close must bookend sequence",
+      "operations": [
+        {
+          "op": "swap",
+          "path": "/story_ledger/body/sequence/6",
+          "other": "/story_ledger/body/sequence/7"
+        }
+      ],
+      "challenger_finding_codes": [
+        "MUSIC_CLOSE_ANCHOR_NOT_ANNOUNCER"
+      ]
+    },
+    {
+      "case_id": "receipts.one_required_outcome_is_missing",
+      "invariant_code": "STORY_FIVE_OUTCOMES_RECEIPTED",
+      "description": "A seal cannot be built when any one of the five receipts is absent.",
+      "expected_gate": "story_validate",
+      "expected_message_regex": "Field required",
+      "operations": [
+        {
+          "op": "remove",
+          "path": "/story_ledger/validation/outcomes/music_bookends"
+        }
+      ],
+      "challenger_finding_codes": []
+    }
+  ]
+}

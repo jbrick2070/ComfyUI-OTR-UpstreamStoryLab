@@ -114,6 +114,14 @@
     "prose_policy_change": "new validator_version_required",
     "network_or_llm_calls": "forbidden"
   },
+  "executable_fixture_corpus": {
+    "normative_envelope": "fixtures/story_recovery/v1/normative_ledger_envelope.json",
+    "captured_packet": "fixtures/story_recovery/v1/source_packets/science_news_folder_red_stamps_20260716.json",
+    "rejected_mutations": "fixtures/story_recovery/v1/rejected_mutations_v1.json",
+    "mutation_coverage_authority": "story_invariants[].code",
+    "dependent_digest_policy": "recompute body and story digests before later-gate admission checks",
+    "historical_control_and_challenger": "calibration_evidence_only_never_silent_v1_promotion"
+  },
   "story_plane": {
     "root": "story_ledger",
     "authoritative_sections": [

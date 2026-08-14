@@ -331,7 +331,16 @@ references carry their kind.
 - Target machine contract: `contracts/ledger_bible_v1.json`
 - Strict models, graph validator, canonicalization and story guard:
   `src/upstream_story_lab/ledger_contract.py`
+- Five trusted semantic validators and immutable registry:
+  `src/upstream_story_lab/ledger_verifiers.py`
+- Complete normative envelope and external captured packet:
+  `fixtures/story_recovery/v1/`
+- Rejected mutation corpus with one replayed case per machine invariant:
+  `fixtures/story_recovery/v1/rejected_mutations_v1.json`
 - Contract tests: `tests/test_ledger_bible_contract.py`
+- Semantic and mutation-corpus tests:
+  `tests/test_ledger_semantic_verifiers.py` and
+  `tests/test_ledger_mutation_corpus.py`
 - Live good/bad evidence projections: `fixtures/story_recovery/`
 - Independent audit and reviewer reconciliation:
   `docs/2026-08-13-story-recovery/`
